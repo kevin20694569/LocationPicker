@@ -1,0 +1,336 @@
+import UIKit
+import AVFoundation
+
+class MainTablePostCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, MediaCollectionCellDelegate  {
+    
+    
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.currentPost.media.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let media = self.currentPost.media[indexPath.row]
+        if media.urlIsImage() {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCollectionCell", for: indexPath) as! ImageViewCollectionCell
+            cell.layoutImageView(media: media)
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayerLayerCollectionCell", for: indexPath) as! PlayerLayerCollectionCell
+            cell.layoutPlayerlayer(media: media)
+            return cell
+        }
+    }
+    
+    @IBOutlet var collectionView : UICollectionView! { didSet {
+        collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.clipsToBounds = true
+        
+    }}
+    
+    var currentMediaIndexPath : IndexPath!
+    var pageviewcontrollerHeight : CGFloat?
+    var mediaCellDelegate : MediaTableCellDelegate!
+    
+    var currentPost : Post!
+    
+    var currentCollectionCell : UICollectionViewCell? {
+        let cell =  collectionView.cellForItem(at: currentMediaIndexPath)
+        return cell
+    }
+    
+    
+    
+    @IBOutlet weak var shareButton : UIButton!
+    @IBOutlet weak var collectButton : UIButton!
+    @IBOutlet weak var restaurantNameLabel : UILabel?
+    @IBOutlet weak var userImageView: UIImageView! { didSet {
+        userImageView.contentMode = .scaleAspectFill
+        userImageView.clipsToBounds = true
+        userImageView.layer.cornerRadius  = 8
+        userImageView.isUserInteractionEnabled = true
+    }}
+    /*   @IBOutlet weak var restaurantAddressLabel: UILabel! { didSet {
+     restaurantAddressLabel.isHidden = true
+     }}*/
+    @IBOutlet weak var pageControll : UIPageControl? { didSet {
+        pageControll?.hidesForSinglePage = true
+    }}
+    @IBOutlet weak var distanceLabel : UILabel?
+    
+    @IBOutlet weak var heartButton : UIButton! { didSet {
+        heartButton.addTarget(self, action: #selector(LikeToggle), for: .touchUpInside)
+    }}
+    
+    @IBOutlet weak var reactionEmojiView : UIStackView! { didSet {
+        reactionEmojiView.layer.cornerRadius = 10.0
+        reactionEmojiView.layer.borderWidth = 1.0
+        reactionEmojiView.layer.borderColor = UIColor.lightGray.cgColor
+    }}
+    
+    @IBOutlet var soundImageView : UIImageView! { didSet {
+        soundImageView.backgroundColor = .clear
+        soundImageView.contentMode = .center
+    }}
+    
+    var tapToProFileGesture : UITapGestureRecognizer!
+    var doubleTapGesture : UITapGestureRecognizer!
+    var longTapGesture : UILongPressGestureRecognizer!
+    var muteTapGesture : UITapGestureRecognizer!
+    var likeToggleGesture : UITapGestureRecognizer!
+    
+    
+    func configureData(post: Post)  {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        currentPost = post
+        self.collectionView.performBatchUpdates {
+            
+            
+        } completion: { bool in
+            self.collectionView.scrollToItem(at: IndexPath(row: self.currentPost.CurrentIndex, section: self.currentMediaIndexPath.section), at: .centeredHorizontally, animated: false)
+        }
+        currentMediaIndexPath = IndexPath(row: post.CurrentIndex, section: 0)
+        distanceLabel?.text = currentPost.distance?.milesTransform()
+        restaurantNameLabel?.text = currentPost.RestaurantName
+        //    restaurantAddressLabel.text = currentPost.RestaurantAddress
+        pageControll?.numberOfPages = currentPost.media.count
+        setHeartImage(like: currentPost.Like)
+        userImageView?.image = currentPost.Userimage
+        if soundImageView != nil {
+            self.soundImageView.image =  UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.1.fill")
+        }
+        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0) )
+        layoutColletctionView()
+        
+    }
+    
+    func layoutColletctionView() {
+        let width = collectionView.bounds.width
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        userImageView.translatesAutoresizingMaskIntoConstraints = false
+        heartButton.translatesAutoresizingMaskIntoConstraints  = false
+        soundImageView.translatesAutoresizingMaskIntoConstraints = false
+        let scale = 0.04
+        NSLayoutConstraint.activate([
+            collectionView.bottomAnchor.constraint(equalTo: pageControll!.topAnchor, constant: -10),
+            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18 + width * scale),
+            userImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18 + width * scale),
+            heartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18 - width * scale),
+            heartButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18 + width * scale),
+            soundImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18 - width * scale),
+            soundImageView.bottomAnchor.constraint(equalTo: pageControll!.bottomAnchor, constant: -50),
+            heartButton.widthAnchor.constraint(equalToConstant: 40),
+            heartButton.heightAnchor.constraint(equalToConstant: 40),
+            userImageView.widthAnchor.constraint(equalToConstant: width * 0.1),
+            userImageView.heightAnchor.constraint(equalToConstant: width * 0.1)
+        ])
+    }
+    func setHeartImage(like : Bool) {
+        let heartImage = like ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        heartButton.setImage(heartImage, for: .normal)
+    }
+    
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        collectionViewFlowSet()
+    }
+    
+    func collectionViewFlowSet() {
+        let flow = UICollectionViewFlowLayout()
+        let height = collectionView.bounds.height
+        let spacing = self.collectionView.bounds.width - height
+        flow.itemSize = CGSize(width: height  , height: height )
+        flow.minimumLineSpacing = spacing
+        flow.minimumInteritemSpacing = 0
+        flow.scrollDirection = .horizontal
+        flow.sectionInset = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: spacing / 2)
+        collectionView.collectionViewLayout = flow
+    }
+    
+}
+
+extension MainTablePostCell {
+    
+    
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        currentMediaIndexPath = .init(row: 0, section: 0)
+        layoutColletctionView()
+        setGesture()
+        if soundImageView != nil {
+            self.soundImageView.image =  UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.1.fill")
+        }
+        playMedia(indexPath: self.currentMediaIndexPath)
+        layoutIfNeeded()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.collectionView.dataSource = nil
+        self.restaurantNameLabel?.text = ""
+        self.distanceLabel?.text = ""
+    }
+    
+    
+    
+    func playMedia(indexPath : IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PlayerLayerCollectionCell {
+            cell.play()
+        }
+    }
+    
+    func pauseMedia(indexPath : IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? PlayerLayerCollectionCell {
+            cell.pause()
+        } else {
+            for cell in collectionView.visibleCells {
+                if let cell = cell as? PlayerLayerCollectionCell {
+                    cell.pause()
+                }
+            }
+        }
+    }
+    
+    func updateCellPageControll(currentCollectionIndexPath: IndexPath) {
+        self.currentMediaIndexPath.row = currentCollectionIndexPath.row
+        self.pageControll?.currentPage = currentCollectionIndexPath.row
+        self.pageControll?.layoutSubviews()
+        
+        self.currentPost.CurrentIndex = currentCollectionIndexPath.row
+        if currentPost.media[currentCollectionIndexPath.row].isImage {
+            self.soundImageView.isHidden = true
+            self.muteTapGesture.isEnabled = false
+        } else {
+            self.soundImageView.isHidden = false
+            self.muteTapGesture.isEnabled = true
+            
+        }
+    }
+    
+    func setGesture() {
+        tapToProFileGesture = UITapGestureRecognizer(target: self, action: #selector(segueToProFile(_ : )))
+        doubleTapGesture = {
+            let DoubletapGesture = UITapGestureRecognizer(target: self, action: #selector(DoubleLike( _ : )))
+            DoubletapGesture.numberOfTapsRequired = 2
+            return DoubletapGesture
+        }()
+        longTapGesture = {
+            let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(segueToDetail (_ :)))
+            longTapGesture.minimumPressDuration = 0.5
+            return longTapGesture
+        }()
+        muteTapGesture = UITapGestureRecognizer(target: self, action: #selector(MutedToggle( _ : )))
+        // likeToggleGesture = UITapGestureRecognizer(target: self, action: #selector(LikeToggle(_ :)))
+        collectionView.addGestureRecognizer(muteTapGesture)
+        collectionView.addGestureRecognizer(doubleTapGesture)
+        collectionView.addGestureRecognizer(longTapGesture)
+        muteTapGesture.require(toFail: doubleTapGesture)
+        userImageView.addGestureRecognizer(tapToProFileGesture)
+        
+    }
+    
+    @objc func LikeToggle() {
+        self.currentPost.Like.toggle()
+        if currentPost.Like {
+            self.heartButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
+        } else {
+            self.heartButton.setImage(UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
+        }
+    }
+    
+    @objc func segueToDetail(_ gesture : UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            mediaCellDelegate.segueToDetail(post : currentPost)
+        }
+    }
+    @objc func DoubleLike(_ gesture : UITapGestureRecognizer) {
+        self.currentPost.Like = true
+        heartButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
+    }
+    @objc func segueToProFile(_ gesture: UITapGestureRecognizer) {
+        
+        mediaCellDelegate.segueToProFile(user_id: currentPost.UserID, user_name : currentPost.UserName, user_image : currentPost.Userimage ?? nil)
+    }
+    
+    @objc func MutedToggle(_ gesture: UITapGestureRecognizer? = nil) {
+        UniqueVariable.IsMuted.toggle()
+        // mediaViewSegueDelegate.
+        updateVisibleCellsMuteStatus()
+    }
+    
+    func updateVisibleCellsMuteStatus() {
+        self.soundImageView.image = UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.1.fill")
+        for cell in collectionView.visibleCells {
+            if let cell = cell as? PlayerLayerCollectionCell {
+                cell.player?.isMuted = UniqueVariable.IsMuted
+            }
+        }
+    }
+    
+    func reloadSection() {
+        DispatchQueue.main.async {
+            self.collectionView.performBatchUpdates(  {
+                self.collectionView.reloadSections([self.currentMediaIndexPath.section])
+            })
+        }
+    }
+    
+}
+
+
+extension MainTablePostCell {
+    
+    
+    func reloadCollectionCell(reloadIndexPath : IndexPath, scrollTo : IndexPath) {
+        
+        setHeartImage(like: self.currentPost.Like)
+        
+        self.currentMediaIndexPath = scrollTo
+        reloadEnterAndBackCollectionCell(enterIndexPath: reloadIndexPath, backIndexPath: scrollTo)
+        
+        self.updateVisibleCellsMuteStatus()
+    }
+    
+    
+    func reloadEnterAndBackCollectionCell(enterIndexPath : IndexPath, backIndexPath : IndexPath) {
+        let enterMedia = currentPost.media[enterIndexPath.row]
+        if let enterCollectioncell = collectionView.cellForItem(at: enterIndexPath) as? PlayerLayerCollectionCell {
+            enterCollectioncell.reload(media: enterMedia)
+        } else if let enterCollectioncell =  collectionView.cellForItem(at: enterIndexPath) as? ImageViewCollectionCell {
+            enterCollectioncell.reload(media: enterMedia)
+        }
+        let backMedia = currentPost.media[backIndexPath.row]
+        if let backCollectionCell = collectionView.cellForItem(at: backIndexPath) as? PlayerLayerCollectionCell {
+            backCollectionCell.reload(media: backMedia)
+        } else if let backCollectionCell =  collectionView.cellForItem(at: backIndexPath) as? ImageViewCollectionCell {
+            backCollectionCell.reload(media: backMedia)
+        }
+    }
+    
+    
+}
+
+extension MainTablePostCell {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        playMedia(indexPath: self.currentMediaIndexPath)
+    }
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let index = Int(round(targetContentOffset.pointee.x / scrollView.bounds.width))
+        if currentMediaIndexPath.row != index {
+            pauseMedia(indexPath: self.currentMediaIndexPath)
+            updateCellPageControll(currentCollectionIndexPath: IndexPath(row: index, section: currentMediaIndexPath.section))
+            for cell in collectionView.visibleCells {
+                if let cell = cell as? PlayerLayerCollectionCell {
+                    cell.player?.isMuted = UniqueVariable.IsMuted
+                }
+            }
+        }
+        currentMediaIndexPath.row = index
+    }
+}
+
+

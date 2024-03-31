@@ -1,0 +1,174 @@
+import UIKit
+protocol tableViewCellDelegate : AnyObject {
+    func cellRowHeightSizeFit()
+    func scrollToUpdateIndexPath(diffY : CGFloat)
+}
+
+class StandardTablePostCell : MainTablePostCell {
+    var standardTableViewDelegate : tableViewCellDelegate!
+    
+    
+    var postsContentLabelHeightAnchor : NSLayoutConstraint!
+    
+    @IBOutlet weak var postTitleLabel : UILabel!
+    @IBOutlet weak var postContentLabel : UILabel! { didSet {
+        postContentLabel.isUserInteractionEnabled = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(postsContentExpand))
+        postContentLabel.addGestureRecognizer(gesture)
+    }}
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        NSLayoutConstraint.activate([
+            self.collectionView.heightAnchor.constraint(equalToConstant: frame.height * 0.5)
+        ])
+        distanceLabel = nil
+        restaurantNameLabel = nil
+        postsContentLabelHeightAnchor = self.postContentLabel.heightAnchor.constraint(equalToConstant: 0)
+        
+    }
+    
+    @objc func postsContentExpand() {
+        postContentLabel.numberOfLines = 0
+        
+        let maxSize = CGSize(width: postContentLabel.frame.width, height: CGFloat.greatestFiniteMagnitude)
+        let actualSize = postContentLabel.sizeThatFits(maxSize)
+        if postContentLabel.frame.height == actualSize.height {
+            return
+        }
+        NSLayoutConstraint.activate([
+            postsContentLabelHeightAnchor
+        ])
+        
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations:  { [self] in
+            postsContentLabelHeightAnchor.constant = actualSize.height
+            
+            contentView.layoutIfNeeded()
+            self.standardTableViewDelegate.cellRowHeightSizeFit()
+        }) { bool in
+            self.standardTableViewDelegate.scrollToUpdateIndexPath(diffY: -1)
+        }
+        
+        
+        
+        
+        
+        // postsContentBottomAnchor.constant -= actualSize.height
+        //  postContentLabel.frame = CGRect(x: postContentLabel.frame.minX, y: postContentLabel.frame.minY, width: postContentLabel.frame.width, height: actualSize.height)
+        
+        
+        /* UIView.animate(withDuration: 5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0,  animations: {[self] in
+         // postContentLabel.frame = CGRect(x: postContentLabel.frame.minX, y: postContentLabel.frame.minY, width: postContentLabel.frame.width, height: actualSize.height)
+         //self.contentView.layoutIfNeeded()
+         postContentLabel.frame = CGRect(x: postContentLabel.frame.minX, y: postContentLabel.frame.minY, width: postContentLabel.frame.width, height: actualSize.height)
+         //self.contentView.layoutIfNeeded()
+         //self.standardTableViewDelegate.cellRowHeightSizeFit()
+         
+         }) { Bool in
+         
+         }
+         self.standardTableViewDelegate.cellRowHeightSizeFit()*/
+        
+        
+        
+        
+        // expandLabel()
+        
+    }
+    func expandLabel() {
+        // 计算文字的高度
+        let maxSize = CGSize(width: postContentLabel.frame.width, height: CGFloat.greatestFiniteMagnitude)
+        let actualSize = postContentLabel.sizeThatFits(maxSize)
+        
+        // 更新UILabel的高度
+        postContentLabel.frame.size = actualSize
+        
+        // 创建新的UILabel显示剩余的文字
+        let remainingLabel = UILabel(frame: CGRect(x: postContentLabel.frame.origin.x,
+                                                   y: postContentLabel.frame.origin.y + postContentLabel.frame.height,
+                                                   width: postContentLabel.frame.width,
+                                                   height: actualSize.height))
+        remainingLabel.text = postContentLabel.text
+        remainingLabel.textColor = postContentLabel.textColor
+        remainingLabel.font = postContentLabel.font
+        remainingLabel.numberOfLines = 0
+        self.postContentLabel = remainingLabel
+        // 将新的UILabel添加到父视图中
+        // contentView.addSubview(remainingLabel)
+    }
+    override func configure() -> UICollectionViewDiffableDataSource<MediaSection, Media> {
+        let datasource = UICollectionViewDiffableDataSource<MediaSection, Media>(collectionView: collectionView) { collectionView, indexPath, media in
+            if media.urlIsImage() {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StandardImageViewCollectionCell", for: indexPath) as! StandardImageViewCollectionCell
+                cell.layoutImageView(media: media)
+                return cell
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StandardPlayerLayerCollectionCell", for: indexPath) as! StandardPlayerLayerCollectionCell
+                cell.layoutPlayerlayer(media: media)
+                return cell
+            }
+        }
+        return datasource
+    }
+    
+    override func setHeartImage(like: Bool) {
+        let heartImage = like ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+        heartButton.setImage(heartImage, for: .normal)
+        
+    }
+    
+    @objc override func LikeToggle() {
+        self.currentPost.Like.toggle()
+        if currentPost.Like {
+            self.heartButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
+        } else {
+            self.heartButton.setImage(UIImage(systemName: "heart")?.withTintColor(.label, renderingMode: .alwaysOriginal), for: .normal)
+        }
+    }
+    
+    
+    override func collectionViewFlowSet() {
+        let flow = UICollectionViewFlowLayout()
+        let width = collectionView.bounds.width
+        let height = collectionView.bounds.height
+        flow.itemSize = CGSize(width: width   , height: height )
+        flow.minimumLineSpacing = 0
+        flow.minimumInteritemSpacing = 0
+        flow.scrollDirection = .horizontal
+        collectionView.collectionViewLayout = flow
+    }
+    
+    
+    override func configureData(post: Post){
+        currentPost = post
+        applySnapshot()
+        pageControll?.numberOfPages = currentPost.media.count
+        setHeartImage(like: post.Like)
+        userImage?.image = currentPost.Userimage
+        if soundImageView != nil {
+            self.soundImageView.image =  UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.1.fill")
+        }
+        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0))
+        self.collectionView.scrollToItem(at: IndexPath(row: currentPost.CurrentIndex, section: 0), at: .centeredHorizontally, animated: false)
+    }
+    
+    override func layoutColletctionView() {
+        let width = collectionView.bounds.width
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        userImage.translatesAutoresizingMaskIntoConstraints = false
+        heartButton.translatesAutoresizingMaskIntoConstraints  = false
+        soundImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            collectionView.bottomAnchor.constraint(equalTo: pageControll!.topAnchor, constant: -10),
+            userImage.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0),
+            userImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18 ),
+            soundImageView.bottomAnchor.constraint(equalTo: pageControll!.topAnchor, constant: -36),
+            userImage.widthAnchor.constraint(equalToConstant: width * 0.1),
+            userImage.heightAnchor.constraint(equalToConstant: width * 0.1)
+        ])
+    }
+    
+    
+    
+    
+}

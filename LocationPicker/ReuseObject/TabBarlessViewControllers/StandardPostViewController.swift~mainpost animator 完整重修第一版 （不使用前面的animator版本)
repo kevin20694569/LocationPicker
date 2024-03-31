@@ -1,0 +1,188 @@
+import UIKit
+import AVFoundation
+
+protocol ImageZoomOutDelegate {
+    var view : UIView! { get  }
+    var enterIndexPath : IndexPath! { get set }
+    var collectionView : UICollectionView! { get }
+    func reloadCellImage(backIndexPath: IndexPath , configureImage: UIImage?)
+}
+
+class StandardPostViewController : MainTableViewController, tableViewCellDelegate {
+    func cellRowHeightSizeFit() {
+        tableView.beginUpdates()
+        tableView.endUpdates()
+    }
+    
+    var previousOffsetY : CGFloat! = 0
+    
+    override var fadeInViews: [UIView]? {
+        return []
+    }
+    
+    override func viewDidLoad() {
+        initRefreshControl()
+        viewDataStyleSet()
+        tableView.dataSource = self
+        tableView.delegate = self
+      //  self.view.backgroundColor = .white
+    }
+    
+    override var currentCell : StandardTablePostCell? {
+        guard let cell = tableView.cellForRow(at: currentIndexPath) as? StandardTablePostCell else {
+            return nil
+        }
+        return cell
+    }
+    
+    override func getFadeInSubviews() -> [UIView?] {
+        return [self.currentCell?.soundImageView]
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellIdentifier = "StandardTablePostCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! StandardTablePostCell
+        let post = self.posts[indexPath.row]
+        cell.MainTabledelegate = self
+        cell.tabbarheight =  (self.tabBarController?.tabBar.bounds.size.height ?? 0)
+        cell.navheight = (self.navigationController?.navigationBar.bounds.size.height ?? 0)
+        cell.configureData(post: post)
+        cell.standardTableViewDelegate = self
+        //self.addplayingnowcontrollerObserve()
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.posts.count
+        
+    }
+    
+    override func tableViewRowHeightSet() {
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+    }
+    
+    override func layoutTitleButton() {
+       
+    }
+
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard !isLoadingPost, posts.count - indexPath.row == 2 else {
+            return
+        }
+        isLoadingPost = true
+        Task {
+            let lastPost = self.posts.last
+            guard let distance = lastPost?.distance,
+                  let date = lastPost?.timestamp else {
+                return
+            }
+            if let refreshControl = self.refreshControl, refreshControl.isRefreshing {
+                refreshControl.endRefreshing()
+            }
+            self.isLoadingPost = false
+        }
+    }
+    
+    override func refreshPosts() {
+        Task {
+            tableView.refreshControl?.beginRefreshing()
+        }
+    }
+    
+    override func configureDataSource() -> UITableViewDiffableDataSource<Section, Post> {
+        let cellIdentifier = "StandardTablePostCell"
+        let dataSource = UITableViewDiffableDataSource<Section, Post>( tableView: tableView, cellProvider: {[weak self] tableView, indexPath, Post in
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! StandardTablePostCell
+            if let post = self?.posts[indexPath.row] {
+                cell.MainTabledelegate = self
+                cell.tabbarheight =  (self?.tabBarController?.tabBar.bounds.size.height ?? 0)
+                cell.navheight = (self?.navigationController?.navigationBar.bounds.size.height ?? 0)
+                cell.configureData(post: post)
+                cell.standardTableViewDelegate = self
+                self?.addplayingnowcontrollerObserve()
+            }
+            return cell
+        })
+        return dataSource
+    }
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentHeight = scrollView.contentSize.height
+        let offsetY = scrollView.contentOffset.y
+        let tableViewHeight = scrollView.bounds.size.height
+        if offsetY > contentHeight - tableViewHeight {
+            return
+        }
+        let diffY = scrollView.contentOffset.y - previousOffsetY
+        if scrollView.contentOffset.y <= 0 {
+            previousOffsetY = scrollView.contentOffset.y
+            return
+        }
+
+        
+        scrollToUpdateIndexPath(diffY: diffY )
+        previousOffsetY = scrollView.contentOffset.y
+
+    }
+    func scrollToUpdateIndexPath(diffY : CGFloat) {
+        let visibleCells = tableView.visibleCells
+        for cell in visibleCells {
+            guard let indexPath = tableView.indexPath(for: cell),
+                  let cell = cell as? MainTablePostCell else {
+                continue
+            }
+            let collectionViewFrameInTableView = tableView.convert(cell.collectionView.frame, from: cell.collectionView.superview)
+            if diffY < 0 {
+                let frame = collectionViewFrameInTableView
+                //collectoinView只露下半2/3就是true
+                //往上
+                let intersects = tableView.bounds.contains(frame)
+                if intersects {
+                    
+                    if self.currentIndexPath > indexPath {
+                        self.checkcellForRowToPause(indexPath: self.currentIndexPath)
+                        self.currentIndexPath = indexPath
+                        //if shouldPlay {
+                        self.checkcellForRowToPlay(indexPath: indexPath)
+                        //}
+                    }
+                }
+                
+            } else {
+                let frame = collectionViewFrameInTableView
+                //collectoinView只露上半1/3就是true
+                //往下
+                let intersects = tableView.bounds.contains(frame)
+                
+                if intersects {
+                    
+                    if self.currentIndexPath < indexPath {
+                        self.checkcellForRowToPause(indexPath: self.currentIndexPath)
+                        self.currentIndexPath = indexPath
+                        //if shouldPlay {
+                        self.checkcellForRowToPlay(indexPath : indexPath)
+                        //}
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    override func checkcellForRowToPlay(indexPath : IndexPath) {
+        guard self.isLoadingPost == false else {
+            return
+        }
+        guard currentIndexPath.row < self.posts.count else { return }
+        if !tableView.visibleCells.isEmpty  {
+            let cell = tableView.cellForRow(at: currentIndexPath)  as! StandardTablePostCell
+            cell.playColletionCellnow()
+        }
+    }
+    
+    
+}

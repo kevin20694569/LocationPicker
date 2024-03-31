@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>top-level-items</key>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>XcodeLocation</key>
+					<string>{"ViewObjectAddress":"0x142bd1dd0"}</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>payload</key>
+					<string>x-xcode-debug-views:///5c63c2fc0</string>
+				</dict>
+				<key>scheme</key>
+				<string>x-xcode-debug-views</string>
+				<key>type</key>
+				<string>DBGViewDebuggerDocumentLocation</string>
+			</dict>
+			<key>title</key>
+			<string>Warning: Position is ambiguous for ZoomAnimatedButton.</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
+</dict>
+</plist>

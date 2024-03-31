@@ -1,0 +1,226 @@
+import UIKit
+import MapKit
+
+
+
+class MapGridPostViewController: UIViewController, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate , UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        self.posts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let post = self.posts[indexPath.row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridPostCell", for: indexPath) as! GridPostCell
+        cell.layoutImageView(post: post, image: nil, mediaIndex: 0)
+        return cell
+    }
+    
+    var previousOffsetY : CGFloat = 0
+    @IBOutlet weak var RestaurantNameLabel : UILabel! { didSet {
+        RestaurantNameLabel.adjustsFontSizeToFitWidth = true
+    }}
+    @IBOutlet weak var RestaurantAddressLabel : UILabel! { didSet {
+        RestaurantAddressLabel.adjustsFontSizeToFitWidth = true
+    }}
+    @IBOutlet weak var RestaurantImageView : UIImageView! { didSet {
+        RestaurantImageView.layer.cornerRadius = 8.0
+        RestaurantImageView.layer.contentsGravity = .resizeAspectFill
+        RestaurantImageView.backgroundColor = .systemGray2
+    }}
+    
+    @IBOutlet weak var openToggleView : UIView!
+    @IBOutlet weak var OpenToggleLabel : UILabel!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var distanceLabel : UILabel!
+    @IBOutlet weak var distanceAndGradeView : UIView!
+    @IBOutlet weak var distanceStackView : UIStackView!
+    @IBOutlet weak var restaurantNameView : UIView!
+    
+    var restaurant : LocationModel!
+    
+    var collectionViewpreviousOffsetY : CGFloat = 0
+    var mappostdelegate : MapViewDelegate!
+    var refreshControl : UIRefreshControl! { didSet {
+        refreshControl?.backgroundColor = .clear
+        refreshControl?.tintColor = .label
+        refreshControl?.addTarget(self, action: #selector(refreshPosts), for: .valueChanged)
+    }}
+    var restaurantID : String!
+    var posts : [Post]! = []
+    
+    @objc func refreshPosts() {
+        Task {
+            self.posts.removeAll()
+            await self.getRestaurantPosts(restaurantID: self.restaurantID, afterDate: "")
+        }
+    }
+    
+    var enterIndexPath : IndexPath! = IndexPath(row: 0, section: 0)
+    var restaurantOriginY : CGFloat!
+    
+    var restaurantDistanceTopAnchor : NSLayoutConstraint!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.layer.cornerRadius = 25
+        self.view.layer.masksToBounds =  true
+        refreshControl = UIRefreshControl()
+        collectionView.refreshControl = self.refreshControl
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        distanceAndGradeView.translatesAutoresizingMaskIntoConstraints  = false
+        restaurantDistanceTopAnchor = distanceAndGradeView.topAnchor.constraint(equalTo: restaurantNameView.bottomAnchor)
+        NSLayoutConstraint.activate([
+            restaurantDistanceTopAnchor
+        ])
+        collectionViewLayout()
+    }
+    
+    func collectionViewLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.estimatedItemSize = .zero
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        let width = self.view.bounds.width / 3
+        layout.itemSize = CGSize(width: width , height: width )
+        layout.scrollDirection = .vertical
+        collectionView.collectionViewLayout = layout
+        collectionView.showsHorizontalScrollIndicator = false
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        mappostdelegate.removeRoute()
+    }
+    
+    func insertPostsReloadSection(newPosts : [Post]) {
+        DispatchQueue.main.async {
+            self.collectionView.performBatchUpdates(  {
+                let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterIndexPath.section) }
+                self.posts.insert(contentsOf: newPosts, at: self.posts.count)
+                self.collectionView.insertItems(at: insertionIndexPaths)
+                
+            })
+        }
+    }
+    
+    func loadPostPreView(id: String, afterDate : String) async {
+        self.RestaurantImageView.image = nil
+        do {
+            let restaurant = try await RestaurantManager.shared.getRestaurantIDasync(restaurantID: id)
+            guard let restaurant = restaurant else {
+                throw RestaurantError.NotFoundRestaurant
+            }
+            self.restaurant = restaurant
+            self.RestaurantImageView.image = restaurant.Image
+        } catch {
+            print("error", error)
+        }
+    }
+    
+    func getRestaurantPosts(restaurantID : String, afterDate : String) async {
+        self.collectionView.refreshControl?.beginRefreshing()
+        do {
+            let newPosts = try await PostManager.shared.getRestaurantPostsByID(restaurantID: restaurantID, date: afterDate)
+            self.collectionView.refreshControl?.endRefreshing()
+
+            insertPostsReloadSection(newPosts: newPosts)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func search(restaurantname : String, restautrantaddress: String?, restaurantID: String) async  {
+        guard self.restaurantID != restaurantID else {
+            return
+        }
+        self.restaurantID = restaurantID
+        RestaurantNameLabel.text = restaurantname
+        RestaurantAddressLabel.text = restautrantaddress
+        self.posts.removeAll()
+        self.collectionView.reloadSections([self.enterIndexPath.section])
+        await loadPostPreView(id: restaurantID, afterDate: "")
+        await getRestaurantPosts(restaurantID: restaurantID, afterDate: "")
+        self.collectionView.reloadSections([self.enterIndexPath.section])
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentHeight = scrollView.contentSize.height
+        let offsetY = scrollView.contentOffset.y
+        let tableViewHeight = scrollView.bounds.size.height
+        if offsetY > contentHeight - tableViewHeight {
+            return
+        }
+        let diffY = scrollView.contentOffset.y - previousOffsetY
+        var newConstant: CGFloat = restaurantDistanceTopAnchor.constant - diffY
+        let persent : Float = Float(  ( (newConstant  + distanceAndGradeView.bounds.height) /  distanceAndGradeView.bounds.height ) - 0.3 )
+        if scrollView.contentOffset.y <= 0 {
+            previousOffsetY = scrollView.contentOffset.y
+            return
+        }
+        if diffY < 0 {
+            newConstant = min( 0  ,newConstant)
+        } else {
+            newConstant = max( -self.distanceAndGradeView.bounds.height ,newConstant)
+        }
+        distanceAndGradeView.layer.opacity = persent
+        restaurantDistanceTopAnchor.constant = newConstant
+        previousOffsetY = scrollView.contentOffset.y
+    }
+}
+
+extension MapGridPostViewController : UICollectionViewDelegate {
+    
+    func configureCollectionDatasource() -> UICollectionViewDiffableDataSource<PreViewSection, Post>  {
+        let datasource = UICollectionViewDiffableDataSource<PreViewSection, Post>(collectionView: self.collectionView) { collectionView, indexPath, post in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridPostCell", for: indexPath) as! GridPostCell
+            cell.layoutImageView(post: post, image: nil, mediaIndex: 0)
+            return cell
+        }
+        return datasource
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let total = self.posts.count
+        if let timestamp = self.posts.last?.timestamp {
+            if total - indexPath.row == 6 {
+                Task {
+                    await getRestaurantPosts(restaurantID: self.restaurantID, afterDate: timestamp)
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegatePushViewController(indexPath: indexPath)
+    }
+    
+    func delegatePushViewController(indexPath : IndexPath) {
+        let targetPostCellIndexPath = IndexPath(row: indexPath.row , section: 0)
+        let storyboard = UIStoryboard(name: "ReuseViewController", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: "MapViewStandardPostViewController") as! MapViewPostTableViewController
+        controller.posts = posts
+        controller.currentTableViewIndexPath = targetPostCellIndexPath
+        controller.navigationItem.title = RestaurantNameLabel.text
+
+        controller.tableView.performBatchUpdates ({
+            
+        }) { bool in
+            controller.tableView.scrollToRow(at: targetPostCellIndexPath, at: .top, animated: false)
+            
+            let scrollToIndexPath = IndexPath(row: self.posts[indexPath.row].CurrentIndex, section: 0)
+            controller.tableViewCurrentCell?.collectionView.scrollToItem(at: scrollToIndexPath , at: .centeredVertically, animated: false)
+            controller.collectionView.performBatchUpdates({
+                
+            }) { [self] bool in
+               
+                self.mappostdelegate.pushViewController(viewcontroller: controller)
+            }
+        }
+    }
+    
+}
