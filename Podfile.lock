@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.9.0)
+  - Alamofire (5.9.1)
   - GoogleMaps (8.4.0):
     - GoogleMaps/Maps (= 8.4.0)
   - GoogleMaps/Base (8.4.0)
@@ -28,13 +28,13 @@ SPEC REPOS:
     - Starscream
 
 SPEC CHECKSUMS:
-  Alamofire: 02b772c9910e8eba1a079227c32fbd9e46c90a24
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
   MultiProgressView: 65e5bb8181687099ade56d16d85d245a92fafa96
   SHFullscreenPopGestureSwift: 96c20749695c8fbf14a29feb5ece469d7a909a41
   Socket.IO-Client-Swift: ee4b8f80a3db18dd7f32b266ddf273310609443c
   Starscream: 19b5533ddb925208db698f0ac508a100b884a1b9
 
-PODFILE CHECKSUM: e1849303d56f18aafd92c3ce025415715542dc6b
+PODFILE CHECKSUM: 1ccb687d5e773791f70a4a6c44d4813eb0a006b3
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

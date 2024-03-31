@@ -647,9 +647,8 @@ extension UIColor {
         }
     }
     
-    static let tintOrange = UIColor(named: "tintOrange")!
+    
 
-    // ... All the other colors
 }
 
 extension String {

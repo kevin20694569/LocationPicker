@@ -27,6 +27,32 @@
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>Timestamp</key>
+					<string>9425097568</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>home-directory</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Library/Developer/Xcode/DerivedData/LocationPicker-eqbjazvlryrddgdhmoecrzkfvuef/Build/Intermediates.noindex/LocationPicker.build/Debug-iphonesimulator/LocationPicker.build/Objects-normal/arm64/LocationPicker.swiftdoc</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>title</key>
+			<string>Error: /Users/huangkaicheng/Library/Developer/Xcode/DerivedData/LocationPicker-eqbjazvlryrddgdhmoecrzkfvuef/Build/Intermediates.noindex/LocationPicker.build/Debug-iphonesimulator/LocationPicker.build/Objects-normal/arm64/LocationPicker.swiftdoc: No such file or directory</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
 	</array>
 </dict>
 </plist>
