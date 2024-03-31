@@ -7,256 +7,336 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A2C1724C-C7C4-4EE8-AB39-DFDCBA1F5C76"
+            uuid = "69EC717C-5A11-4A57-BB5D-F2481CE5E620"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
-            landmarkName = "tableView(_:willDisplay:forRowAt:)"
+            startingLineNumber = "443"
+            endingLineNumber = "443"
+            landmarkName = "startToStandardAnimation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "14732BEB-4288-482B-BCB2-B95D06385A97"
+            uuid = "6C79228D-08DE-4472-B683-76CF7DFBF9F5"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
-            landmarkName = "tableView(_:willDisplay:forRowAt:)"
+            startingLineNumber = "489"
+            endingLineNumber = "489"
+            landmarkName = "startToMininumAnimation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "8A1DE97D-CD60-4D20-8494-31B8EB143004"
+            uuid = "CE6E1944-3A8F-4E2B-A547-A74D976DF15C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/ChatViewControllers/ChatRoomViewController.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "245"
-            endingLineNumber = "245"
-            landmarkName = "tableView(_:didSelectRowAt:)"
+            startingLineNumber = "491"
+            endingLineNumber = "491"
+            landmarkName = "startToMininumAnimation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "80A5C75F-4253-4539-AB19-732EB695BE87"
+            uuid = "B71ACF14-30D5-4ECB-A2DB-350CA7BC6BE3"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/ChatViewControllers/ChatRoomViewController.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
-            landmarkName = "tableView(_:didSelectRowAt:)"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
+            landmarkName = "showCoordinateOnMap(coordinate:visibleOffsetY:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9D518318-4ED0-437C-A853-3771757255F6"
+            uuid = "20BD873F-C41B-4270-BBA0-E3022B93E241"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/CellStyle/ChatCell/MessageTableViewCell.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
-            landmarkName = "configure(message:)"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
+            landmarkName = "startToStandardAnimation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9AA9C8FE-8099-4945-A31B-73F939FEBE0E"
+            uuid = "0678F4D0-5DA8-469B-AFA7-06B13F2CEAF8"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/ChatViewControllers/MessageViewController.swift"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "tableView(_:cellForRowAt:)"
+            startingLineNumber = "488"
+            endingLineNumber = "488"
+            landmarkName = "startToMininumAnimation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1CD7A103-3555-4D25-BD86-B7379E034DD6"
+            uuid = "CF8E3655-6759-400C-AF6D-8765CC32C257"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "487"
+            endingLineNumber = "487"
+            landmarkName = "startToMininumAnimation()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "50F50C4F-119E-4902-92B8-C1F9BBA3CED9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
+            landmarkName = "showCoordinateOnMap(coordinate:visibleOffsetY:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CF88C51B-506A-4B2B-8D22-B40D4962B93A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "492"
+            endingLineNumber = "492"
+            landmarkName = "startToMininumAnimation()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E7BE7673-0956-4C5D-98A6-3C446F71FD8D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/MapViewControllers/MapViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "445"
+            endingLineNumber = "445"
+            landmarkName = "startToStandardAnimation()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "796D4A1F-D5D4-4132-B4B5-F0D058D7EED8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/util/Animator/GridPostCellAnimator/DismissPostTableViewAnimator.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "playerLayerSetAnimationPerform(initFrame:targetFrame:fromViewControllerinitFrame:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5A06784D-FD21-4452-B4B2-B14C0D62EE10"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/CellStyle/MediaCell/PlayerLayerCollectionCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
+            landmarkName = "layoutIfNeeded()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "77D2225D-F7FB-4A27-960C-EE47065E08E2"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocationPicker/ReuseObject/WholePageMediaViewController/WholePageMediaViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "284"
-            endingLineNumber = "284"
-            landmarkName = "viewDidAppear(_:)"
+            startingLineNumber = "1734"
+            endingLineNumber = "1734"
+            landmarkName = "handlePanGestureToDismiss(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5C45B406-388A-4047-A976-271304E022E6"
+            uuid = "58852DF6-E326-4C88-9D5E-7B03F85CE1FB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocationPicker/ReuseObject/WholePageMediaViewController/WholePageMediaViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1326"
-            endingLineNumber = "1326"
-            landmarkName = "dismissSelf()"
+            startingLineNumber = "1739"
+            endingLineNumber = "1739"
+            landmarkName = "handlePanGestureToDismiss(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6516F398-B54E-4B89-888E-79914294163B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "402"
-            endingLineNumber = "402"
-            landmarkName = "animationController(forDismissed:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A286B5EE-FF95-4A11-89A4-5927C6906BF9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "409"
-            endingLineNumber = "409"
-            landmarkName = "animationController(forPresented:presenting:source:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C92C2C17-0BE2-4214-97A7-E40F207129AD"
+            uuid = "30135052-3F9B-4581-BBDC-C1EA898E3F48"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocationPicker/ReuseObject/PostTableViewController/PostTableViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "viewDidDisappear(_:)"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
+            landmarkName = "handlePanGestureToDismiss(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B37E402E-29F0-42F9-A2DA-A7568CEE82CE"
+            uuid = "6C0ECAB4-35D1-44DB-8F17-54304471541E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/CellStyle/RestaurantProfileCell/RestaurantDetailCollectionViewButtonsCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "collectionView(_:cellForItemAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6E923475-E55F-45B8-A2FE-616F25ECCE66"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocationPicker/ReuseObject/PostTableViewController/PostTableViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "viewDidDisappear(_:)"
+            startingLineNumber = "452"
+            endingLineNumber = "452"
+            landmarkName = "startViewBackAnimate(x:y:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3B2B50D8-8FB4-42DD-802D-B6763B4E4664"
+            uuid = "B4CC5BD5-CE97-4D7C-8565-04F2FB4AA554"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocationPicker/ReuseObject/PostTableViewController/PostTableViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "animationController(forDismissed:)"
+            startingLineNumber = "433"
+            endingLineNumber = "433"
+            landmarkName = "handlePanGestureToDismiss(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "77D42807-6B5F-4D96-B545-3B9067CBBA3E"
+            uuid = "7180A55A-C908-4AF2-BA17-8297EDA42C22"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/CellStyle/RestaurantProfileCell/RestaurantDetailOpeningTimesCell.swift"
+            filePath = "LocationPicker/ReuseObject/PostTableViewController/PostTableViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
-            landmarkName = "configureOpeningLable(openingDay:today:)"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
+            landmarkName = "handlePanGestureToDismiss(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A82BAAFF-5531-463A-8D31-7F85077DFD52"
+            uuid = "29A542F8-8582-4201-9EA5-1409C8473E32"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/CellStyle/RestaurantProfileCell/RestaurantDetailOpeningTimesCell.swift"
+            filePath = "LocationPicker/CellStyle/MediaCell/PlayerLayerCollectionCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
-            landmarkName = "configure(restaurant:)"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "layoutPlayerlayer(media:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DB2AF897-7645-4894-A685-DFC873FF9D37"
+            uuid = "0B08355C-09DE-4A26-88F9-42E97A976C90"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/CellStyle/RestaurantProfileCell/RestaurantDetailOpeningTimesCell.swift"
+            filePath = "LocationPicker/CellStyle/MediaCell/PlayerLayerCollectionCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "configure(restaurant:)"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "init(frame:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

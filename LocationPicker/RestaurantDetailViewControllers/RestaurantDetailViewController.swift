@@ -206,7 +206,6 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
     
     func presentPostTableViewController(indexPath: IndexPath) {
         let targetPostCellIndexPath = IndexPath(row: indexPath.row , section: 0)
-        let targetPostCellMediaIndexPath = IndexPath(row: posts[indexPath.row].CurrentIndex, section: 0)
         let restaurantPostsTableViewController = RestaurantPostsTableViewController(presentForTabBarLessView: presentForTabBarLessView)
         let nav = SwipeEnableNavViewController(rootViewController: restaurantPostsTableViewController)
         restaurantPostsTableViewController.restaurant = self.restaurant

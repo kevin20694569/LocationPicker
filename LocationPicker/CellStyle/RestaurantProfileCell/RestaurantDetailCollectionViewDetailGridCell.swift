@@ -38,6 +38,7 @@ class RestaurantDetailCollectionViewDetailGridCell : CollectionCollectionViewCel
             flow.scrollDirection = .horizontal
             collectionView.collectionViewLayout = flow
         }
+        collectionView.isScrollEnabled = false
     }
     
     

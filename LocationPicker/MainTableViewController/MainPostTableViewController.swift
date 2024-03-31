@@ -157,7 +157,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         initRefreshControl()
         viewStyleSet()
         configureBarButton()
-        try? refreshPosts()
+        refreshPosts()
         
         
     }
@@ -234,8 +234,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.refreshControl?.beginRefreshing()
         tableView.isPagingEnabled  = false
         self.posts.removeAll()
-        Task {
-          
+        Task(priority : .background) {
             do {
                 
                 
@@ -277,6 +276,12 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.reloadSections([0], with: .fade)
     }
     
+    func insertNewPosts(newPosts: [Post]) {
+        let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: currentTableViewIndexPath.section) }
+        self.posts.insert(contentsOf: newPosts, at: self.posts.count)
+        self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
+    }
+    
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = currentCollectionCell as? PlayerLayerCollectionCell {
@@ -290,7 +295,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             return
         }
         
-        Task {
+        Task(priority : .background) {
             isLoadingPost = true
             let lastPost = self.posts.last
             guard let distance = lastPost?.distance,
@@ -298,14 +303,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 return
             }
             do {
-                
                 let newposts = try await self.postsStatus.getPosts(user_id: Constant.user_id, distance: distance, date: date)
                 if newposts.count > 0 {
-                    self.tableView.performBatchUpdates({
-                        let insertionIndexPaths = (self.posts.count..<self.posts.count + newposts.count).map { IndexPath(row: $0, section: currentTableViewIndexPath.section) }
-                        self.posts.insert(contentsOf: newposts, at: self.posts.count)
-                        self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
-                    })
+                    insertNewPosts(newPosts: newposts)
                 }
                 isLoadingPost = false
                 

@@ -111,6 +111,7 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
     
     func fillStar(grade : Double) {
         let integerPart = Int(grade)
+        
         let decimalPart = grade - Double(integerPart)
         
         for index in 0...integerPart - 1 {
@@ -120,19 +121,18 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
         if grade == 5 {
             return
         }
+
         let starImageView = self.starStackView.arrangedSubviews[integerPart] as! UIImageView
         if decimalPart == 0 {
             starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
         } else {
             starImageView.image = UIImage(systemName: "star.leadinghalf.filled", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-            
         }
-        let round = Int(round(grade))
-
-        for index in round...4 {
-            
-            let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
-            starImageView.image = UIImage(systemName: "star",withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+        if integerPart < 4 {
+            for index in integerPart...4 {
+                let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
+                starImageView.image = UIImage(systemName: "star",withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+            }
         }
         
     }

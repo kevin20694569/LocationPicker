@@ -5,7 +5,7 @@ import UIKit
 class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, RestaurantProfileCollectionCell, UIViewControllerTransitioningDelegate {
     var restaurant : Restaurant!
     
-    var presentDelegate : PresentDelegate?
+    weak var presentDelegate : PresentDelegate?
     
     let collectionExtraButtonsDict : [String : (identify : String, image : UIImage, text:  String)]! = [
         "phone" : ("phone", UIImage(systemName: "phone.fill")! , "致電"),
@@ -37,6 +37,7 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewButtonCell", for: indexPath) as! CollectionViewButtonCell
         let tuple = activeButtonsArray[index]
         let id = tuple.identify
+     
         if id == "navigation" {
             cell.button.addTarget(self, action: #selector(openGoogleMapsForSearch), for: .touchUpInside)
         } else if id == "phone" {
@@ -93,8 +94,9 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        collectionView.allowsSelection = true
-        collectionView.isScrollEnabled = false
+        collectionView.allowsSelection = false
+        collectionView.allowsMultipleSelection = false
+        collectionView.isScrollEnabled = true
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
     }
     
@@ -145,15 +147,6 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
-        
-      /*  let alertViewController = TouchableAlertController(title: "是否要撥打電話？", message: nil, preferredStyle: .actionSheet)
-        let callUpAction = UIAlertAction(title: "撥出  " + (/*restaurant.formatted_phone_number ??*/ "0903328382"), style: .default) { action in
-
-        }
-        let cancelAction = UIAlertAction(title: "取消", style: .destructive, handler: nil)
-        alertViewController.addAction(callUpAction)
-        alertViewController.addAction(cancelAction)
-        presentDelegate?.present(alertViewController, animated:true)*/
     }
     
     

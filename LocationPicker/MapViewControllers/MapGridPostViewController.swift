@@ -100,7 +100,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     var posts : [Post]! = []
     
     @objc func refreshPosts() {
-        Task {
+        Task(priority : .background) {
             self.collectionView.refreshControl?.beginRefreshing()
             self.posts.removeAll()
             await self.getRestaurantPosts(restaurantID: self.restaurantID, afterDate: "", reload: true)
@@ -242,11 +242,13 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     
     @objc func presentRestaurantDetailViewController() {
         let controller = RestaurantDetailViewController(presentForTabBarLessView: true)
-
+        
         controller.posts = posts
         controller.restaurant = self.restaurant
+        
         self.show(controller, sender: nil)
         BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate.navigationController)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -315,7 +317,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
             if let restaurantImage = restaurant.image {
                 self.RestaurantImageView.image = restaurantImage
             } else {
-                Task {
+                Task(priority : .background) {
                     let restaurantImage = await self.restaurant.imageURL?.getImageFromImageURL()
                     self.restaurant.image = restaurantImage
                     self.RestaurantImageView.image = restaurantImage

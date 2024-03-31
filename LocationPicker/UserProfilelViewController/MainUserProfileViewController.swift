@@ -92,7 +92,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         super.viewWillAppear(animated)
         configureNavBar(title: self.user.name)
         if !getUserProfileFinish {
-            Task {
+            Task(priority : .background)  {
                 await configure(user_id: user_id)
             }
         }
@@ -112,7 +112,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
 
     func configure(user_id: Int)  async {
         do {
-            Task {
+            Task(priority : .background) {
                 await getUserPosts(user_id : user_id, date : "")
             }
             getUserProfileFinish = true
@@ -145,11 +145,9 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
                 newPosts = Post.localPostsExamples
             }
             if newPosts.count > 0 {
-                self.collectionView.performBatchUpdates {
-                    let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
-                    self.posts.insert(contentsOf: newPosts, at: self.posts.count)
-                    self.collectionView.insertItems(at: insertionIndexPaths)
-                }
+                let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
+                self.posts.insert(contentsOf: newPosts, at: self.posts.count)
+                self.collectionView.insertItems(at: insertionIndexPaths)
             }
         } catch {
             print("沒拿到posts")

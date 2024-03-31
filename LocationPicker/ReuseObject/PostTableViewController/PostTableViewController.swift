@@ -32,7 +32,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
     @objc func dismissSelf() {
         self.dismiss(animated: true) {
-            self.reloadCollectionCell(backCollectionIndexPath: self.currentMediaIndexPath)
+        
             BasicViewController.shared.swipeDatasourceToggle(navViewController: self.postsTableDelegate?.navigationController ?? self.navigationController)
         }
     }
@@ -86,14 +86,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.tableView.register(StandardPostContentTableCell, forCellReuseIdentifier: "StandardPostContentTableCell")
         let StandardPostAllTextTableCell = UINib(nibName: "StandardPostAllTextTableCell", bundle: nil)
         self.tableView.register(StandardPostAllTextTableCell, forCellReuseIdentifier: "StandardPostAllTextTableCell")
-    }
-
-    
-    
-    func insertNewPosts(newPosts : [Post]) {
-        let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: currentTableViewIndexPath.section) }
-        self.posts.insert(contentsOf: newPosts, at: self.posts.count)
-        self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
     }
     
     override func presentWholePageMediaViewController(post: Post?) {
@@ -384,14 +376,15 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
             self.navigationItem.title = title
         }
     }
+    
+
 
 }
 
 extension PostTableViewController  {
     @objc func handlePanGestureToDismiss(_ recognizer: UIPanGestureRecognizer) {
         // 獲取手勢的位置
-        guard let navView = self.navigationController?.view,
-              let navBarView = self.navigationController?.navigationBar else {
+        guard let navView = self.navigationController?.view else {
             return
         }
         

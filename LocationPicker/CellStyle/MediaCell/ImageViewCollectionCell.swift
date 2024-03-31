@@ -62,27 +62,25 @@ class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
         if let image = media.image {
             self.imageView.image = image
         } else {
-            Task {
+            Task(priority: .low) {
                 let image = await media.DonwloadURL.getImageFromImageURL()
                 media.image = image
                 self.imageView.image = image
            }
         }
-        self.layoutIfNeeded()
-        
-
+        DispatchQueue.main.async {
+            self.layoutIfNeeded()
+        }
     }
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
-        
-        DispatchQueue.main.async {
-            UIView.performWithoutAnimation {
-                self.imageView.frame = self.bounds
-            }
+        UIView.performWithoutAnimation {
+            self.imageView.frame = self.bounds
         }
-
-    }
         
+        
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         self.imageView.image = nil

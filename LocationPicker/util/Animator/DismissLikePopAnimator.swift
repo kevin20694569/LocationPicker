@@ -6,10 +6,6 @@ class DismissLikePopAnimator : NSObject, UIViewControllerAnimatedTransitioning {
         return 2
     }
     
-    func animationEnded(_ transitionCompleted: Bool) {
-        
-    }
-    
     func animateTransition(using transitionContext: any UIViewControllerContextTransitioning) {
        let duration = self.transitionDuration(using: transitionContext)
         let bounds = UIScreen.main.bounds

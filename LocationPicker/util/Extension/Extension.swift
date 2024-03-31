@@ -369,7 +369,7 @@ extension Media {
                  videos.append(video)
                  videoMap[outputURL.absoluteString] = index*/
             }
-            // lightConpressor轉完會曝光 無解
+            // lightCompressor轉完會曝光 無解
             /*  let videoCompressor = LightCompressor()
              
              
@@ -424,21 +424,6 @@ extension Media {
                     group.addTask {
                         do {
                             let urlAsset = AVURLAsset(url: inputURL, options: nil)
-                            
-                            /*  guard let videoTrack = urlAsset.tracks(withMediaType: .video).first else {
-                             throw CompressError.compressVideoFail
-                             }
-                             let videoComposition = AVMutableVideoComposition()
-                             let instruction = AVMutableVideoCompositionInstruction()
-                             instruction.timeRange = CMTimeRange(start: .zero, duration: urlAsset.duration)
-                             let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
-                             layerInstruction.setTransform(videoTrack.preferredTransform, at: .zero)
-                             videoComposition.renderSize = CGSize(width: videoTrack.naturalSize.width , height: videoTrack.naturalSize.height)
-                             videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
-                             instruction.layerInstructions = [layerInstruction]
-                             videoComposition.instructions = [instruction]
-                             exportSession.videoComposition = videoComposition*/
-                            
                             
                             guard let exportSession = AVAssetExportSession(asset: urlAsset, presetName: String(AVAssetExportPresetHighestQuality)) else {
                                 throw CompressError.compressVideoFail

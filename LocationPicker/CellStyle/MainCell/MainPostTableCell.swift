@@ -140,7 +140,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             
             userImageView.image = userImage
         } else {
-            Task {
+            Task(priority: .low) {
                 let userImage = await currentPost.user?.imageURL?.getImageFromImageURL()
                 currentPost.user?.image = userImage
                 userImageView.image = userImage
@@ -485,14 +485,6 @@ extension MainPostTableCell {
         }
     }
     
-    func reloadSection() {
-        DispatchQueue.main.async {
-            self.collectionView.performBatchUpdates(  {
-                self.collectionView.reloadSections([self.currentMediaIndexPath.section])
-            })
-        }
-    }
-    
 }
 
 
@@ -548,7 +540,7 @@ extension MainPostTableCell {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let bounds = UIScreen.main.bounds
         
-        var maxWidth = bounds.width - 16
+        let maxWidth = bounds.width - 16
         var maxHeight : CGFloat! = bounds.height * 0.5
         if presented is ShareViewController {
             maxHeight =  bounds.height * 0.7

@@ -36,12 +36,9 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
     func reload(media : Media?) {
         playerLayer.cornerRadius = Constant.standardCornerRadius
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0)
         if let media = media {
             layoutPlayerlayer(media: media)
         }
-        CATransaction.commit()
         self.playerLayer.isHidden = false
         self.contentView.isHidden = false
         self.isHidden = false
@@ -72,14 +69,10 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
         self.playerLayer.player = media.player
         playerLayer.player = media.player
         playerLayer.videoGravity = .resizeAspectFill
-        DispatchQueue.main.async { [self] in
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(0)
-            self.playerLayer.frame = self.bounds
-            CATransaction.commit()
-        }
         self.updateMuteStatus()
-        self.layoutIfNeeded()
+        DispatchQueue.main.async {
+            self.layoutIfNeeded()
+        }
     }
     
     func layoutSoundImageView() {
@@ -96,7 +89,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
 
         
         let frame = self.playerLayer.superlayer!.convert(self.playerLayer.frame, to: self.contentView.layer)
-        let trailingConstant = frame.maxY
+        
         DispatchQueue.main.async { [self] in
 
             self.contentView.addSubview(soundImageBackgroundBlurView)
@@ -122,7 +115,6 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         playerLayer.player?.seek(to: CMTime.zero)
     }
     
@@ -132,12 +124,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
-        DispatchQueue.main.async {
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(0)
-            self.playerLayer.frame = self.bounds
-            CATransaction.commit()
-        }
+        self.playerLayer.frame = self.bounds
     }
 
     func play() {

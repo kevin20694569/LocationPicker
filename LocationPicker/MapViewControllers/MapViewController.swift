@@ -56,11 +56,23 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
             return standardMinY
         }
     }
-    
-    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        mapIsMoving = !animated
-    }
 
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        if let coord = currentPlacemark?.location?.coordinate {
+            let currentPlacePoint =  MKMapPoint(coord)
+            let userLocationPoint = MKMapPoint(self.MapView.userLocation.coordinate)
+            if isPolylinePresented {
+
+                mapIsMoving = !mapView.visibleMapRect.contains(currentPlacePoint) && !mapView.visibleMapRect.contains(userLocationPoint)
+                
+            } else {
+
+                mapIsMoving = !mapView.visibleMapRect.contains(currentPlacePoint)
+                
+            }
+        }
+    }
+    
     
     
     
@@ -86,7 +98,7 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
     
     @IBOutlet var backToLocationAndEraseRouteButton : UIButton!
     
-    var currentPlacemark : CLPlacemark!
+    var currentPlacemark : CLPlacemark?
     let locationManager = CLLocationManager()
     var safeAreaFullScreenMinY : CGFloat!
     var standardMinY : CGFloat!
@@ -118,6 +130,7 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         let status = CLLocationManager.authorizationStatus()
         if status == CLAuthorizationStatus.authorizedWhenInUse {
             MapView.showsUserLocation = true
@@ -133,22 +146,14 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
         MapCardViewController.didMove(toParent: self)
         
         layoutSearchOnGooleMapButton()
+        standardMinY = self.view.bounds.height - MapCardViewController.collectionView.frame.minY
+        MapCardViewController.view.frame = CGRect(x: 0, y: standardMinY, width: self.view.bounds.width, height: self.view.bounds.height - self.view.safeAreaInsets.top  
+        )
 
-    }
-    
-    
-    
-    func defaultInit() {
-        let frame =  self.MapCardViewController.view.frame
-        self.MapView.alpha = 1
-        self.MapCardViewController.view.frame = CGRect(x: frame.minX, y: standardMinY, width: frame.width, height: frame.height)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        standardMinY = self.view.bounds.height - MapCardViewController.collectionView.frame.minY
-
         cardViewinit()
         let restaurantNameSuperView = MapCardViewController.view.viewWithTag(5)
         let restaurantNameSuperViewFrame = MapCardViewController.view.convert(restaurantNameSuperView!.bounds , to: nil)
@@ -192,6 +197,7 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
     func layoutNavbarStyle() {
         self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+        
         self.navigationController?.navigationBar.isTranslucent  = true
     }
     
@@ -204,7 +210,7 @@ class MapViewController: UIViewController, MKLocalSearchCompleterDelegate, UIVie
     }
 }
 extension MapViewController: MKMapViewDelegate {
-    func configure(restaurantName: String, address: String, restaurantID : String) async {
+    func configure(restaurantName: String, address: String, restaurantID : String) {
         guard lastRestaurantID != restaurantID else {
             return
         }
@@ -214,26 +220,33 @@ extension MapViewController: MKMapViewDelegate {
         
         MapCardViewController.distanceLabel.text = ""
         startToStandardAnimation()
-        await MapCardViewController.search(restaurantname: restaurantName , restautrantaddress:address ,restaurantID: restaurantID)
+        Task {
+            await MapCardViewController.search(restaurantname: restaurantName , restautrantaddress:address ,restaurantID: restaurantID)
+        }
         Task {
             do {
+
                 let placemarks = try await geoCoder.geocodeAddressString(address)
                 self.currentPlacemark = placemarks[0]
                 let annotation = MKPointAnnotation()
-                if let location = placemarks[0].location {
-                    if let currentLocation = self.MapView.userLocation.location {
-                        
-                        let distance = location.distance(from: currentLocation)
-                        MapCardViewController.distanceLabel.text = String(format : "%.1f公里" ,distance / 1000)
-                    }
-                    locatinoCoordinate = location.coordinate
-                    annotation.coordinate = location.coordinate
-                    annotation.title = restaurantName
-                    self.MapView.addAnnotation(annotation)
-                    
-                    showCoordinateOnMap(coordinate: annotation.coordinate,visibleOffsetY: bounds.height - standardMinY)
+                guard let location = placemarks[0].location else {
+                    return
                 }
+                
+                if let currentLocation = self.MapView.userLocation.location {
+                    
+                    let distance = location.distance(from: currentLocation)
+                    MapCardViewController.distanceLabel.text = String(format : "%.1f公里" ,distance / 1000)
+                }
+                locatinoCoordinate = location.coordinate
+                annotation.coordinate = location.coordinate
+                annotation.title = restaurantName
+                self.MapView.addAnnotation(annotation)
+                
+                showCoordinateOnMap(coordinate: annotation.coordinate,visibleOffsetY: bounds.height - standardMinY)
+                
             } catch {
+                print(error)
                 throw error
             }
         }
@@ -349,18 +362,12 @@ extension MapViewController : CLLocationManagerDelegate {
 
 extension MapViewController : UIGestureRecognizerDelegate {
     func cardViewinit() {
-        MapCardViewController.view.frame = CGRect(x: 0, y: standardMinY, width: self.view.bounds.width, height: self.view.bounds.height - self.view.safeAreaInsets.top  )
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
         panGestureRecognizer.allowedScrollTypesMask = .all
         panGestureRecognizer.cancelsTouchesInView = false
         panGestureRecognizer.delegate = self
         MapCardViewController.openToggleView.addGestureRecognizer(panGestureRecognizer)
-        if let annotationCoordinate = currentPlacemark?.location?.coordinate {
-            let annotationPoint = MKMapPoint(annotationCoordinate)
-            let pointRect = MKMapRect(Rectwidth: 1500, Rectheight: 1500, mappoint: annotationPoint, moveditance:
-                                        standardMinY)
-            MapView.setVisibleMapRect(pointRect, animated: true)
-        }
+
         
     }
 

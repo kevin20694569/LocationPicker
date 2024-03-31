@@ -49,6 +49,9 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
 
     
     func animationEnded(_ transitionCompleted: Bool) {
+        if !transitionCompleted {
+            print("dismissPostTableViewController Fail")
+        }
         self.toViewController.reloadCollectionCell(backCollectionIndexPath:  self.collectionViewTransitionToIndexPath)
         self.transitionPlayerLayer?.removeFromSuperlayer()
         self.transitionPlayerLayer?.removeAllAnimations()
@@ -76,27 +79,28 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
         toViewController.view.isUserInteractionEnabled = false
         self.toViewController.collectionView.isPagingEnabled = false
         self.toViewController.collectionView.scrollToItem(at: self.collectionViewTransitionToIndexPath, at: .centeredHorizontally, animated: false)
-
-        if let toCollectionImageCell = toViewController.collectionView.cellForItem(at: self.collectionViewTransitionToIndexPath) as?
-            GridPostCell {
-            self.mediaTargetRadius = toCollectionImageCell.cornerRadius
-            targetFrame = toCollectionImageCell.contentView.convert(toCollectionImageCell.imageView.frame, to: containerView)
-            toCollectionImageCell.imageView.isHidden = true
-            
-        }  else {
-            self.transitionContext.completeTransition(false)
-            return
-        }
-        
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
             }
-        if let fromWholeImageCell = fromViewController.currentCollectionCell as? StandardImageViewCollectionCell {
-            self.transitionImageView = fromWholeImageCell.imageView
-            self.initCornerRadius = fromWholeImageCell.imageView.layer.cornerRadius
-            initFrame = fromWholeImageCell.contentView.convert(fromWholeImageCell.imageView.frame, to: containerView)
-            let fromViewControllerinitFrame = (fromViewController.view.superview?.convert(fromViewController.view.frame, to: containerView))!
+            if let toCollectionImageCell = toViewController.collectionView.cellForItem(at: self.collectionViewTransitionToIndexPath) as?
+                GridPostCell {
+                self.mediaTargetRadius = toCollectionImageCell.cornerRadius
+                targetFrame = toCollectionImageCell.contentView.convert(toCollectionImageCell.imageView.frame, to: containerView)
+                toCollectionImageCell.imageView.isHidden = true
+                
+            }  else {
+                self.transitionContext.completeTransition(false)
+                return
+            }
+            
+            
+
+            if let fromWholeImageCell = fromViewController.currentCollectionCell as? StandardImageViewCollectionCell {
+                self.transitionImageView = fromWholeImageCell.imageView
+                self.initCornerRadius = fromWholeImageCell.imageView.layer.cornerRadius
+                initFrame = fromWholeImageCell.contentView.convert(fromWholeImageCell.imageView.frame, to: containerView)
+                let fromViewControllerinitFrame = (fromViewController.view.superview?.convert(fromViewController.view.frame, to: containerView))!
             self.performImageViewZoomOutAnimation(initFrame: initFrame, targetFrame: targetFrame, fromViewControllerinitFrame: fromViewControllerinitFrame)
             
         } else if let fromWholePlayerLayerCell = fromViewController.currentCollectionCell as? StandardPlayerLayerCollectionCell {
@@ -139,28 +143,35 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
         let playerLayer = transitionPlayerLayer!
         let duration = transitionDuration(using: transitionContext)
         let containerView = transitionContext.containerView
-        containerView.layer.addSublayer(playerLayer)
-        startFromViewControllerFadeOut()
-        performFromBackgroundViewAnimated(fromViewControllerinitFrame: initFrame, targetFrame: targetFrame)
-        CATransaction.begin()
-
-        CATransaction.setAnimationDuration(0)
-        CATransaction.setCompletionBlock {
+        
+        self.startFromViewControllerFadeOut()
+        self.performFromBackgroundViewAnimated(fromViewControllerinitFrame: initFrame, targetFrame: targetFrame)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             CATransaction.begin()
-            CATransaction.setAnimationDuration(duration)
+            CATransaction.setAnimationDuration(0)
             
+            playerLayer.frame = initFrame
+            containerView.layer.addSublayer(playerLayer)
             
             CATransaction.setCompletionBlock {
-                self.transitionContext.completeTransition(true)
+                CATransaction.begin()
+                CATransaction.setAnimationDuration(duration)
+                CATransaction.setCompletionBlock {
+                    self.transitionContext.completeTransition(true)
+                }
+                CATransaction.setAnimationTimingFunction(Constant.presentPostTableViewCAMediaTimingFunction)
+                playerLayer.frame = targetFrame
+                playerLayer.cornerRadius = self.mediaTargetRadius
+                playerLayer.videoGravity = .resizeAspectFill
+                CATransaction.commit()
             }
-            CATransaction.setAnimationTimingFunction(Constant.presentPostTableViewCAMediaTimingFunction)
-            playerLayer.frame = targetFrame
-            playerLayer.cornerRadius = self.mediaTargetRadius
-            playerLayer.videoGravity = .resizeAspectFill
+            
             CATransaction.commit()
+            
         }
-        playerLayer.frame = initFrame
-        CATransaction.commit()
+        
+        
         
         
     }
@@ -171,9 +182,9 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
         let offsetY = (targetFrame.minY + targetFrame.height / 2) - (initFrame.minY + initFrame.height / 2)
         CATransaction.begin()
         CATransaction.setAnimationTimingFunction(Constant.presentPostTableViewCAMediaTimingFunction)
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut ,animations: {
-           // self.navFrom.view.frame.origin.x += offsetX
-           // self.navFrom.view.frame.origin.y += offsetY
+        UIView.animate(withDuration: duration, delay: 0, animations: {
+            self.navFrom.view.frame.origin.x += offsetX
+            self.navFrom.view.frame.origin.y += offsetY
         })
         CATransaction.setAnimationTimingFunction(Constant.presentPostTableViewCAMediaTimingFunction)
         let delay : Double = 0
