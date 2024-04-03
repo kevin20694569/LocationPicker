@@ -233,11 +233,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     @objc func refreshPosts()  {
         tableView.refreshControl?.beginRefreshing()
         tableView.isPagingEnabled  = false
-        self.posts.removeAll()
+        
         Task(priority : .background) {
             do {
-                
-                
                 defer {
                     tableView.refreshControl?.endRefreshing()
                     self.setTitleText(text : self.postsStatus.titleString)
@@ -248,6 +246,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 }
                 self.isLoadingPost = true
                 self.pauseCurrentMedia()
+                self.posts.removeAll()
                 if !getServerData {
                     insertPostsReloadSection(posts:  Post.localPostsExamples)
                     return
@@ -256,12 +255,16 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 let newposts = try await self.postsStatus.getPosts(user_id: Constant.user_id, distance: 0, date: "")
 
                 if newposts.count > 0 {
+
                     insertPostsReloadSection(posts:  newposts)
                 } else {
                     tableView.reloadSections([0], with: .fade)
                 }
                 currentTableViewIndexPath = IndexPath(row: 0, section: 0)
-                self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                if  tableView.cellForRow(at: currentTableViewIndexPath) != nil {
+                    
+                    self.tableView.scrollToRow(at: currentTableViewIndexPath, at: .top, animated: true)
+                }
 
             } catch {
                 tableView.reloadSections([0], with: .fade)
@@ -298,6 +301,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         Task(priority : .background) {
             isLoadingPost = true
             let lastPost = self.posts.last
+    
             guard let distance = lastPost?.distance,
                   let date = lastPost?.timestamp else {
                 return
@@ -431,8 +435,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     
     func segueToProFile(user_id: Int, user_name: String, user_image: UIImage?) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView)
-        controller.user_id = user_id
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView,  user_id: user_id)
         controller.navigationItem.title = user_name
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -505,6 +508,7 @@ extension MainPostTableViewController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "MainPostTableCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MainPostTableCell
+        
         let post = self.posts[indexPath.row]
         
         cell.mediaTableCellDelegate = self

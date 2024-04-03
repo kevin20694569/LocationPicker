@@ -5,6 +5,24 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         messages.count
     }
+    var room_user_ids : [Int]! = []
+    
+    init(chatRoom : ChatRoom) {
+        super.init(nibName: nil, bundle: nil)
+        self.chatRoom = chatRoom
+        if let user = chatRoom.user {
+            self.room_user_ids = [user.user_id , Constant.user_id]
+        }
+    }
+    
+    init(chatRoomUser_ids : [Int]) {
+        super.init(nibName: nil, bundle: nil)
+        self.room_user_ids = chatRoomUser_ids
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = messages[indexPath.row]
@@ -21,7 +39,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.configure(message: message)
             return cell
         default :
-            print(message.sender_id)
+        
             if message.postJson != nil  {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedPostCell", for : indexPath) as! LhsMessageSharedPostCell
                 cell.messageTableCellDelegate = self
@@ -58,7 +76,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var presentForTabBarLessView : Bool! = true
     
-    var chatRoom : ChatRoom!
+    var chatRoom : ChatRoom?
     
     
     var tableView : UITableView! = UITableView()
@@ -75,10 +93,11 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func sendMessage() {
-        guard !messageInputTextView.text.isEmpty else {
+        guard !messageInputTextView.text.isEmpty,
+        let chatRoom = chatRoom else {
             return
         }
-        SocketIOManager.shared.sendMessage(to_room_id: self.chatRoom.room_id, sender_id: Constant.user_id, message: messageInputTextView.text)
+        SocketIOManager.shared.sendMessage(to_room_id: chatRoom.room_id, sender_id: Constant.user_id, message: messageInputTextView.text)
         self.messageInputTextView.text.removeAll()
         fitMessageInputTextView(textView: messageInputTextView)
     }
@@ -106,16 +125,31 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         registerCells()
         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
         viewStyleSet()
-        Task {
-            do {
-                try await loadMessage(date: "")
-                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-                self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-                shouldTriggerLoad = true
-                
-            } catch {
-                print(error)
+        if let chatRoom = chatRoom {
+            Task {
+                do {
+                    try await loadMessagesByChatRoomID(date: "")
+                    let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    shouldTriggerLoad = true
+                    
+                } catch {
+                    print(error)
+                }
             }
+        } else {
+            Task {
+                do {
+                    try await loadMessagesByRoom_User_IDs(date: "")
+                    let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    shouldTriggerLoad = true
+                    
+                } catch {
+                    print(error)
+                }
+            }
+            
         }
         
         
@@ -193,13 +227,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func layoutNavBar() {
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationItem.title = self.chatRoom.room_name
+        self.navigationItem.title = self.chatRoom?.room_name
         self.navigationController?.navigationBar.backgroundColor = .clear
     }
     func showUserProfile(user_id: Int) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView)
-        controller.user_id = user_id
-        controller.navigationItem.title = chatRoom.room_name
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user_id: user_id)
+        controller.navigationItem.title = chatRoom?.room_name
         self.view.endEditing(true)
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -360,12 +393,28 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.addGestureRecognizer(gesture)
     }
 
-    
-    
-    
-    func loadMessage(date : String) async throws {
+    func loadMessagesByRoom_User_IDs(date : String) async throws {
         do {
-            var messages = try await ChatRoomsManager.shared.getMessagesFromChatroomID(chatroom_id:  self.chatRoom.room_id, date: date)
+            var messages = try await  ChatRoomsManager.shared.getInitMessagesFromUser_ID(user_ids: self.room_user_ids)
+            messages.reverse()
+            guard messages.count > 0 else {
+                shouldTriggerLoad = false
+                throw MessageError.noMoreMessages
+            }
+            self.insertRows(newMessages: messages)
+            
+        } catch {
+            throw error
+        }
+    }
+    
+    
+    func loadMessagesByChatRoomID(date : String) async throws {
+        guard let chatRoom = chatRoom else {
+            return
+        }
+        do {
+            var messages = try await ChatRoomsManager.shared.getMessagesFromChatroomID(chatroom_id:  chatRoom.room_id, date: date)
             messages.reverse()
             guard messages.count > 0 else {
                 shouldTriggerLoad = false
@@ -405,7 +454,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             shouldTriggerLoad = false
             Task {
                 do {
-                    try await loadMessage(date: (messages.first?.created_time)!)
+                    try await loadMessagesByChatRoomID(date: (messages.first?.created_time)!)
                 } catch {
                     print(error)
                 }

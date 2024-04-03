@@ -2,11 +2,12 @@ import Alamofire
 import UIKit
 
 final class RestaurantManager {
+    let ip = APIKey.IP
     var distance : Double?
     static let shared : RestaurantManager = RestaurantManager()
     private init() { }
     
-    let API = Constant.httpIP + "restaurants/"
+    lazy var API = self.ip + "/restaurants"
     func getRestaurantIDasync(restaurantID: String) async throws -> Restaurant? {
         do {
             guard let latitude = LocationManager.shared.currentLocation?.coordinate.latitude,
@@ -14,7 +15,7 @@ final class RestaurantManager {
                 print("拿不到位置")
                 throw LocationError.UserLocationNotFound
             }
-            let urlstring = API + "\(restaurantID)?latitude=\(latitude)&longitude=\(longitude)"
+            let urlstring = API + "/\(restaurantID)?latitude=\(latitude)&longitude=\(longitude)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw APIError.URLnotFound(urlstring)

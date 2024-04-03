@@ -6,9 +6,20 @@ struct Friend  {
     var user : User!
     
     
+    static let examples : [Friend] = {
+        Array.init(repeating: Friend(friendship_time: "", user: User.example), count: 20)
+        
+    }()
+    
+    
     init(json : FriendJson) {
         self.friendship_time = json.friendship?.friendship_time
         let user = User(userJson: json.userJson)
+        self.user = user
+    }
+    
+    init(friendship_time : String, user : User) {
+        self.friendship_time = friendship_time
         self.user = user
     }
     

@@ -2,15 +2,17 @@ import UIKit
 
 
 
-class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate {
+class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate {
+
     
     var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [ : ]
     var getServerData : Bool = Constant.getServerData
         
     
     
-    init(presentForTabBarLessView : Bool) {
+    init(presentForTabBarLessView : Bool, user_id : Int?) {
         super.init(nibName: nil, bundle: nil)
+        self.user_id = user_id
         self.presentForTabBarLessView = presentForTabBarLessView
     }
     
@@ -69,12 +71,13 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         registerCells()
         layoutCollectionCellflow()
         viewDataStyleSet()
-
+        
     }
     
     func viewDataStyleSet() {
         self.view.backgroundColor = .backgroundPrimary
         self.collectionView.backgroundColor = .backgroundPrimary
+        collectionView.delaysContentTouches = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
@@ -90,6 +93,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         configureNavBar(title: self.user.name)
         if !getUserProfileFinish {
             Task(priority : .background)  {
@@ -99,8 +103,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
     
     func configureNavBar(title : String?) {
-       self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+       self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = true
         self.navigationController?.navigationBar.isTranslucent = true
         if let title = title {
@@ -120,8 +124,6 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
                 return
             }
             self.user = user
-
-            
             configureNavBar(title: self.user.name)
             self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
             
@@ -298,6 +300,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileMainCell", for: indexPath) as! ProfileMainCell
                 cell.configureBasic(user: self.user)
+                cell.delegate = self
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileCollectionViewPlaylistCell", for: indexPath) as! ProfileCollectionViewPlaylistCell

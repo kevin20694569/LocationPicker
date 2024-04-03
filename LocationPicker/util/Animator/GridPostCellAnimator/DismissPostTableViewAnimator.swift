@@ -156,7 +156,7 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
             
             CATransaction.setCompletionBlock {
                 CATransaction.begin()
-                CATransaction.setAnimationDuration(duration)
+                CATransaction.setAnimationDuration(duration - 0.01)
                 CATransaction.setCompletionBlock {
                     self.transitionContext.completeTransition(true)
                 }

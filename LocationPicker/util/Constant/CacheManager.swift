@@ -1,8 +1,8 @@
 import Foundation
 
 enum CacheConfiguration {
-    static let maxObjects = 100
-    static let maxSize = 1024 * 1024 * 50
+    static let maxObjects = 2000
+    static let maxSize = 1024 * 1024 * 100
 }
 
 final class CacheManager {

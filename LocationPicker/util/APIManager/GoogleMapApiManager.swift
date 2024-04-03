@@ -3,7 +3,7 @@ import GoogleMaps
 
 class GoogleMapApiManager {
     static let shared = GoogleMapApiManager()
-    let apiKey = Constant.GoogleMapAPIKey
+    let apiKey = APIKey.googleMapAPIKey
     let textSearchJsonURL = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     let nearbySeatchJsonURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     var location : (lat : Double, lng: Double )! {

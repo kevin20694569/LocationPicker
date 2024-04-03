@@ -34,10 +34,14 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
     }
     
     func animationEnded(_ transitionCompleted: Bool) {
+        
         toViewController.collectionView.isHidden = false
         self.toViewController.reloadCollectionCell(backCollectionIndexPath: transitionCollectionIndexPath)
+        
         self.transitionPlayerLayer?.removeFromSuperlayer()
         self.transitionPlayerLayer?.removeAllAnimations()
+  
+       
         self.transitionPlayerLayer = nil
         self.transitionImageView?.removeFromSuperview()
         self.transitionImageView = nil
@@ -71,7 +75,6 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
             view?.alpha = 0
         })
         startFadeOutViewAnimation()
-
         DispatchQueue.main.async { [self] in
             startBottomBarBackgroundFadeToBackGroundColor(bottomBarView: MainTabBarViewController.shared.tabBar)
         
@@ -84,21 +87,21 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
             } else if let toCollectionPlayerLayerCell =  toViewController.collectionView.visibleCells.first as? PlayerLayerCollectionCell {
                 self.targetCornerRadius = toCollectionPlayerLayerCell.cornerRadiusfloat
                 targetFrame = toCollectionPlayerLayerCell.contentView.convert(toCollectionPlayerLayerCell.playerLayer.frame, to: containerView)
-                CATransaction.begin()
+               /* CATransaction.begin()
                 CATransaction.setAnimationDuration(0)
                 toCollectionPlayerLayerCell.playerLayer.isHidden = true
-                CATransaction.commit()
+                CATransaction.commit()*/
             } else {
                 self.transitionContext.completeTransition(true)
                 return
             }
-            self.toViewController.collectionView.isHidden = true
+
             
             self.toViewController.collectionView.isPagingEnabled = false
         self.toViewController.collectionView.scrollToItem(at: self.transitionCollectionIndexPath, at: .centeredHorizontally, animated: false)
         self.toViewController.collectionView.isPagingEnabled = true
         
-
+            self.toViewController.collectionView.isHidden = true
              
             if let fromWholeImageCell = fromViewController.currentCollectionCell as? WholeImageViewCollectionCell {
                 self.transitionImageView = fromWholeImageCell.imageView
@@ -152,7 +155,7 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
     }
     
     func performImageViewZoomOutAnimation(initFrame: CGRect, targetFrame: CGRect, fromViewControllerinitFrame: CGRect)  {
-        let containerView = self.transitionContext.containerView
+       
         
         let imageView = self.transitionImageView!
         let durationTime = transitionDuration(using: transitionContext)
@@ -211,17 +214,17 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
     
     func fadeInViewStartAnimation() {
         let duration = transitionDuration(using: transitionContext) / 2
-        DispatchQueue.main.async {
-            UIView.animate(withDuration:  duration, delay: duration , animations: {
-                self.fromViewController.view.backgroundColor = .clear
-                self.fadInSubViews.forEach { view in
-                    if view is UILabel || view is UISlider {
-                        return
-                    }
-                    view?.alpha = 1
+        
+        UIView.animate(withDuration:  duration, delay: duration , animations: {
+            self.fromViewController.view.backgroundColor = .clear
+            self.fadInSubViews.forEach { view in
+                if view is UILabel || view is UISlider {
+                    return
                 }
-            })
-        }
+                view?.alpha = 1
+            }
+        })
+        
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {

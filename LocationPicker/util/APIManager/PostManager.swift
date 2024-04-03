@@ -2,6 +2,7 @@ import Alamofire
 import Foundation
 
 final class PostManager : NSObject {
+    let ip = APIKey.IP
     
     let user_id = Constant.user_id
     
@@ -16,12 +17,12 @@ final class PostManager : NSObject {
     
     var friends_Ids : [Int]?
     
-    let API = Constant.httpIP + "posts/"
+    lazy var API = ip + "/posts"
     
     func getPublicNearLocationPosts(distance: Double) async throws -> [Post] {
         
         do {
-            let urlstring = API + "nearlocation?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&user_id=\(user_id)"
+            let urlstring = API + "/nearlocation?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&user_id=\(user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -113,7 +114,7 @@ final class PostManager : NSObject {
     
     func getRestaurantPostsByID(restaurantID : String, date : String) async throws -> [Post] {
         do {
-            let urlstring = API + "restaurants/\(restaurantID)?date=\(date)&user_id=\(user_id)"
+            let urlstring = API + "/restaurants/\(restaurantID)?date=\(date)&user_id=\(user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -128,25 +129,6 @@ final class PostManager : NSObject {
                 newPosts.append(Post(postJson: $0))
             }
             return newPosts
-            /*
-             let postarray : [Post] = await withTaskGroup(of: (index: Int, post : Post).self, returning: [Post].self) { group in
-             for (i, result) in results.enumerated() {
-             group.addTask() {
-             if let post = await Post(postJson: result, forSnapshot: true) {
-             return (i, post)
-             } else {
-             print("建立ｐｏｓｔ失敗")
-             return (i, Post())
-             }
-             }
-             }
-             var array : [Post] = .init(repeating: Post(), count: results.count)
-             for await result in group {
-             array[result.index] = result.post
-             }
-             return array
-             }
-             return postarray*/
         } catch {
             throw PostError.PostNotFound
         }
@@ -154,7 +136,7 @@ final class PostManager : NSObject {
     
     func getUserPostsByID(user_id : Int, date : String) async throws -> [Post] {
         do {
-            let urlstring = API + "users/\(user_id)?date=\(date)&user_id=\(Constant.user_id)"
+            let urlstring = API + "/users/\(user_id)?date=\(date)&user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -168,25 +150,6 @@ final class PostManager : NSObject {
                 newPosts.append(Post(postJson: $0))
             }
             return newPosts
-            /* let postarray = await withTaskGroup(of: (index: Int, post : Post).self, returning: [Post].self) { group in
-             for (i, result) in results.enumerated() {
-             group.addTask() {
-             if let post = await Post(postJson: result, forSnapshot: true) {
-             return (i, post)
-             } else {
-             print("建立ｐｏｓｔ失敗")
-             return (i, Post())
-             }
-             }
-             }
-             
-             var array : [Post] = .init(repeating: Post(), count: results.count)
-             for await result in group {
-             array[result.index] = result.post
-             }
-             return array
-             }
-             return postarray*/
         } catch {
             print(error)
             throw PostError.PostNotFound
@@ -195,7 +158,7 @@ final class PostManager : NSObject {
     
     func getFriendsNearLocationPosts(user_id: Int ,distance: Double) async throws -> [Post] {
         do {
-            let urlstring = API + "nearlocation/friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&user_id=\(Constant.user_id)"
+            let urlstring = API + "/nearlocation/friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -209,24 +172,6 @@ final class PostManager : NSObject {
                 newPosts.append(Post(postJson: $0))
             }
             return newPosts
-            /* let postarray = await withTaskGroup(of: (index: Int, post : Post).self, returning: [Post].self) { group in
-             for (i, result) in results.enumerated() {
-             group.addTask() {
-             if let post = await Post(postJson: result, forSnapshot: false) {
-             return (i, post)
-             } else {
-             print("建立ｐｏｓｔ失敗")
-             return (i, Post())
-             }
-             }
-             }
-             var array : [Post] = .init(repeating: Post(), count: results.count)
-             for await result in group {
-             array[result.index] = result.post
-             }
-             return array
-             }
-             return postarray*/
         } catch {
             print(error)
             throw PostError.PostNotFound
@@ -235,7 +180,7 @@ final class PostManager : NSObject {
     
     func getFriendsPostsByCreatedTime(user_id: Int ,date: String) async throws -> [Post] {
         do {
-            let urlstring = API + "friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&date=\(date)&user_id=\(Constant.user_id)"
+            let urlstring = API + "/friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&date=\(date)&user_id=\(Constant.user_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
@@ -258,7 +203,7 @@ final class PostManager : NSObject {
     
     func getPostDetail(post_id : String, request_user_id: Int ) async throws -> Post {
         do {
-            let urlstring = API + post_id + "?request_user_id =\(request_user_id)"
+            let urlstring = API + "/\(post_id)?request_user_id=\(request_user_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {

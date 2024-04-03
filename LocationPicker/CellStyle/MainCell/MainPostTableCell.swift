@@ -568,8 +568,7 @@ extension MainPostTableCell {
     
     @objc func presentShareViewController(_ gesture : UITapGestureRecognizer) {
         
-        let viewController = ShareViewController()
-        viewController.currentPost = currentPost
+        let viewController = SharePostViewController(post: currentPost)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         mediaTableCellDelegate?.present(viewController, animated: true)

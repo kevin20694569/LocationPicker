@@ -1,7 +1,5 @@
 import UIKit
 struct Constant {
-    static let httpIP : String = APIKey.IP
-    static let GoogleMapAPIKey : String = APIKey.googleMapAPIKey
     static let standardCornerRadius : CGFloat = 46
     static var bottomBarViewHeight : CGFloat = 83
     

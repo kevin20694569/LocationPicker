@@ -1,6 +1,13 @@
 import UIKit
+import AVFoundation
 
 class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, StandardPostTableCellProtocol {
+    
+    deinit {
+        self.currentPost.media.forEach() {
+           $0.player?.seek(to: CMTime.zero)
+       }
+    }
 
     var collectionViewHeight : CGFloat!
     
@@ -8,7 +15,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     
     @IBOutlet weak var emojiButton : ZoomAnimatedButton! {didSet {
         emojiButton.tag = -1
-
     }}
     
     @IBOutlet weak var userNameLabel : UILabel! { didSet {
@@ -342,12 +348,19 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             self.isEmojiViewAnimated = false
         }
     }
-    
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        Task(priority: .low) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.currentPost.media.forEach() {
+               $0.player?.seek(to: CMTime.zero)
+           }
+        }
+        
+    }
 
-    
-    
-    
     override func autoLayoutActive() {
         let width = collectionView.bounds.width
         collectionView.translatesAutoresizingMaskIntoConstraints = false

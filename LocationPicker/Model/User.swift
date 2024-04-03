@@ -90,6 +90,7 @@ class User : Equatable, Hashable {
         self.name = name
         self.image = image
         self.imageURL = imageURL
+        self.isFriend = .random()
     }
     
     init(userJson: UserJson) {

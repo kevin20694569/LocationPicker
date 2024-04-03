@@ -3,7 +3,7 @@ enum FriendsSection {
     case main
 }
 
-class FriendsViewController: UIViewController, UITableViewDelegate, UISearchBarDelegate, UIScrollViewDelegate, UISearchControllerDelegate, UITextFieldDelegate, FriendRequestsCellDelegate, UITableViewDataSource {
+class FriendRequestViewController: UIViewController, UITableViewDelegate, UISearchBarDelegate, UIScrollViewDelegate, UISearchControllerDelegate, UITextFieldDelegate, FriendRequestsCellDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userRequests.count
     }
@@ -18,7 +18,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UISearchBarD
     
     
     func segueToUserProfileView(userRequst userRequest : UserFriendRequest) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: true)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: true, user_id: userRequest.user_ID)
         controller.user_id = userRequest.user_ID
         controller.navigationItem.title = userRequest.name
         self.navigationController?.pushViewController(controller, animated: true)
@@ -81,10 +81,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UISearchBarD
     
     
 }
-extension FriendsViewController {
+extension FriendRequestViewController {
     func loadUserFriendsRequests(user_id : Int) async {
         do {
-            let newRequests = try await FriendsManager.shared.getUserFriendsRequestsFromUserID(user_id: Constant.user_id, date: "")
+            let newRequests = try await FriendsManager.shared.getUserFriendReceiveRequestsFromUserID(user_id: Constant.user_id, date: "")
             
             if newRequests.count > 0 {
                 tableView.beginUpdates()
@@ -107,17 +107,14 @@ extension FriendsViewController {
         let cell = cell as! FriendRequestsTableViewCell
         let userRequst = cell.userRequestInstance
         Task {
-            if let imageURL = userRequst?.user_imageurl,
-               let (data, _)  = try? await URLSession.shared.data(from: imageURL) {
-                let image = UIImage(data: data)
-                userRequst?.userimage = image
-                cell.userImageView.image = image
-            }
+            let image = await userRequst?.user_imageurl?.getImageFromImageURL()
+            userRequst?.userimage = image
+            cell.userImageView.image = image
         }
     }
 }
 
-extension FriendsViewController {
+extension FriendRequestViewController {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         SearchBar.endEditing(true)
         previousOffsetY = scrollView.contentOffset.y
@@ -161,50 +158,3 @@ extension FriendsViewController {
         }
     }
 }
-
-extension FriendsViewController {
-    /* func tableviewcellEnterDetailView(user : User, indexPath : IndexPath) {
-     self.currentIndexPath = indexPath
-     let viewcontroller = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-     viewcontroller.Albumimage = Song.artworkUrl100
-     viewcontroller.Song = Song
-     viewcontroller.MainViewDelegate = self
-     viewcontroller.modalPresentationStyle = .custom
-     viewcontroller.transitioningDelegate = self
-     self.modalPresentationStyle = .custom
-     self.transitioningDelegate = self
-     self.present(viewcontroller, animated: true)
-     }*/
-}
-
-/*extension FriendsViewController: UIViewControllerTransitioningDelegate {
- 
- /*  func updateImageView(image: UIImage) {
-  let cell = self.tableView.cellForRow(at: currentIndexPath!) as! FriendsTableViewCell
-  cell.AlbumImageView.image = image
-  cell.AlbumImageView.setNeedsLayout()
-  cell.AlbumImageView.layoutIfNeeded()
-  }*/
- func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
- return DetailPresentationViewController(presentedViewController: presented, presenting: presenting)
- }
- 
- func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
- let viewcontroller = source as! MainViewController
- let cell = viewcontroller.MainpresentedView.tableView.cellForRow(at: viewcontroller.MainpresentedView.tableView.indexPathForSelectedRow!) as! FriendsTableViewCell
- let imageview = cell.AlbumImageView
- let startpoint = cell.AlbumImageView.convert(cell.AlbumImageView.bounds, to: self.view)
- let Animator = DetailViewControllerZoominAnimator(startpoint: startpoint, image: cell.AlbumImageView.image!)
- cell.AlbumImageView.image = nil
- return Animator
- }
- 
- func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
- let cell = MainpresentedView.tableView.cellForRow(at: currentIndexPath!) as! FriendsTableViewCell
- let viewcontroller = dismissed as! DetailViewController
- let startpoint = cell.AlbumImageView.convert(cell.AlbumImageView.bounds, to: self.view)
- let Animator = DetailViewControllerZoomOutAnimator(image: viewcontroller.Albumimage, startpoint: startpoint)
- return Animator
- }
- }*/
-

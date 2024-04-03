@@ -59,8 +59,13 @@ extension URL {
         
         let time = CMTime(seconds: 0, preferredTimescale: 1) 
         do {
+            let cachedURLString = self.lastPathComponent.replacingOccurrences(of: "." + self.pathExtension, with: "")
+            if let cachedImage = CacheManager.shared.getFromCache(key: cachedURLString) as? UIImage {
+                return cachedImage
+            }
             let cgImage = try generator.copyCGImage(at: time, actualTime: nil)
             let thumbnail = UIImage(cgImage: cgImage)
+            CacheManager.shared.cache(object: thumbnail, key: cachedURLString)
             return thumbnail
         } catch {
             return UIImage()
@@ -68,13 +73,18 @@ extension URL {
     }
     func getImageFromImageURL() async -> UIImage {
         do {
-            let (data, _) = try await URLSession.shared.data(from: self)
-            guard let image = UIImage(data: data) else {
-                return UIImage(systemName: "pencil.circle.fill")!
+            let cachedURLString = self.lastPathComponent.replacingOccurrences(of: "." + self.pathExtension, with: "")
+            if let cachedImage = CacheManager.shared.getFromCache(key: cachedURLString) as? UIImage {
+                return cachedImage
             }
+            let (data, _) = try await URLSession.shared.data(from: self)
+            
+            guard let image = UIImage(data: data) else {
+                return UIImage()
+            }
+            CacheManager.shared.cache(object: image, key: cachedURLString)
             return image
         } catch {
-            
             print("下載Media image失敗", error)
             return UIImage(systemName: "pencil.circle.fill")!
             

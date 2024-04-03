@@ -39,6 +39,7 @@ class RestaurantDetailCollectionViewDetailGridCell : CollectionCollectionViewCel
             collectionView.collectionViewLayout = flow
         }
         collectionView.isScrollEnabled = false
+        collectionView.delaysContentTouches = false
     }
     
     

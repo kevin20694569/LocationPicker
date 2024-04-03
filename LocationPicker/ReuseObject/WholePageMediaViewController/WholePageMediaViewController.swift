@@ -778,9 +778,12 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     var enterCollectionIndexPath: IndexPath!
     
     func reloadCollectionCell(backCollectionIndexPath: IndexPath) {
+        
         if let needReloadCell = self.collectionView.cellForItem(at: self.enterCollectionIndexPath) as? MediaCollectionCell {
             needReloadCell.reload(media: nil)
+            
         }
+
     }
     
     func playCurrentMedia() {
@@ -1307,8 +1310,7 @@ extension WholePageMediaViewController {
     
     
     @objc func presentShareViewController(_ gesture : UITapGestureRecognizer) {
-        let viewController = ShareViewController()
-        viewController.currentPost = currentPost
+        let viewController =  SharePostViewController(post: currentPost)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         self.present(viewController, animated: true)
@@ -1334,7 +1336,7 @@ extension WholePageMediaViewController {
     }
     
     @objc func segueToProFile( _ imageView : UIImageView) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView, user_id: self.currentPost.user?.user_id)
         controller.user_id = currentPost.user?.user_id
         controller.navigationItem.title = currentPost.user?.name
         self.show(controller, sender: nil)

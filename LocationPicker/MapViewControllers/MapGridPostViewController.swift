@@ -75,7 +75,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     }}
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var gradeLabel: UILabel! { didSet {
-        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .bold)
+        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
     }}
     @IBOutlet weak var distanceLabel : UILabel! { didSet {
         distanceLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
@@ -122,7 +122,11 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     }
     
     func configureOpeningTime(restaurant : Restaurant) {
-        self.gradeLabel.text = String(format: "%.1f", restaurant.average_grade  ?? 0.0)
+        if let grade = restaurant.average_grade {
+            self.gradeLabel.text = String(format: "%.1f", grade)
+        } else {
+            self.gradeLabel.text = "nil"
+        }
         
         self.openingTimeStackView.arrangedSubviews.forEach() { view in
             openingTimeStackView.removeArrangedSubview(view)

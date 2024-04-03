@@ -68,8 +68,6 @@ class Post : Hashable, Equatable {
     
     
     
-    
-    
     convenience init(postJson: PostJson) {
         
         let post_title = postJson.postDetail?.post_title
@@ -109,8 +107,6 @@ class Post : Hashable, Equatable {
                 publicReactions?.append( Reaction(json: reactionJson))
             }
         }
-        
-        
         let mediaContents : [Media] = test(mediajsonArray: postJson.postDetail!.media!)
         
         func test(mediajsonArray : [mediaJSON] ) -> [Media] {
@@ -124,8 +120,6 @@ class Post : Hashable, Equatable {
                             let cachedMedia = Media(title: mediaJson.itemtitle, DownloadURL: url, image: image)
                             mediaArray.append(cachedMedia)
                         } else {
-                            
-                            
                             let media = Media(title: mediaJson.itemtitle, DownloadURL: url)
                             mediaArray.append(media)
                         }
@@ -227,7 +221,10 @@ class Post : Hashable, Equatable {
         guard let reaction = self.selfReaction else {
             return
         }
-        Task {
+        Task { [weak self ] in
+            guard let self = self else {
+                return
+            }
             if lastReactionInDataBase?.reactionInt != reaction.reactionInt || lastReactionInDataBase?.liked != reaction.liked {
                 
                 self.cacelTimer()
@@ -240,6 +237,10 @@ class Post : Hashable, Equatable {
                 self.shouldPostReaction = false
             }
         }
+    }
+    
+    deinit {
+        postReaction()
     }
     
 }

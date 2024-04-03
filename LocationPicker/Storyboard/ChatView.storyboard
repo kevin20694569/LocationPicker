@@ -136,10 +136,10 @@
             </objects>
             <point key="canvasLocation" x="4482" y="-199"/>
         </scene>
-        <!--Friends View Controller-->
+        <!--Friend Request View Controller-->
         <scene sceneID="ZwU-nr-zsT">
             <objects>
-                <viewController id="BoW-5A-0CU" customClass="FriendsViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BoW-5A-0CU" customClass="FriendRequestViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uRP-Co-MlN">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

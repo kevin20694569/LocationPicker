@@ -3,12 +3,13 @@ import Alamofire
 
 
 class FriendsManager {
+    let ip = APIKey.IP
     static let shared = FriendsManager()
-    let API = Constant.httpIP + "friends/"
+    lazy var API = ip + "/friends"
     
     func getUserFriendsFromUserID(user_id : Int, Date : String) async throws -> [Friend]  {
         do {
-            let urlstring = API + "\(user_id)"
+            let urlstring = API + "?request_user_id=\(user_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
@@ -29,9 +30,32 @@ class FriendsManager {
         }
     }
     
-    func getUserFriendsRequestsFromUserID(user_id : Int, date : String) async throws -> [UserFriendRequest]  {
+    func getUserFriendReceiveRequestsFromUserID(user_id : Int, date : String) async throws -> [UserFriendRequest]  {
         do {
-            let urlstring = API + "friendrequests/\(user_id)?date=\(date)"
+            let urlstring = API + "/friendrequests/receive-friend-request?request_user_id=\(user_id)&date=\(date)"
+            guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
+                  let url = URL(string: urlstring) else {
+                throw  APIError.URLnotFound(urlstring)
+            }
+            var req = URLRequest(url: url)
+            req.httpMethod = "GET"
+            req.timeoutInterval = 2.0
+            let decoder = JSONDecoder()
+            let (data, _) = try await URLSession.shared.data(for: req)
+
+            let requestsJson = try decoder.decode([UserRequestJson].self, from: data)
+           let requests = requestsJson.map { json in
+                return UserFriendRequest(json: json)
+            }
+            return requests
+        } catch  {
+            throw error
+        }
+    }
+    
+    func getUserFriendSentRequestsFromUserID(user_id : Int, date : String) async throws -> [UserFriendRequest]  {
+        do {
+            let urlstring = API + "/friendrequests/sent-friend-request?request_user_id=\(user_id)&date=\(date)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -55,7 +79,7 @@ class FriendsManager {
     func acceptFriendRequestFromRequestID(request_id: Int, accept_user_id : Int) async throws -> Int {
         
         do {
-            let urlstring = self.API + "friendships/accept/\(request_id)"
+            let urlstring = self.API + "/friendrequests/accept/\(request_id)"
             guard  urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                    let url = URL(string: urlstring) else {
                 throw APIError.URLnotFound(urlstring)
@@ -77,9 +101,9 @@ class FriendsManager {
         }
     }
     
-    func sendBeingFriendRequest(from from_user_id : Int,  to to_user_id : Int)  async throws {
+    func sendFriendRequest(from from_user_id : Int,  to to_user_id : Int)  async throws {
         do {
-            let urlstring = API + "friendrequests/"
+            let urlstring = API + "/friendrequests/send"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
@@ -91,7 +115,7 @@ class FriendsManager {
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
             let encoder = JSONEncoder()
-            let request = FriendRequestBody(from_user_id: from_user_id, to_user_id: to_user_id)
+            let request = FriendRequestBody(request_user_id: from_user_id, to_user_id: to_user_id)
             let body = try encoder.encode(request)
             req.httpBody = body
             let (data, res) = try await URLSession.shared.data(for: req)
@@ -108,7 +132,7 @@ class FriendsManager {
     
     
     struct FriendRequestBody : Encodable {
-        var from_user_id : Int
+        var request_user_id : Int
         var to_user_id : Int
     }
     

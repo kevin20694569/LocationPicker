@@ -177,7 +177,7 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
     func viewDataStyleSet() {
         self.view.backgroundColor = .backgroundPrimary
         self.collectionView.backgroundColor = .backgroundPrimary
-
+        collectionView.delaysContentTouches = false
         collectionView.dataSource = self
         collectionView.delegate = self
         self.collectionView.showsVerticalScrollIndicator = false

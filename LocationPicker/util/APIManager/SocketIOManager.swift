@@ -119,5 +119,22 @@ class SocketIOManager : NSObject {
         socket.emit("sharePostByMessage", dict)
     }
     
+    func shareRestaurant(to_user_ids : [Int], sender_id : Int, restaurant : Restaurant) {
+        let dict : [String : Any?] = [ "sender_id" : sender_id,
+                                       "receive_ids" : to_user_ids,
+                                       "shared_restaurant_id" : restaurant.restaurantID,
+        ]
+        socket.emit("shareRestaurantByMessage", dict)
+    }
+    
+    func shareUser(to_user_ids : [Int], sender_id : Int, user : User) {
+        let dict : [String : Any?] = [ "sender_id" : sender_id,
+                                       "receive_ids" : to_user_ids,
+                                       "shared_user_id" : user.user_id,
+        ]
+        socket.emit("shareUserByMessage", dict)
+    }
+    
+    
 }
 

@@ -141,13 +141,14 @@ struct ReactionJson : Codable {
 
 
 class ReactionsManager {
+    let ip = APIKey.IP
     static let shared = ReactionsManager()
-    let API = Constant.httpIP + "reactions/"
+    lazy var API = ip + "/reactions"
     
     func postReactionToPost(post_id : String, user_id : Int ,reaction : Int? = nil, liked : Bool? = false) async throws   {
         do {
             
-            let urlstring = API + "\(post_id)"
+            let urlstring = API + "/post/\(post_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
@@ -156,7 +157,7 @@ class ReactionsManager {
             var request = URLRequest(url: url)
             request.httpMethod = HTTPMethod.post.rawValue
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            let parameters: [String: Any] = [
+            let parameters: [String: Any?] = [
                 "user_id": user_id,
                 "reaction" : reaction,
                 "liked" : liked
@@ -187,7 +188,7 @@ class ReactionsManager {
     
     func getUserFriendsReactionsFromUserID(post_id : String) async throws -> [Reaction]  {
         do {
-            let urlstring = API + "\(post_id)"
+            let urlstring = API + "/\(post_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {

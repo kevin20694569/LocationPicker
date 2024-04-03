@@ -21,4 +21,12 @@ protocol MaxFrameController : AnyObject {
     var maxWidth : CGFloat! { get set }
 }
 
+protocol ShowViewControllerDelegate : UIViewController {
+    var presentForTabBarLessView : Bool! { get }
+}
+
+
+protocol ProfileMainCellDelegate : ShowViewControllerDelegate {
+    
+}
 

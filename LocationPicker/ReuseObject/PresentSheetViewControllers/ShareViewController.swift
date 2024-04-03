@@ -12,9 +12,6 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         return cell
     }
     
-    var currentPost : Post!
-    
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return friends.count
     }
@@ -94,17 +91,9 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         config.baseForegroundColor = UIColor.secondaryLabelColor
         config.attributedTitle = attString
         shareButton.configuration = config
-        shareButton.addTarget(self, action: #selector(sharePost( _ :)), for: .touchUpInside)
     }
     
-    @objc func sharePost( _ button : UIButton) {
-        let ids = selectedSharedUserDict.values.compactMap() {
-            return $0.user.user_id
-        }
-        
-        SocketIOManager.shared.sharePost(to_user_ids: ids, sender_id: Constant.user_id, post: currentPost)
-        self.dismiss(animated: true)
-    }
+
     
     func updateShareButton(enable : Bool) {
         
@@ -193,6 +182,89 @@ extension ShareViewController {
                 
             }
         }
+    }
+}
+
+
+class SharePostViewController : ShareViewController {
+    var currentPost : Post!
+    
+    init(post : Post) {
+        super.init(nibName: nil, bundle: nil)
+        self.currentPost = post
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func sharePost( _ button : UIButton) {
+        let ids = selectedSharedUserDict.values.compactMap() {
+            return $0.user.user_id
+        }
+        
+        SocketIOManager.shared.sharePost(to_user_ids: ids, sender_id: Constant.user_id, post: currentPost)
+        self.dismiss(animated: true)
+    }
+    
+    override func layoutShareButton() {
+        super.layoutShareButton()
+        shareButton.addTarget(self, action: #selector(sharePost( _ :)), for: .touchUpInside)
+    }
+}
+
+
+class ShareRestaurantController : ShareViewController {
+    
+    var restaurant : Restaurant!
+    
+    init(restaurant : Restaurant) {
+        super.init(nibName: nil, bundle: nil)
+        self.restaurant = restaurant
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func shareRestaurant( _ button : UIButton) {
+        let ids = selectedSharedUserDict.values.compactMap() {
+            return $0.user.user_id
+        }
+        SocketIOManager.shared.shareRestaurant(to_user_ids: ids, sender_id: Constant.user_id, restaurant: restaurant)
+        self.dismiss(animated: true)
+    }
+    
+    override func layoutShareButton() {
+        super.layoutShareButton()
+        shareButton.addTarget(self, action: #selector(shareRestaurant( _ :)), for: .touchUpInside)
+    }
+}
+
+class ShareUserController : ShareViewController {
+    
+    var user : User!
+    
+    init(user : User) {
+        super.init(nibName: nil, bundle: nil)
+        self.user = user
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func shareUser( _ button : UIButton) {
+        let ids = selectedSharedUserDict.values.compactMap() {
+            return $0.user.user_id
+        }
+        SocketIOManager.shared.shareUser(to_user_ids: ids, sender_id: Constant.user_id, user: user)
+        self.dismiss(animated: true)
+    }
+    
+    override func layoutShareButton() {
+        super.layoutShareButton()
+        shareButton.addTarget(self, action: #selector(shareUser( _ :)), for: .touchUpInside)
     }
 }
 

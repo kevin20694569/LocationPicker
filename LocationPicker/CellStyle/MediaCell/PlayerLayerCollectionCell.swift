@@ -35,15 +35,20 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     var soundImageview : UIImageView!
     
     func reload(media : Media?) {
+        self.contentView.alpha = 1
         playerLayer.cornerRadius = Constant.standardCornerRadius
         if let media = media {
+
             layoutPlayerlayer(media: media)
+            
         }
-        self.playerLayer.isHidden = false
-        self.contentView.isHidden = false
-        self.isHidden = false
-        self.soundImageview.isHidden = false
-        contentView.layer.insertSublayer(playerLayer, at: 0)
+        UIView.performWithoutAnimation {
+            self.contentView.isHidden = false
+            self.isHidden = false
+            
+            self.soundImageview.isHidden = false
+        }
+
     }
     
     override init(frame: CGRect) {
@@ -65,14 +70,37 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
         self.currentMedia = media
         self.isUserInteractionEnabled = true
         self.contentView.isUserInteractionEnabled = true
-        playerLayer.isHidden = false
-        self.playerLayer.player = media.player
-        playerLayer.player = media.player
-        playerLayer.videoGravity = .resizeAspectFill
+
+
+
         self.updateMuteStatus()
-        DispatchQueue.main.async {
-            self.layoutIfNeeded()
+        UIView.performWithoutAnimation {
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(0)
+            self.contentView.layer.insertSublayer(self.playerLayer, at: 0)
+            playerLayer.isHidden = false
+            playerLayer.player = media.player
+            self.playerLayer.frame = self.bounds
+            playerLayer.videoGravity = .resizeAspectFill
+            CATransaction.commit()
         }
+        
+      //  CATransaction.begin()
+      //  CATransaction.setAnimationDuration(0)
+      //  self.playerLayer.frame = self.bounds
+      //  CATransaction.commit()
+        
+      //  DispatchQueue.main.async {
+            //CATransaction.begin()
+           // CATransaction.setAnimationDuration(0)
+            
+           // self.contentView.layer.insertSublayer(self.playerLayer, at: 0)
+            
+          //
+           // CATransaction.commit()
+          //     self.layoutIfNeeded()
+            
+      //  }
     }
     
     func layoutSoundImageView() {
@@ -124,7 +152,11 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
+
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0)
         self.playerLayer.frame = self.bounds
+        CATransaction.commit()
     }
 
     func play() {
@@ -172,7 +204,7 @@ class StandardPlayerLayerCollectionCell:  PlayerLayerCollectionCell {
     override func layoutPlayerlayer(media: Media) {
         super.layoutPlayerlayer(media: media)
         self.playerLayer.cornerRadius = cornerRadiusfloat
-        layoutIfNeeded()
+      //  layoutIfNeeded()
     }
 
 }

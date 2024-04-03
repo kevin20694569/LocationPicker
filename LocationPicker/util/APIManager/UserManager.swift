@@ -2,13 +2,14 @@ import Alamofire
 import UIKit
 
 final class UserManager {
+    let ip = APIKey.IP
     static let shared : UserManager = UserManager()
     private init() { }
-    let API = Constant.httpIP + "users/"
+    lazy var API = self.ip + "/users"
     
     func getProfileByID(user_ID: Int) async throws -> User? {
         do {
-            let urlstring = API + "\(user_ID)?request_user_id=\(Constant.user_id)"
+            let urlstring = API + "/\(user_ID)?request_user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw APIError.URLnotFound(urlstring)

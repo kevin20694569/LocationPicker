@@ -236,9 +236,8 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         let chatRoom = chatrooms[indexPath.row]
-        let controller = MessageViewController()
+        let controller = MessageViewController(chatRoom: chatRoom)
         let cell = tableView.cellForRow(at: indexPath) as! ChatRoomTableCell
-        controller.chatRoom = chatRoom
         let userImage = chatRoom.user?.image
         if let user_id = chatRoom.user?.user_id {
             controller.userImageDict[user_id] = userImage

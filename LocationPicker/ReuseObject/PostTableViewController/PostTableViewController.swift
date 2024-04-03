@@ -18,6 +18,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.presentForTabBarLessView = presentForTabBarLessView
     }
     
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

@@ -1,13 +1,13 @@
 import UIKit
 
-
-
-class ProfileMainCell: UICollectionViewCell, UICollectionViewDelegate {
+class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelegate {
     
     var mainView : UIView! = UIView() { didSet {
 
         mainView.backgroundColor = .secondaryBackgroundColor
     }}
+    
+    weak var delegate : ProfileMainCellDelegate?
     
     var userImageView : UIImageView! = UIImageView()  { didSet {
         userImageView.layer.cornerRadius = 8.0
@@ -41,6 +41,17 @@ class ProfileMainCell: UICollectionViewCell, UICollectionViewDelegate {
     var countStackViews : [(title : String , stackView :  UIStackView, label : UILabel)]! {
         return [("貼文", postCountStackView, postCountLabel) , ("朋友", friendCountStackView, friendCountLabel), ("清單", playlistCountStackView, playlistCountLabel)]
     }
+    
+    func setGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(showFriendsViewController ( _: )))
+        friendCountStackView.isUserInteractionEnabled = true
+        self.friendCountStackView.addGestureRecognizer(gesture)
+    }
+    
+    @objc func showFriendsViewController( _ gesture : UITapGestureRecognizer) {
+        let controller = FriendViewController(presentForTabBarLessView: self.delegate?.presentForTabBarLessView ?? false, user: self.user)
+        delegate?.show(controller, sender: nil)
+    }
 
     
     override init(frame: CGRect) {
@@ -51,6 +62,7 @@ class ProfileMainCell: UICollectionViewCell, UICollectionViewDelegate {
         layoutButtons()
         layoutDetailStackView()
         layout()
+        setGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -68,6 +80,9 @@ class ProfileMainCell: UICollectionViewCell, UICollectionViewDelegate {
         leftConfig.title = nil
         self.leftButton.configuration = leftConfig
         leftButton.addTarget(self, action: #selector(leftButtonTapped ( _ : )), for: .touchUpInside)
+        
+        shareButton.addTarget(self, action: #selector(showShareController( _ :) ), for: .touchUpInside)
+        
         buttonStackView.spacing = 16
         buttonStackView.axis = .horizontal
         buttonStackView.distribution = .fillEqually
@@ -102,9 +117,27 @@ class ProfileMainCell: UICollectionViewCell, UICollectionViewDelegate {
         }
     }
     
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let bounds = UIScreen.main.bounds
+        
+        let maxWidth = bounds.width - 16
+        var maxHeight : CGFloat! = bounds.height * 0.5
+        if presented is ShareViewController {
+            maxHeight =  bounds.height * 0.7
+        }
+        return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
+    }
+    
+    @objc func showShareController( _ button : UIButton) {
+        let controller = ShareUserController(user: user)
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = self
+        self.delegate?.present(controller, animated: true)
+    }
+    
     func sendFriendRequest(to to_user_id : Int) async {
         do {
-            try await FriendsManager.shared.sendBeingFriendRequest(from: Constant.user_id, to: to_user_id)
+            try await FriendsManager.shared.sendFriendRequest(from: Constant.user_id, to: to_user_id)
         } catch {
             print(error)
         }

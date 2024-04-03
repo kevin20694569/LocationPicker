@@ -32,6 +32,14 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
         presentDelegate?.present(viewController, animated: true)
     }
     
+    @objc func presentShareViewController(_ gesture : UITapGestureRecognizer) {
+        
+        let viewController = ShareRestaurantController(restaurant: self.restaurant)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = self
+        presentDelegate?.present(viewController, animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let index = indexPath.row
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewButtonCell", for: indexPath) as! CollectionViewButtonCell
@@ -49,7 +57,7 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
         } else if id == "collect" {
             cell.button.addTarget(self, action: #selector(presentAddCollectViewController( _ :)), for: .touchUpInside)
         } else if id == "share" {
-            
+            cell.button.addTarget(self, action: #selector(presentShareViewController( _ :)), for: .touchUpInside)
         }
         cell.configure(buttonIndex: indexPath.row, text: tuple.text, image: tuple.image)
         return cell
@@ -57,11 +65,14 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let bounds = UIScreen.main.bounds
-        if presented is LimitSelfFramePresentedView {
-            let maxWidth = bounds.width - 16
-            return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: bounds.height * 0.5)
+        
+        let maxWidth = bounds.width - 16
+        var maxHeight : CGFloat! = bounds.height * 0.5
+        if presented is ShareViewController {
+            maxHeight =  bounds.height * 0.7
         }
-        return nil
+        return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
+       // return nil
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -94,6 +105,7 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, 
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        collectionView.delaysContentTouches = false
         collectionView.allowsSelection = false
         collectionView.allowsMultipleSelection = false
         collectionView.isScrollEnabled = true
