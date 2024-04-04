@@ -55,7 +55,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     var user_id : Int! = Constant.user_id
     
-    var user: User! = User()
+    var userProfile: UserProfile! = UserProfile()
     
     var posts : [Post]! =  []
     
@@ -94,7 +94,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        configureNavBar(title: self.user.name)
+        configureNavBar(title: self.userProfile.user?.name)
         if !getUserProfileFinish {
             Task(priority : .background)  {
                 await configure(user_id: user_id)
@@ -120,11 +120,11 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
                 await getUserPosts(user_id : user_id, date : "")
             }
             getUserProfileFinish = true
-            guard let user = try await UserManager.shared.getProfileByID(user_ID: user_id) else {
+            guard let userProfile = try await UserProfileManager.shared.getProfileByID(user_ID: user_id) else {
                 return
             }
-            self.user = user
-            configureNavBar(title: self.user.name)
+            self.userProfile = userProfile
+            configureNavBar(title: self.userProfile.user?.name)
             self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
             
         } catch {
@@ -167,7 +167,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         let controller = UserProfilePostTableViewController(presentForTabBarLessView: presentForTabBarLessView)
         let nav = SwipeEnableNavViewController(rootViewController: controller)
 
-        controller.user = self.user
+        controller.user = self.userProfile.user
         controller.posts = posts
         
         controller.currentTableViewIndexPath = targetPostCellIndexPath
@@ -299,7 +299,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileMainCell", for: indexPath) as! ProfileMainCell
-                cell.configureBasic(user: self.user)
+                cell.configure(userProfile: self.userProfile)
                 cell.delegate = self
                 return cell
             } else {

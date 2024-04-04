@@ -7,7 +7,15 @@ final class UserManager {
     private init() { }
     lazy var API = self.ip + "/users"
     
-    func getProfileByID(user_ID: Int) async throws -> User? {
+}
+
+final class UserProfileManager {
+    let ip = APIKey.IP
+    static let shared : UserProfileManager = UserProfileManager()
+    private init() { }
+    lazy var API = self.ip + "/users"
+    
+    func getProfileByID(user_ID: Int) async throws -> UserProfile? {
         do {
             let urlstring = API + "/\(user_ID)?request_user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -19,16 +27,14 @@ final class UserManager {
             req.httpMethod = "GET"
             let decoder = JSONDecoder()
             let (data, _) = try await URLSession.shared.data(for: req)
-            let json = try decoder.decode(UserJson.self, from: data)
-            let user = User(userJson: json)
-            return user
+            let json = try decoder.decode(UserProfileJson.self, from: data)
+
+            let userProfile = UserProfile(profileJson: json)
+            return userProfile
         } catch {
             throw error
         }
     }
-    
-    
-    
 }
 
 

@@ -13,12 +13,12 @@ class SocketIOManager : NSObject {
     
     static let shared = SocketIOManager()
     
+    var chatRoomViewController : ChatRoomViewController?
+    
     let  manager = SocketManager(socketURL: URL(string: APIKey.IP)! , config: [
         .log(true),
         .compress,
         .reconnectWait(1)
-        
-        
     ])
     var socket : SocketIOClient!
     
@@ -40,6 +40,8 @@ class SocketIOManager : NSObject {
             
             let dict : Dictionary<String, any Hashable> = ["socket_id" : self.socket_id ,"user_id": Constant.user_id]
             self.socket.emit("connectParams", dict )
+            
+            
         }
         
         socket.on(clientEvent: .error) {data, ack in
@@ -67,6 +69,7 @@ class SocketIOManager : NSObject {
         socket.on(clientEvent: .reconnect){ data, ack in
             let dict : Dictionary<String, any Hashable> = ["socket_id" : self.socket_id ,"user_id": Constant.user_id]
             self.socket.emit("connectParams", dict )
+            self.chatRoomViewController?.refreshChatRoomsPreview()
         }
         
         

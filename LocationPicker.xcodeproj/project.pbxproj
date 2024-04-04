@@ -173,6 +173,7 @@
 		23F085E72BBE5FB700A024D6 /* StandardImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085E62BBE5FB700A024D6 /* StandardImageViewCollectionCell.swift */; };
 		23F085EB2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085EA2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift */; };
 		23F085ED2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085EC2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift */; };
+		23F085F12BBF0CD600A024D6 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F02BBF0CD600A024D6 /* UserProfile.swift */; };
 		23FDBD052B37E64200285263 /* PreviewPostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -347,6 +348,7 @@
 		23F085E62BBE5FB700A024D6 /* StandardImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardImageViewCollectionCell.swift; sourceTree = "<group>"; };
 		23F085EA2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadMediaDetailImageViewCollectionCell.swift; sourceTree = "<group>"; };
 		23F085EC2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadMediaDetailPlayerLayerCollectionCell.swift; sourceTree = "<group>"; };
+		23F085F02BBF0CD600A024D6 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPostTableViewController.swift; sourceTree = "<group>"; };
 		B99DA1252FBB81990376BDC2 /* Pods-LocationPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.release.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.release.xcconfig"; sourceTree = "<group>"; };
 		E982666EE4E0DA419F62495A /* Pods-LocationPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.debug.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.debug.xcconfig"; sourceTree = "<group>"; };
@@ -771,7 +773,7 @@
 			path = GridPostCellAnimator;
 			sourceTree = "<group>";
 		};
-		23B7FE092AEA3B050053EC79 /* CellStyle */ = {
+		23B7FE092AEA3B050053EC79 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
 				23881A492B4D3D35008BE6AA /* CommonCell */,
@@ -785,7 +787,7 @@
 				232971092B21F41B000C35D9 /* ChatCell */,
 				23F9AF0A2B5CC83200A05B61 /* PostDetailCell */,
 			);
-			path = CellStyle;
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		23BD13D82B18AD0A00F80B25 /* ProfileCell */ = {
@@ -844,6 +846,7 @@
 				23B1E3DE2B109E7900424E21 /* Message.swift */,
 				2309B98A2B3D9592001D8612 /* Playlist.swift */,
 				23CDFACB2BA704D900549AA0 /* Friend.swift */,
+				23F085F02BBF0CD600A024D6 /* UserProfile.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -870,7 +873,7 @@
 		23DD48042AE9886300C63821 /* ReuseObject */ = {
 			isa = PBXGroup;
 			children = (
-				23B7FE092AEA3B050053EC79 /* CellStyle */,
+				23B7FE092AEA3B050053EC79 /* Cell */,
 				231B3FCF2B5CCADA00DB4132 /* PostTableViewController */,
 				2307937E2B71E4E400266227 /* WholePageMediaViewController */,
 				23E8C79E2B288E31007F0888 /* PresentationController */,
@@ -1370,6 +1373,7 @@
 				23138C542B8630B6008E7146 /* ExtendedEmojiView.swift in Sources */,
 				232971062B21F1A6000C35D9 /* NewPostImageViewCollectionCell.swift in Sources */,
 				2307938B2B73451A00266227 /* TextField.swift in Sources */,
+				23F085F12BBF0CD600A024D6 /* UserProfile.swift in Sources */,
 				236B95E72B8777C900E63999 /* StandardPostTitleTableCell.swift in Sources */,
 				230D07EC2BB288EB00FE2C5A /* TableCellProtocol.swift in Sources */,
 				230D07E62BB2881E00FE2C5A /* PresentProtocol.swift in Sources */,

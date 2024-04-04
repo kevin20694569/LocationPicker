@@ -70,20 +70,21 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
         self.currentMedia = media
         self.isUserInteractionEnabled = true
         self.contentView.isUserInteractionEnabled = true
-
-
+        playerLayer.player = media.player
+        self.playerLayer.videoGravity = .resizeAspectFill
 
         self.updateMuteStatus()
-        UIView.performWithoutAnimation {
+        DispatchQueue.main.async {
+            
             CATransaction.begin()
             CATransaction.setAnimationDuration(0)
             self.contentView.layer.insertSublayer(self.playerLayer, at: 0)
-            playerLayer.isHidden = false
-            playerLayer.player = media.player
+            self.playerLayer.isHidden = false
             self.playerLayer.frame = self.bounds
-            playerLayer.videoGravity = .resizeAspectFill
+        
             CATransaction.commit()
         }
+
     }
     
     func layoutSoundImageView() {
@@ -136,7 +137,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
 
-
+        
     }
 
     func play() {

@@ -395,7 +395,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     func loadMessagesByRoom_User_IDs(date : String) async throws {
         do {
-            var messages = try await  ChatRoomsManager.shared.getInitMessagesFromUser_ID(user_ids: self.room_user_ids)
+            var messages = try await  MessageManager.shared.getInitMessagesFromUser_ID(user_ids: self.room_user_ids)
             messages.reverse()
             guard messages.count > 0 else {
                 shouldTriggerLoad = false
@@ -414,7 +414,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             return
         }
         do {
-            var messages = try await ChatRoomsManager.shared.getMessagesFromChatroomID(chatroom_id:  chatRoom.room_id, date: date)
+            var messages = try await MessageManager.shared.getMessagesFromChatroomID(chatroom_id:  chatRoom.room_id, date: date)
             messages.reverse()
             guard messages.count > 0 else {
                 shouldTriggerLoad = false

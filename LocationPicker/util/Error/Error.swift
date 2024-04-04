@@ -60,6 +60,7 @@ enum UserAPIError : LocalizedError {
 enum FriendsAPIError : LocalizedError {
     case acceptFriendRequestError
     case sendFriendRequestError
+    case getFriendsError
     
     var errorDescription: String? {
         switch self {
@@ -67,6 +68,8 @@ enum FriendsAPIError : LocalizedError {
             return "接受朋友邀請失敗"
         case .sendFriendRequestError :
             return "寄送朋友邀請失敗"
+        case .getFriendsError :
+            return "獲取朋友失敗"
         }
     }
 }

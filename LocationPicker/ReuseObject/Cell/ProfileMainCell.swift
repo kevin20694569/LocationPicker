@@ -36,7 +36,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         playlistCountLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
     }}
     
-    var user : User!
+    var userProfile : UserProfile!
     
     var countStackViews : [(title : String , stackView :  UIStackView, label : UILabel)]! {
         return [("貼文", postCountStackView, postCountLabel) , ("朋友", friendCountStackView, friendCountLabel), ("清單", playlistCountStackView, playlistCountLabel)]
@@ -49,7 +49,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     }
     
     @objc func showFriendsViewController( _ gesture : UITapGestureRecognizer) {
-        let controller = FriendViewController(presentForTabBarLessView: self.delegate?.presentForTabBarLessView ?? false, user: self.user)
+        let controller = FriendViewController(presentForTabBarLessView: self.delegate?.presentForTabBarLessView ?? false, user: self.userProfile.user)
         delegate?.show(controller, sender: nil)
     }
 
@@ -113,7 +113,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     
     @objc func leftButtonTapped(_ sender : UIView) {
         Task {
-            await sendFriendRequest(to:   self.user.user_id)
+            await sendFriendRequest(to:   self.userProfile.user.user_id)
         }
     }
     
@@ -129,7 +129,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     }
     
     @objc func showShareController( _ button : UIButton) {
-        let controller = ShareUserController(user: user)
+        let controller = ShareUserController(user: userProfile.user)
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = self
         self.delegate?.present(controller, animated: true)
@@ -210,43 +210,43 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         mainView.clipsToBounds = true
     }
     
-    func configureBasic(user : User ) {
-        self.user = user
-        if let userImage = user.image {
+    func configure(userProfile : UserProfile ) {
+        self.userProfile = userProfile
+        if let userImage = userProfile.user.image {
             userImageView.image = userImage
         } else {
-            if let imageURL = user.imageURL {
+            if let imageURL = userProfile.user.imageURL {
                 Task {
-                  
                     let image = await imageURL.getImageFromImageURL()
-                    self.user.image = image
+                    self.userProfile.user.image = image
                     userImageView.image = image
                 }
             }
         }
-        if let friends_count = user.friends_count {
+        if let friends_count = userProfile.user.friends_count {
             self.friendCountLabel.text = String(friends_count)
         }
-        if let posts_count = user.posts_count {
+        if let posts_count = userProfile.user.posts_count {
             self.postCountLabel.text = String(posts_count)
         }
-    
+        
         updateLeftButton()
         
     }
     
     func updateLeftButton() {
-        let user = self.user!
+        
         if var leftConfig = leftButton.configuration {
-            let arrtri = AttributedString( user.userProfileStatus.mainButtonTitle, attributes: AttributeContainer([
+            let arrtri = AttributedString( userProfile.userProfileStatus.mainButtonTitle, attributes: AttributeContainer([
                 .font : UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .bold),
             ]))
-
-            leftConfig.baseBackgroundColor = user.userProfileStatus.mainColor
+            
+            leftConfig.baseBackgroundColor = userProfile.userProfileStatus.mainColor
             leftConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
-            leftConfig.image = user.userProfileStatus.mainImage
+            leftConfig.image = userProfile.userProfileStatus.mainImage
             leftConfig.attributedTitle = arrtri
             self.leftButton.configuration = leftConfig
+            
         }
     }
     

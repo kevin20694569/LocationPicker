@@ -57,11 +57,10 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     var enterCollectionIndexPath : IndexPath! =  IndexPath(row: 0, section: 0)
     
     func getFadeInSubviews() -> [UIView?] {
-        if let cell = currentCollectionCell as? NewPostCellDelegate {
+        if let cell = currentCollectionCell as? PlayerLayerCollectionCell {
+            return cell.soundViewIncludeBlur
         }
         return []
-        
-        
     }
     
     func getFadedSubviews() -> [UIView]! {
@@ -280,12 +279,12 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         let indexPath =  IndexPath(row: 0, section: 0)
         self.PageControll.currentPage = 0
         self.PageControll.numberOfPages = MediaStorage.count
-        collectionView.performBatchUpdates ({
-            self.collectionView.reloadSections([0])
-        }) { bool in
+        self.collectionView.reloadSections([0])
+
+
             self.updateCellPageControll(currentCollectionIndexPath: indexPath)
             self.playCurrentMedia(indexPath: self.currentMediaIndexPath)
-        }
+        
     }
     
     func colletionViewLayoutFlow() {

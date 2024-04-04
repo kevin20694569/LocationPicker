@@ -131,6 +131,38 @@ class FriendsManager {
     }
     
     
+    func getUserFriends(user_id : Int) async throws -> [Friend] {
+        
+        do {
+            let urlstring = self.API + "?request_user_id=\(user_id)"
+            guard  urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
+                   let url = URL(string: urlstring) else {
+                throw APIError.URLnotFound(urlstring)
+            }
+            var req = URLRequest(url: url)
+            req.httpMethod = "GET"
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            req.timeoutInterval = 2.0
+            let decoder = JSONDecoder()
+            var (data, res) = try await URLSession.shared.data(for: req)
+            if let httpRes = res as? HTTPURLResponse {
+                if 200...299 ~= httpRes.statusCode  {
+                    let json = try decoder.decode([FriendJson].self, from: data)
+                    let friends = json.compactMap() {
+                        return Friend(json: $0)
+                    }
+                    return friends
+                }
+                
+            }
+            throw FriendsAPIError.getFriendsError
+            
+        } catch {
+            throw error
+        }
+    }
+    
+    
     struct FriendRequestBody : Encodable {
         var request_user_id : Int
         var to_user_id : Int

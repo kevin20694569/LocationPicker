@@ -63,7 +63,7 @@ class User : Equatable, Hashable {
     var isFriend : Bool! = false
     var friends_count : Int?
     
-    var userProfileStatus : UserStatus! = .default
+
     
 
     
@@ -99,39 +99,37 @@ class User : Equatable, Hashable {
         self.name = userJson.name
         self.posts_count = userJson.posts_count
         self.friends_count = userJson.friends_count
-        self.isFriend = userJson.isFriend
+
         if let imageURL = userJson.user_imageurl {
             self.imageURL = URL(string: imageURL)
         }
         self.posts_count = userJson.posts_count
         self.friends_count = userJson.friends_count
-        if userJson.user_id == Constant.user_id {
-            self.userProfileStatus = .isSelfProfile
-        } else {
-            self.userProfileStatus = userJson.isFriend ?? false ? .isFriend : .notFriend
-        }
+
+
     }
     
     
 }
 
 
+
+
 struct UserJson : Codable {
-    
     var user_id : Int!
     var name : String?
-    var isFriend : Bool? = false
+
     
     var posts_count : Int?
     
     var friends_count : Int?
     var user_imageurl : String?
     
+    
     enum CodingKeys : String, CodingKey {
         case user_id = "user_id"
         case name = "user_name"
         case user_imageurl = "user_imageurl"
-        case isFriend = "isFriend"
         case posts_count = "posts_count"
         case friends_count = "friends_count"
     }
@@ -141,9 +139,8 @@ struct UserJson : Codable {
         self.user_id = try container.decodeIfPresent(Int.self, forKey: .user_id)
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
         self.user_imageurl = try container.decodeIfPresent(String.self, forKey: .user_imageurl)
-        self.isFriend = try container.decodeIfPresent(Bool.self, forKey: .isFriend)
+       
         self.posts_count = try container.decodeIfPresent(Int.self, forKey: .posts_count)
         self.friends_count = try container.decodeIfPresent(Int.self, forKey: .friends_count)
     }
-    
 }

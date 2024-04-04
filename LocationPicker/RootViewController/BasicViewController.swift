@@ -166,6 +166,17 @@ extension BasicViewController {
             }
             
             self.view.frame.origin.x += deltaX
+            if let chatRoomViewController = self.navChatRoomViewController.viewControllers.first  as?  ChatRoomViewController  {
+                if !chatRoomViewController.hasBeenFirstAppear {
+
+                    if self.view.frame.origin.x < -UIScreen.main.bounds.width - 20  {
+                        chatRoomViewController.refreshChatRoomsPreview()
+                        chatRoomViewController.hasBeenFirstAppear = true
+                    }
+
+                }
+            }
+
             recognizer.setTranslation(.zero, in: self.view)
         case .ended :
             
@@ -243,7 +254,7 @@ extension BasicViewController {
                     }
                     Task {
                         mapViewController?.Restaurant  = Restaurant(name: post.restaurant?.name, Address: post.restaurant?.Address, restaurantID: post.restaurant!.restaurantID, image: nil)
-                        await mapViewController?.configure(restaurantName: post.restaurant!.name, address: post.restaurant!.Address, restaurantID:  post.restaurant!.restaurantID)
+                        mapViewController?.configure(restaurantName: post.restaurant!.name, address: post.restaurant!.Address, restaurantID:  post.restaurant!.restaurantID)
                     }
                 }
             }

@@ -56,18 +56,7 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
     
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
-        DispatchQueue.main.async {
-            let bounds = self.contentView.bounds
-            let frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width , height: bounds.height * self.mediaHeightScale)
-            self.BehindPlayerLayerView.frame = frame
-            self.BehindPlayerLayerView.layer.addSublayer(self.playerLayer)
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(0)
-            self.playerLayer.frame = frame
-            CATransaction.commit()
-            self.playerLayer.layoutIfNeeded()
-            self.layoutTextField()
-        }
+
 
     }
 
@@ -77,9 +66,22 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
         playerLayer.backgroundColor = UIColor.secondaryBackgroundColor.cgColor
         self.playerLayer.player?.isMuted = true
         self.textField.text = media.title
+        self.playerLayer.player = media.player
         textField.delegate = self.textFieldDelegate
-        layoutIfNeeded()
-        
+        DispatchQueue.main.async {
+            
+            let bounds = self.contentView.bounds
+            let frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width , height: bounds.height * self.mediaHeightScale)
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(0)
+            
+            self.BehindPlayerLayerView.frame = frame
+            self.playerLayer.frame = frame
+            self.BehindPlayerLayerView.layer.addSublayer(self.playerLayer)
+            self.playerLayer.isHidden = false
+            CATransaction.commit()
+            self.layoutTextField()
+        }
     }
     
     func layoutTextField() {

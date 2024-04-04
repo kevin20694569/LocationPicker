@@ -20,7 +20,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         friends.count
     }
 
-    var friends : [Friend]! = Friend.examples
+    var friends : [Friend]! = []//Friend.examples
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendTableCell", for: indexPath) as! FriendTableCell
         let friend = friends[indexPath.row]
@@ -36,6 +36,22 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         setupTableView()
         setupLayout()
+        
+    }
+    
+    
+    func insertFriends() async  {
+        do {
+            let newFriends = try await FriendsManager.shared.getUserFriends(user_id: self.user.user_id)
+            if newFriends.count > 0 {
+                let insertionIndexPaths = (self.friends.count..<self.friends.count + newFriends.count).map { IndexPath(row: $0, section: 0) }
+               
+                self.friends.insert(contentsOf: newFriends, at: friends.count)
+                self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
+            }
+        } catch {
+            print(error)
+        }
     }
     
     func setupTableView() {
@@ -47,8 +63,13 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         }
         tableView.rowHeight = bounds.height / 10
         tableView.allowsSelection = false
-        tableView.delegate = self
-        tableView.dataSource = self
+        Task {
+            tableView.delegate = self
+            tableView.dataSource = self
+            await insertFriends()
+        }
+        
+
     }
     
     func registerCells() {

@@ -8,6 +8,8 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         self.collectionCurrentIndex = currentIndex
     }
     
+    var hasBeenFirstAppear : Bool = false
+    
     var collectionCurrentIndex : Int = 0
     
     @IBOutlet var leftBarButtonItem : UIBarButtonItem!
@@ -155,12 +157,11 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
         initRefreshControll()
         viewStyleSet()
-        refreshChatRoomsPreview()
         let bounds = UIScreen.main.bounds
         searchBarViewMinY = (self.navigationController?.navigationBar.frame.maxY)! + (self.navigationController?.navigationBar.frame.height)!
         self.searchBar.frame = CGRect(x: 0, y: searchBarViewMinY, width: bounds.width, height: searchBar.bounds.height)
-
         configureBarButton()
+        SocketIOManager.shared.chatRoomViewController = self
         
     }
     
