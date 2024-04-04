@@ -11,10 +11,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Nav User Profile View Controller-->
+        <!--Swipe Enable Nav View Controller-->
         <scene sceneID="9N9-1F-b6o">
             <objects>
-                <navigationController storyboardIdentifier="NavUserProfileViewController" id="l3q-sf-ETg" customClass="NavUserProfileViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavUserProfileViewController" id="l3q-sf-ETg" customClass="SwipeEnableNavViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="person" catalog="system" id="4qU-va-NsQ"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Pwk-7H-skf">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
@@ -28,10 +28,10 @@
             </objects>
             <point key="canvasLocation" x="7404" y="311"/>
         </scene>
-        <!--Nav Upload Post View Controller-->
+        <!--Swipe Enable Nav View Controller-->
         <scene sceneID="xHJ-ZE-Heb">
             <objects>
-                <navigationController storyboardIdentifier="NavUploadPostViewController" id="TBh-AW-3xI" customClass="NavUploadPostViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavUploadPostViewController" id="TBh-AW-3xI" customClass="SwipeEnableNavViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="camera" catalog="system" id="Zgx-tx-ZFt"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="8RM-M2-rhr">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>

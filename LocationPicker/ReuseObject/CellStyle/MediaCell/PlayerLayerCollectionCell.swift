@@ -84,23 +84,6 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
             playerLayer.videoGravity = .resizeAspectFill
             CATransaction.commit()
         }
-        
-      //  CATransaction.begin()
-      //  CATransaction.setAnimationDuration(0)
-      //  self.playerLayer.frame = self.bounds
-      //  CATransaction.commit()
-        
-      //  DispatchQueue.main.async {
-            //CATransaction.begin()
-           // CATransaction.setAnimationDuration(0)
-            
-           // self.contentView.layer.insertSublayer(self.playerLayer, at: 0)
-            
-          //
-           // CATransaction.commit()
-          //     self.layoutIfNeeded()
-            
-      //  }
     }
     
     func layoutSoundImageView() {
@@ -153,10 +136,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
 
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0)
-        self.playerLayer.frame = self.bounds
-        CATransaction.commit()
+
     }
 
     func play() {
@@ -197,17 +177,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
 }
 
-class StandardPlayerLayerCollectionCell:  PlayerLayerCollectionCell {
-    override var cornerRadiusfloat: CGFloat {
-        return 0
-    }
-    override func layoutPlayerlayer(media: Media) {
-        super.layoutPlayerlayer(media: media)
-        self.playerLayer.cornerRadius = cornerRadiusfloat
-      //  layoutIfNeeded()
-    }
 
-}
 
 
 

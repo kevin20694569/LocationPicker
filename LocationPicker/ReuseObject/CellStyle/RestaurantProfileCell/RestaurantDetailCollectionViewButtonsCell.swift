@@ -2,7 +2,7 @@ import UIKit
 
 
 
-class RestaurantDetailCollectionViewButtonsCell : CollectionCollectionViewCell, RestaurantProfileCollectionCell, UIViewControllerTransitioningDelegate {
+class RestaurantDetailCollectionViewButtonsCell : CollectionViewInCollectionCell, RestaurantProfileCollectionCell, UIViewControllerTransitioningDelegate {
     var restaurant : Restaurant!
     
     weak var presentDelegate : PresentDelegate?

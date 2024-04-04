@@ -1,6 +1,6 @@
 import UIKit
 
-class ProfileCollectionViewPlaylistCell: CollectionCollectionViewCell {
+class ProfileCollectionViewPlaylistCell: CollectionViewInCollectionCell {
     
     var playlists : [Playlist]! = Playlist.examples
     

@@ -1,8 +1,5 @@
 import UIKit
 
-
-
-
 class StaticImageViewCollectionCell : ImageViewCollectionCell, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     weak var mediaCellDelegate : MediaTableCellDelegate!

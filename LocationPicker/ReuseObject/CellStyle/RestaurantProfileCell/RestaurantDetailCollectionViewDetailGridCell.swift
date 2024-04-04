@@ -1,7 +1,7 @@
 import UIKit
 import MapKit
 
-class RestaurantDetailCollectionViewDetailGridCell : CollectionCollectionViewCell, RestaurantProfileCollectionCell {
+class RestaurantDetailCollectionViewDetailGridCell : CollectionViewInCollectionCell, RestaurantProfileCollectionCell {
 
     
     weak var delegate : RestaurantDetailCollectionViewDetailGridCellDelegate?

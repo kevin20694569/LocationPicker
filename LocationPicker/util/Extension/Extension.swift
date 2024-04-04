@@ -174,12 +174,6 @@ extension MKMapRect {
     }
 }
 
-extension URL {
-    func getExtension(from url: URL) -> String {
-        let fileExtension = url.pathExtension
-        return fileExtension
-    }
-}
 
 extension Date {
     

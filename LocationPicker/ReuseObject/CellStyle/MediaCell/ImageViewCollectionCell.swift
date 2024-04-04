@@ -26,10 +26,6 @@ class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
         
     }
     
-    
-    
-    
-    
     func reload(media : Media?) {
         imageView.layer.cornerRadius = Constant.standardCornerRadius
         if let media = media {
@@ -88,16 +84,7 @@ class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
 }
 
-class StandardImageViewCollectionCell : ImageViewCollectionCell {
-    override var cornerRadiusfloat: CGFloat {
-        return 0
-    }
-    override func layoutImageView(media: Media) {
-        super.layoutImageView(media: media)
-        self.imageView.layer.cornerRadius = cornerRadiusfloat
-        self.layoutIfNeeded()
-    }
-}
+
 
 
 

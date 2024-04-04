@@ -22,7 +22,7 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var mainTabBarViewController : MainTabBarViewController!
     
-    var navChatRoomViewController : NavUserProfileViewController!
+    var navChatRoomViewController : SwipeEnableNavViewController!
     
     var viewControllerArray : [UIViewController]! = []
     
@@ -40,7 +40,7 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
         navMapViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavMapViewController") as? NavMapViewController
         mainTabBarViewController = self.storyboard?.instantiateViewController(withIdentifier: "CustomTabBarController")  as? MainTabBarViewController
 
-        navChatRoomViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavChatRoomViewController") as? NavUserProfileViewController
+        navChatRoomViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavChatRoomViewController") as? SwipeEnableNavViewController
         swipePanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_ :)))
         swipePanGesture.cancelsTouchesInView = false
         swipePanGesture.delegate = self

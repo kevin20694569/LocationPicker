@@ -1,5 +1,5 @@
 import UIKit
-class CollectionCollectionViewCell : UICollectionViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class CollectionViewInCollectionCell : UICollectionViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     

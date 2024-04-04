@@ -118,10 +118,10 @@
             </objects>
             <point key="canvasLocation" x="4482" y="520"/>
         </scene>
-        <!--Nav User Profile View Controller-->
+        <!--Swipe Enable Nav View Controller-->
         <scene sceneID="WkM-s4-SLb">
             <objects>
-                <navigationController storyboardIdentifier="NavChatRoomViewController" automaticallyAdjustsScrollViewInsets="NO" id="s9F-1N-ugh" customClass="NavUserProfileViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavChatRoomViewController" automaticallyAdjustsScrollViewInsets="NO" id="s9F-1N-ugh" customClass="SwipeEnableNavViewController" customModule="LocationPicker" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="odG-3n-ndX">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>

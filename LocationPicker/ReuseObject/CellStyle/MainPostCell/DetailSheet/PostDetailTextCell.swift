@@ -77,41 +77,6 @@ class PostContentCell: PostDetailTextCell {
     
 }
 
-/*class PostDetailInterationCell : UITableViewCell {
-    var currentPost : Post!
-    
-    @IBOutlet var heartButton : UIButton! {didSet {
-        heartButton.addTarget(self, action: #selector(LikeToggle(_ :)), for: .touchUpInside)
-    }}
-    @IBOutlet var statButton : UIButton!
-    @IBOutlet var shareButton : UIButton!
-    
-    var postDetailInterationCellDeleagte : PostDetailInterationCellDeleagte!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.backgroundColor = .clear
-    }
-    
-    func configure(post : Post) {
-        currentPost = post
-        setHeartImage()
-    }
-    
-    
-    @objc func LikeToggle(_ button: UIButton) {
-        self.currentPost.liked.toggle()
-        setHeartImage()
-    }
-    func setHeartImage() {
-        if currentPost.liked {
-            heartButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
-        } else {
-            heartButton.setImage(UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
-        }
-        postDetailInterationCellDeleagte.setHeartImage()
-    }
-}*/
 
 
 
