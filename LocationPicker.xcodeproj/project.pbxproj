@@ -77,7 +77,6 @@
 		233EB5642BBD20A000E415D6 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5632BBD20A000E415D6 /* MessageManager.swift */; };
 		233EB5662BBDB53000E415D6 /* FriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5652BBDB53000E415D6 /* FriendViewController.swift */; };
 		233EB5682BBDB6BF00E415D6 /* FriendTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */; };
-		233EB56A2BBDE1A700E415D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 233EB5692BBDE1A700E415D6 /* GoogleService-Info.plist */; };
 		235A13CE2A53533A004156D3 /* LocationPicker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */; };
 		235A13D02A53533A004156D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 235A13CF2A53533A004156D3 /* Assets.xcassets */; };
 		235A13D32A53533A004156D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 235A13D12A53533A004156D3 /* LaunchScreen.storyboard */; };
@@ -249,7 +248,6 @@
 		233EB5632BBD20A000E415D6 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		233EB5652BBDB53000E415D6 /* FriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendViewController.swift; sourceTree = "<group>"; };
 		233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableCell.swift; sourceTree = "<group>"; };
-		233EB5692BBDE1A700E415D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		235A13C02A535339004156D3 /* LocationPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocationPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235A13CD2A53533A004156D3 /* LocationPicker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationPicker.xcdatamodel; sourceTree = "<group>"; };
 		235A13CF2A53533A004156D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -652,7 +650,6 @@
 				2379D9B82AEA405F008FC491 /* image */,
 				235A13D42A53533A004156D3 /* Info.plist */,
 				233EB5612BB9EDBB00E415D6 /* GoogleService-Info.plist */,
-				233EB5692BBDE1A700E415D6 /* GoogleService-Info.plist */,
 				235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */,
 				235A13CF2A53533A004156D3 /* Assets.xcassets */,
 				23DD47BE2AE9874D00C63821 /* LocationPicker-Bridging-Header.h */,
@@ -1187,7 +1184,6 @@
 				23D814BB2B60E72200B75CAD /* MapViewController.storyboard in Resources */,
 				23DCB71A2B95DBC400D97BF2 /* RestaurantDetailCollectionViewDetailGridCell.xib in Resources */,
 				230D08232BB2E09000FE2C5A /* ChIJ6VOxmM2rQjQRfiQ6tvqm-3I_1.jpg in Resources */,
-				233EB56A2BBDE1A700E415D6 /* GoogleService-Info.plist in Resources */,
 				233EB5622BB9EDBB00E415D6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

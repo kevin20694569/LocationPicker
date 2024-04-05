@@ -28,7 +28,7 @@ class ChatRoomsManager {
             if let chatroomsJson = try? decoder.decode([ChatroomJson].self, from: data) {
                 let chatrooms = chatroomsJson.map { json in
                     
-                    return ChatRoom(json: json)
+                    return ChatRoom(lastMessage: json.lastMessageJson, user: json.user)
                 }
                 
                 return chatrooms
@@ -55,7 +55,7 @@ class ChatRoomsManager {
             let decoder = JSONDecoder()
             let (data, _) = try await URLSession.shared.data(for: req)
             let chatroomsJson = try decoder.decode(ChatroomJson.self, from: data)
-            return  ChatRoom(json: chatroomsJson)
+            return  ChatRoom(lastMessage: chatroomsJson.lastMessageJson, user: chatroomsJson.user)
         } catch  {
             throw error
         }

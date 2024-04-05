@@ -119,14 +119,16 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
             Task(priority : .background) {
                 await getUserPosts(user_id : user_id, date : "")
             }
-            getUserProfileFinish = true
+
             guard let userProfile = try await UserProfileManager.shared.getProfileByID(user_ID: user_id) else {
                 return
             }
+            
             self.userProfile = userProfile
+            
             configureNavBar(title: self.userProfile.user?.name)
             self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
-            
+            getUserProfileFinish = true
         } catch {
             print("getProfile問題")
         }

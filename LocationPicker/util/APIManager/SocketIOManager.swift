@@ -3,8 +3,6 @@ import SocketIO
 
 
 
-
-
 class SocketIOManager : NSObject {
     
     weak var progressDelegate : UploadDelegate?
@@ -48,7 +46,7 @@ class SocketIOManager : NSObject {
             print("Socket error")
         }
         
-        socket.on("messages") { data, SocketAckEmitter in
+        socket.on("message") { data, SocketAckEmitter in
             let array = data.first as? [[String : Any]]
             array?.forEach() {
                 let jsonData = $0
@@ -56,14 +54,25 @@ class SocketIOManager : NSObject {
                     let message = jsonData["message"] as? String ?? "錯誤"
                     let room_id = jsonData["room_id"] as? String ?? "錯誤"
                     let created_time = jsonData["created_time"] as? String ?? "錯誤"
+                    let rawValueType = jsonData["type"] as? Int
+                    
                     let isRead = jsonData["isRead"] as? Bool ?? false
-                    let messageModel = Message(room_id: room_id, sender_id: sender_id, message: message, isRead: isRead, created_time: created_time)
+                    let messageModel = Message(messageType : MessageType(rawValue: rawValueType ?? -1)! , room_id: room_id, sender_id: sender_id, message: message, isRead: isRead, created_time: created_time)
                     let notification = Notification(name: Notification.Name(rawValue: "ReceivedMessageNotification"), object: nil, userInfo: ["message": messageModel])
                     NotificationCenter.default.post(notification)
                 }
             }
             
             
+        }
+        
+        socket.on("messageIsRead") { data , SocketAckEmitter in
+            if let dict = data.first as? [String : Any],
+                let room_id = dict["room_id"] as? String {
+                let notification = Notification(name: Notification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil, userInfo: ["room_id": room_id])
+                NotificationCenter.default.post(notification)
+            }
+
         }
         
         socket.on(clientEvent: .reconnect){ data, ack in
@@ -104,8 +113,17 @@ class SocketIOManager : NSObject {
     
 
     
-    func sendMessage(to_room_id: String , sender_id : Int, message: String) {
+    func sendMessageByRoomID(to_room_id: String , sender_id : Int, message: String) {
         let dict : [String : Any?] = [ "room_id" : to_room_id,
+                                      "message" : message,
+                                      "sender_id" : sender_id,
+
+        ]
+        socket.emit("message", dict)
+    }
+    
+    func sendMessageByToUserIDs(to_user_ids: [Int] , sender_id : Int, message: String) {
+        let dict : [String : Any?] = [ "receive_ids" : to_user_ids,
                                       "message" : message,
                                       "sender_id" : sender_id,
 
@@ -136,6 +154,12 @@ class SocketIOManager : NSObject {
                                        "shared_user_id" : user.user_id,
         ]
         socket.emit("shareUserByMessage", dict)
+    }
+    
+    func markAsRead(room_id : String, sender_id : Int) {
+        let dict : [String : Any] = ["room_id": room_id,
+                                     "sender_id" : sender_id]
+        socket.emit("isRead", dict)
     }
     
     

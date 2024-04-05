@@ -9,25 +9,38 @@ class ChatRoom : Hashable , Equatable {
     }
     
     var room_id : String!
-    var lastMessage : String?
-    var senderId : Int?
-    var isRead : Bool?
-    
     var lastTimeStamp : String?
+    var name : String!
+   /* var lastMessage : String?
+    var senderId : Int?
+    var isRead : Bool?*/
+    
 
-    var room_name : String!
+
+    
+    
+    var lastMessage : Message!
     
     var user : User?
     
     init(room_id: String!, lastMessage: String? = nil, senderId: Int? = nil, isRead: Bool? = nil, room_name: String!, lastTimeStamp : String? ,  user : User?) {
-        self.room_id = room_id
+        /*self.room_id = room_id
         self.lastMessage = lastMessage
         self.senderId = senderId
         self.isRead = isRead
         self.lastTimeStamp = lastTimeStamp
-        self.room_name = room_name
+        self.room_name = room_name*/
         self.user = user
     }
+    
+    init (lastMessage : MessageJson, user : UserJson){
+        self.room_id = lastMessage.room_id
+        self.lastTimeStamp = lastMessage.created_time
+        self.name = user.name
+        self.lastMessage = Message(json: lastMessage)
+        self.user = User(userJson: user)
+    }
+    
     
     convenience init(json : ChatroomJson) {
         var user : User?
@@ -50,12 +63,12 @@ struct ChatroomJson : Codable {
     var lastMessageJson : MessageJson!
 
     
-    var user : UserJson?
+    var user : UserJson!
     
     
     enum CodingKeys : String, CodingKey {
         case user = "user"
-        case lastMessageJson = "lastMessage"
+        case lastMessageJson = "message"
     }
     
     init(from decoder: Decoder) throws {

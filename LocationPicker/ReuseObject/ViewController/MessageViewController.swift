@@ -89,15 +89,16 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     func setReturnButton() {
-        returnButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
+        returnButton.addTarget(self, action: #selector(sendMessage (_ : )), for: .touchUpInside)
     }
     
-    @objc func sendMessage() {
+    @objc func sendMessage( _ button : UIButton) {
         guard !messageInputTextView.text.isEmpty,
-        let chatRoom = chatRoom else {
+        let chatRoom = chatRoom,
+        let user = chatRoom.user else {
             return
         }
-        SocketIOManager.shared.sendMessage(to_room_id: chatRoom.room_id, sender_id: Constant.user_id, message: messageInputTextView.text)
+        SocketIOManager.shared.sendMessageByToUserIDs(to_user_ids: [user.user_id], sender_id: Constant.user_id, message:  messageInputTextView.text)
         self.messageInputTextView.text.removeAll()
         fitMessageInputTextView(textView: messageInputTextView)
     }
@@ -124,13 +125,18 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         layout()
         registerCells()
         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
+        //NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil)
         viewStyleSet()
-        if let chatRoom = chatRoom {
+        if chatRoom != nil {
             Task {
                 do {
                     try await loadMessagesByChatRoomID(date: "")
                     let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    if self.messages.first?.sender_id != Constant.user_id,
+                       let room_id = messages.first?.room_id {
+                        SocketIOManager.shared.markAsRead(room_id: room_id, sender_id: Constant.user_id)
+                    }
                     shouldTriggerLoad = true
                     
                 } catch {
@@ -227,12 +233,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func layoutNavBar() {
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationItem.title = self.chatRoom?.room_name
+        self.navigationItem.title = self.chatRoom?.name
         self.navigationController?.navigationBar.backgroundColor = .clear
     }
     func showUserProfile(user_id: Int) {
         let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user_id: user_id)
-        controller.navigationItem.title = chatRoom?.room_name
+        controller.navigationItem.title = chatRoom?.name
         self.view.endEditing(true)
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -475,11 +481,5 @@ extension MessageViewController {
                 BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
             }
         }
-    }
-
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-
-        
     }
 }

@@ -15,12 +15,17 @@ class ChatRoomTableCell: UITableViewCell {
     
     func configure(chatroom : ChatRoom) {
         self.chatroomInstance = chatroom
-        self.nameLabel.text = chatroom.room_name
-        self.lastMessageLabel.text = chatroom.lastMessage
-        self.lastMessageTimeLabel.text = chatroom.lastTimeStamp?.timeAgoFromString()
+        self.nameLabel.text = chatroom.name
+        self.lastMessageLabel.text = chatroom.lastMessage.message
+        self.lastMessageTimeLabel.text = chatroom.lastMessage.agoTime
+        if chatroom.lastMessage.sender_id == Constant.user_id {
+            lastMessageLabel.textColor = .secondaryLabelColor
+            lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: .thin )
+        } else {
+            lastMessageLabel.textColor = chatroom.lastMessage.isRead ?? false ? .secondaryLabelColor : .label
+            lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: chatroom.lastMessage.isRead ?? false ? .thin : .bold )
+        }
 
-        lastMessageLabel.textColor = chatroom.isRead ?? false ? .secondaryLabelColor : .label
-        lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: chatroom.isRead ?? false ? .thin : .bold )
         Task {
             if let image = chatroom.user?.image {
                 roomImageView?.image = image

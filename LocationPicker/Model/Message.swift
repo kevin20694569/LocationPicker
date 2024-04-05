@@ -1,8 +1,14 @@
 import UIKit
 
-enum MessageType {
-    case Text, SharedPost
+enum MessageType : Int, Codable {
+    case General = 0
+    case PostShare = 1
+    case UserShare = 2
+    case ErrorType = -1
+    
+
 }
+
 
 
 class Message: Equatable, Hashable {
@@ -31,14 +37,8 @@ class Message: Equatable, Hashable {
     
     var snapshotMedia : Media?
     
-    var messageType : MessageType! {
-        if let postJson = postJson {
-            return .SharedPost
-        }
-        return .Text
-    }
-    
-    init(message_id: String? = nil, room_id : String, sender_id: Int, message: String, isRead: Bool,  created_time : String) {
+    var messageType : MessageType!
+    init(messageType : MessageType, message_id: String? = nil, room_id : String, sender_id: Int, message: String, isRead: Bool,  created_time : String) {
         self.message_id = message_id
         self.room_id = room_id
         self.sender_id = sender_id
@@ -46,6 +46,7 @@ class Message: Equatable, Hashable {
         self.isRead = isRead
         self.created_time = created_time
         self.agoTime = created_time.timeAgoFromString()
+        self.messageType = messageType
     }
     
     init(json : MessageJson) {
@@ -59,11 +60,12 @@ class Message: Equatable, Hashable {
         self.postJson = json.post
         self.restaurantJson = json.restaurant
         self.snapshotMedia = Media(json: json.post?.media?.first)
+        self.messageType = json.type
     }
     
     
     
-    static let examples = Array(repeating: Message(room_id: "1_2", sender_id: [1, 2].randomElement()!, message: "你好", isRead: false, created_time: "0"), count: 80)
+    static let examples = Array(repeating: Message( messageType : .General, room_id: "1_2", sender_id: [1, 2].randomElement()!, message: "你好", isRead: false, created_time: "0"), count: 80)
     
 }
 
@@ -78,9 +80,13 @@ struct MessageJson : Codable {
     
     var shared_Post_id : String?
     
+    var type : MessageType?
+    
     var post : PostDetailJson?
     
     var restaurant : RestaurantJson?
+    
+    
     
     enum CodingKeys : String, CodingKey {
         case message_id = "_id"
@@ -92,6 +98,7 @@ struct MessageJson : Codable {
         case shared_Post_id = "shared_Post_id"
         case post = "post"
         case restaurant = "restaurant"
+        case type = "type"
     }
     
     init(from decoder: Decoder) throws {
@@ -105,6 +112,8 @@ struct MessageJson : Codable {
         self.shared_Post_id = try container.decodeIfPresent(String.self, forKey: .shared_Post_id)
         self.post = try container.decodeIfPresent(PostDetailJson.self, forKey: .post)
         self.restaurant = try container.decodeIfPresent(RestaurantJson.self, forKey: .restaurant)
+        let typeRawvalue = try container.decodeIfPresent(Int.self, forKey: .type)
+        self.type = MessageType(rawValue: typeRawvalue ?? -1)
 
     }
     

@@ -115,6 +115,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
                 
                 SocketIOManager.shared.joinRooms(room_ids: room_ids)
             }
+            chatRoomsHadBeenCompletedGet = false
             isLoadingNewChatRooms = false
         }
     }
@@ -129,10 +130,12 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
                 isLoadingNewChatRooms = false
             }
             let newChatRooms = try await ChatRoomsManager.shared.getChatroomsPreviewFromUserID(user_id: Constant.user_id, date: date)
+
             guard newChatRooms.count > 0 else {
                 self.chatRoomsHadBeenCompletedGet = true
                 return
             }
+           
             let insertionIndexPaths = (self.chatrooms.count..<self.chatrooms.count + newChatRooms.count).map { IndexPath(row: $0, section: 0) }
             self.chatrooms.insert(contentsOf: newChatRooms, at: self.chatrooms.count)
             
@@ -154,7 +157,8 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         SocketIOManager.shared.listening()
-        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveChatRoomIsRead( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil)
         initRefreshControll()
         viewStyleSet()
         let bounds = UIScreen.main.bounds
@@ -178,42 +182,65 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    @objc func receiveMessage(_ notification: Notification) {
-        if let message = notification.userInfo?["message"] as? Message {
-            let destinationIndexPath = IndexPath(row: 0, section: 0)
-            if ChatRoom.hasRecievedRoom_IDs[message.room_id] != nil {
-                
-                for (index, chatroom) in self.chatrooms.enumerated() {
-                    if chatroom.room_id == message.room_id {
-                        
-                        let indexPath = IndexPath(row: index, section: 0)
-                        if let roomCell = tableView.cellForRow(at: indexPath) as? ChatRoomTableCell {
-                            roomCell.chatroomInstance.lastMessage =  message.message
-                            roomCell.chatroomInstance.lastTimeStamp = message.created_time
-                            roomCell.configure(chatroom: roomCell.chatroomInstance)
-                            let itemToMove = self.chatrooms.remove(at: indexPath.row)
-                            chatrooms.insert(itemToMove, at: 0)
-                            tableView.beginUpdates()
-                            tableView.moveRow(at: indexPath, to: destinationIndexPath)
-                            tableView.endUpdates()
-                        }
-                        break
-                    }
+    @objc func receiveChatRoomIsRead( _ notification : Notification) {
+        guard let room_id = notification.userInfo?["room_id"] as? String  else {
+            return
+        }
+        guard ChatRoom.hasRecievedRoom_IDs[room_id] != nil else {
+            return
+        }
+        for (index, chatroom) in self.chatrooms.enumerated() {
+            if chatroom.room_id == room_id {
+                chatroom.lastMessage.isRead = true
+                let indexPath = IndexPath(row: index, section: 0)
+                if let cell = tableView.cellForRow(at: indexPath) as? ChatRoomTableCell {
+                    cell.configure(chatroom: chatroom)
                 }
-                return
-            }
-            
-            Task {
-                let newChatRoom = try await ChatRoomsManager.shared.getSingleChatroomsPreviewFromUserID(room_id: message.room_id)
-                ChatRoom.hasRecievedRoom_IDs[newChatRoom.room_id] = newChatRoom.room_id
-                chatrooms.insert(newChatRoom, at: 0)
-                self.tableView.insertRows(at: [destinationIndexPath], with: .top)
-                tableView.beginUpdates()
-                tableView.endUpdates()
-                SocketIOManager.shared.joinRooms(room_ids: [newChatRoom.room_id])
+                break
             }
         }
     }
+    
+    @objc func receiveMessage(_ notification: Notification) {
+        guard let message = notification.userInfo?["message"] as? Message  else {
+            return
+        }
+        let destinationIndexPath = IndexPath(row: 0, section: 0)
+        if ChatRoom.hasRecievedRoom_IDs[message.room_id] != nil {
+            
+            for (index, chatroom) in self.chatrooms.enumerated() {
+                if chatroom.room_id == message.room_id {
+                    chatroom.lastMessage = message
+                    let indexPath = IndexPath(row: index, section: 0)
+                    if let cell = tableView.cellForRow(at: indexPath) as? ChatRoomTableCell {
+                        cell.configure(chatroom: chatroom)
+                    }
+                    let itemToMove = self.chatrooms.remove(at: indexPath.row)
+                    chatrooms.insert(itemToMove, at: 0)
+                    tableView.beginUpdates()
+                    tableView.moveRow(at: indexPath, to: destinationIndexPath)
+                    tableView.endUpdates()
+                    
+                    
+                    break
+                }
+            }
+            return
+        }
+        
+        Task {
+            let newChatRoom = try await ChatRoomsManager.shared.getSingleChatroomsPreviewFromUserID(room_id: message.room_id)
+            ChatRoom.hasRecievedRoom_IDs[newChatRoom.room_id] = newChatRoom.room_id
+            chatrooms.insert(newChatRoom, at: 0)
+            self.tableView.insertRows(at: [destinationIndexPath], with: .top)
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            
+            SocketIOManager.shared.joinRooms(room_ids: [newChatRoom.room_id])
+        }
+    }
+
+
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -262,7 +289,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         let lastChatrooms = self.chatrooms.last
-        guard let timeStamp = lastChatrooms?.lastTimeStamp else {
+        guard let timeStamp = lastChatrooms?.lastMessage.created_time else {
             return
         }
         Task {
