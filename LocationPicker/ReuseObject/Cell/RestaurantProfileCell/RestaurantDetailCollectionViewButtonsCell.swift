@@ -105,7 +105,6 @@ class RestaurantDetailCollectionViewButtonsCell : CollectionViewInCollectionCell
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        collectionView.delaysContentTouches = false
         collectionView.allowsSelection = false
         collectionView.allowsMultipleSelection = false
         collectionView.isScrollEnabled = true

@@ -20,18 +20,18 @@ class RhsMessageSharedPostCell : RhsMessageTableViewCell, MessageSharedPostCell 
         super.configure(message: message)
         
         self.post = message.postJson
-        self.restaurantNameLabel.text = message.restaurantJson?.restaurant_name
+        self.restaurantNameLabel.text = message.sharedPostRestaurant?.name
         self.postImageView.image = nil
-       
-        if let media = message.snapshotMedia {
-            if let image = media.image {
-                self.postImageView.image = image
-            } else {
-                Task { [self] in
-                    let image = await Media.getSnapShot(media: media)
-                    media.image = image
-                    message.snapshotMedia = media
-                    if media.DonwloadURL == URL(string : self.post.media!.first!.url) {
+        if let snapshotImage = message.snapshotImage {
+            self.postImageView.image = snapshotImage
+        } else {
+            Task { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                if let image = try? await message.snapshotImageURL?.getImageFromURL() {
+                    message.snapshotImage = image
+                    if message.snapshotImageURL == URL(string : self.post.media!.first!.url) {
                         self.postImageView.image = image
                     }
                 }
@@ -39,7 +39,7 @@ class RhsMessageSharedPostCell : RhsMessageTableViewCell, MessageSharedPostCell 
         }
     }
     
-    func setGesture() {
+    override func setGesture() {
         showPostGesture.addTarget(self, action: #selector(showPost ( _ : )))
         self.mainView.addGestureRecognizer(showPostGesture)
         mainView.isUserInteractionEnabled = true
@@ -112,24 +112,25 @@ class LhsMessageSharedPostCell : LhsMessageTableViewCell, MessageSharedPostCell 
         
     }
     
-    override func layoutImageView() {
-        super.layoutImageView()
-    }
-    
     override func configure(message: Message) {
         super.configure(message: message)
+        
+     //   dump(message)
         self.post = message.postJson
-        self.restaurantNameLabel.text = message.restaurantJson?.restaurant_name
+        self.restaurantNameLabel.text = message.sharedPostRestaurant?.name
         self.postImageView.image = nil
-        if let media = message.snapshotMedia {
-            if let image = media.image {
-                self.postImageView.image = image
-            } else {
-                Task {
-                    let image = await Media.getSnapShot(media: media)
-                    self.postImageView.image = image
-                    media.image = image
-
+        if let snapshotImage = message.snapshotImage {
+            self.postImageView.image = snapshotImage
+        } else {
+            Task { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                if let image = try? await message.snapshotImageURL?.getImageFromURL() {
+                    message.snapshotImage = image
+                    if message.snapshotImageURL == URL(string : self.post.media!.first!.url) {
+                        self.postImageView.image = image
+                    }
                 }
             }
         }

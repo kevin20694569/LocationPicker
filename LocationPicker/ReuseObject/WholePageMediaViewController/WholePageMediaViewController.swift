@@ -318,7 +318,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             self.userImageView.image = userImage
         } else {
             Task {
-                let userImage = await currentPost.user?.imageURL?.getImageFromImageURL()
+                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
                 currentPost.user?.image = userImage
                 self.userImageView.image = userImage
             }
@@ -328,7 +328,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             self.locationimageView.image = image
         } else if let restaurantImageURL = currentPost.restaurant?.imageURL {
             Task {
-                let image = await restaurantImageURL.getImageFromImageURL()
+                let image = try await restaurantImageURL.getImageFromURL()
                 self.locationimageView.image = image
                 self.currentPost.restaurant?.image = image
             }
@@ -675,7 +675,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         userImageView.clipsToBounds = true
         userImageView.layer.cornerRadius = 12
         userImageView.isUserInteractionEnabled = true
-        let userImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(segueToProFile(_ :)))
+        let userImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ :)))
         userImageView.addGestureRecognizer(userImageViewGesture)
     }
     
@@ -1316,8 +1316,7 @@ extension WholePageMediaViewController {
         self.present(viewController, animated: true)
     }
     @objc func showRestaurantDetailViewController() {
-        let controller = RestaurantDetailViewController(presentForTabBarLessView: presentForTabBarLessView)
-        controller.restaurant = self.currentPost.restaurant
+        let controller = RestaurantDetailViewController(presentForTabBarLessView: presentForTabBarLessView, restaurant:  self.currentPost.restaurant)
         self.show(controller, sender: nil)
     }
     
@@ -1335,8 +1334,8 @@ extension WholePageMediaViewController {
         self.dismiss(animated: true)
     }
     
-    @objc func segueToProFile( _ imageView : UIImageView) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView, user_id: self.currentPost.user?.user_id)
+    @objc func showUserProfile( _ imageView : UIImageView) {
+        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView, user: self.currentPost.user, user_id: self.currentPost.user?.user_id)
         controller.user_id = currentPost.user?.user_id
         controller.navigationItem.title = currentPost.user?.name
         self.show(controller, sender: nil)

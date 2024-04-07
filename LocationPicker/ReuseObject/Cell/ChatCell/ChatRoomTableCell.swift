@@ -31,7 +31,7 @@ class ChatRoomTableCell: UITableViewCell {
                 roomImageView?.image = image
             } else {
                 if let imageURL = chatroom.user?.imageURL {
-                    let image = await imageURL.getImageFromImageURL()
+                    let image = try await imageURL.getImageFromURL()
                     chatroom.user?.image = image
                     roomImageView?.image = image
                 }

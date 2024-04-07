@@ -54,7 +54,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             button.addTarget(self, action: #selector(emojiTargetTapped(_ : )), for: .touchUpInside)
         }
         
-        let userNameLabelGesture = UITapGestureRecognizer(target: self, action: #selector(segueToProFile(_ :)))
+        let userNameLabelGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ :)))
         self.userNameLabel.addGestureRecognizer(userNameLabelGesture)
         userNameLabel.isUserInteractionEnabled = true
     }
@@ -76,7 +76,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let media = self.currentPost.media[indexPath.row]
-        if media.urlIsImage() {
+        if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StandardImageViewCollectionCell", for: indexPath) as! StandardImageViewCollectionCell
             cell.layoutImageView(media: media)
             return cell
@@ -140,7 +140,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             userImageView?.image = userImage
         } else {
             Task {
-                let userImage = await currentPost.user?.imageURL?.getImageFromImageURL()
+                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
                 currentPost.user?.image = userImage
                 userImageView?.image = userImage
             }

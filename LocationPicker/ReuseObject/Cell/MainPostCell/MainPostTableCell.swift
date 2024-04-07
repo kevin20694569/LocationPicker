@@ -36,7 +36,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let media = self.currentPost.media[indexPath.row]
-        if media.urlIsImage() {
+        if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCollectionCell", for: indexPath) as! ImageViewCollectionCell
             cell.layoutImageView(media: media)
             return cell
@@ -141,7 +141,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             userImageView.image = userImage
         } else {
             Task(priority: .low) {
-                let userImage = await currentPost.user?.imageURL?.getImageFromImageURL()
+                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
                 currentPost.user?.image = userImage
                 userImageView.image = userImage
             }
@@ -272,7 +272,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     var tapHeartGesture : UITapGestureRecognizer!
     
     func setGesture() {
-        tapToProFileGesture = UITapGestureRecognizer(target: self, action: #selector(segueToProFile(_ : )))
+        tapToProFileGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ : )))
         doubleTapGesture = {
             let DoubletapGesture = UITapGestureRecognizer(target: self, action: #selector(DoubleLike( _ : )))
             DoubletapGesture.numberOfTapsRequired = 2
@@ -467,10 +467,13 @@ extension MainPostTableCell {
     
     
     
-    @objc func segueToProFile(_ gesture: UITapGestureRecognizer) {
-        mediaTableCellDelegate?.segueToProFile(user_id: currentPost.user!.user_id, user_name : currentPost.user!.name, user_image : currentPost.user?.image ?? nil)
+    @objc func showUserProfile(_ gesture: UITapGestureRecognizer) {
+        guard let user = self.currentPost.user else {
+            return
+        }
+        mediaTableCellDelegate?.showUserProfile(user: user)
     }
-    
+
     @objc func MutedToggle(_ gesture: UITapGestureRecognizer? = nil) {
         UniqueVariable.IsMuted.toggle()
         mediaTableCellDelegate?.updateVisibleCellsMuteStatus()

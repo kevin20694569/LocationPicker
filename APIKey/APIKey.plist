@@ -9,6 +9,6 @@
 	<key>ngrok</key>
 	<string>https://kevin20694569.ngrok.app</string>
 	<key>localHost</key>
-	<string>http://192.168.0.193:3000</string>
+	<string>http://192.168.0.193:8080</string>
 </dict>
 </plist>

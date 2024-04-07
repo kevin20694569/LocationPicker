@@ -11,6 +11,7 @@ class ChatRoom : Hashable , Equatable {
     var room_id : String!
     var lastTimeStamp : String?
     var name : String!
+    
    /* var lastMessage : String?
     var senderId : Int?
     var isRead : Bool?*/
@@ -42,7 +43,7 @@ class ChatRoom : Hashable , Equatable {
     }
     
     
-    convenience init(json : ChatroomJson) {
+   /* convenience init(json : ChatroomJson) {
         var user : User?
         if let userJson = json.user {
             user = User(userJson: userJson)
@@ -50,9 +51,10 @@ class ChatRoom : Hashable , Equatable {
         let messageJson = json.lastMessageJson!
         let room_id = json.lastMessageJson.room_id!
         var lastMessage = json.lastMessageJson.message
+        let message = M messageJson.message
 
         self.init(room_id: messageJson.room_id, lastMessage: lastMessage,  senderId: messageJson.sender_id, isRead: messageJson.isRead , room_name: user?.name, lastTimeStamp: messageJson.created_time, user: user)
-    }
+    }*/
     
     static var hasRecievedRoom_IDs : [String : String]! = [ : ]
     

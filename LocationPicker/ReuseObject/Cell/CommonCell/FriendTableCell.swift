@@ -8,6 +8,8 @@ class FriendTableCell : UITableViewCell {
     
     var userNameLabel : UILabel! = UILabel()
     
+    
+    
     var mainButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
     
     weak var delegate : ShowViewControllerDelegate?
@@ -31,7 +33,7 @@ class FriendTableCell : UITableViewCell {
             self.userImageView.image = image
         } else {
             Task {
-                let image = await user.imageURL?.getImageFromImageURL()
+                let image = try await user.imageURL?.getImageFromURL()
                 friend.user.image  = image
                 self.userImageView.image = image
             }
@@ -55,7 +57,7 @@ class FriendTableCell : UITableViewCell {
     }
     
     @objc func showUserProfileController( _ gesture : UITapGestureRecognizer) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user_id: user.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: user, user_id: user.user_id)
         delegate?.show(controller, sender: nil)
     }
     
@@ -78,9 +80,9 @@ class FriendTableCell : UITableViewCell {
             userImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
             
-            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 8),
-            userNameLabel.topAnchor.constraint(equalTo: userImageView.topAnchor, constant: 4),
-            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.trailingAnchor, constant: -8),
+            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
+            userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
+            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.leadingAnchor, constant: -12),
             mainButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             mainButton.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
             mainButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
@@ -95,7 +97,9 @@ class FriendTableCell : UITableViewCell {
     }
     
     func setupLabel() {
+        
         userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
+        userNameLabel.adjustsFontSizeToFitWidth = true
     }
     
     func setupGesture() {

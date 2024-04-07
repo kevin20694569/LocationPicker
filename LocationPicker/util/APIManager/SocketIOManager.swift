@@ -46,33 +46,30 @@ class SocketIOManager : NSObject {
             print("Socket error")
         }
         
-        socket.on("message") { data, SocketAckEmitter in
-            let array = data.first as? [[String : Any]]
-            array?.forEach() {
-                let jsonData = $0
-                if let sender_id = jsonData["sender_id"] as? Int {
-                    let message = jsonData["message"] as? String ?? "錯誤"
-                    let room_id = jsonData["room_id"] as? String ?? "錯誤"
-                    let created_time = jsonData["created_time"] as? String ?? "錯誤"
-                    let rawValueType = jsonData["type"] as? Int
-                    
-                    let isRead = jsonData["isRead"] as? Bool ?? false
-                    let messageModel = Message(messageType : MessageType(rawValue: rawValueType ?? -1)! , room_id: room_id, sender_id: sender_id, message: message, isRead: isRead, created_time: created_time)
-                    let notification = Notification(name: Notification.Name(rawValue: "ReceivedMessageNotification"), object: nil, userInfo: ["message": messageModel])
-                    NotificationCenter.default.post(notification)
-                }
+        socket.on("message") { dataArray, SocketAckEmitter in
+            let decoder = JSONDecoder()
+            guard let data = dataArray.first as? Data else {
+                return
             }
-            
+            let messagesJson = try? decoder.decode([MessageJson].self, from: data)
+            messagesJson?.forEach() {
+                let message = Message(json: $0)
+                let notification = Notification(name: Notification.Name(rawValue: "ReceivedMessageNotification"), object: nil, userInfo: [
+                    "message": message])
+                
+                NotificationCenter.default.post(notification)
+            }
             
         }
         
+        
         socket.on("messageIsRead") { data , SocketAckEmitter in
             if let dict = data.first as? [String : Any],
-                let room_id = dict["room_id"] as? String {
+               let room_id = dict["room_id"] as? String {
                 let notification = Notification(name: Notification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil, userInfo: ["room_id": room_id])
                 NotificationCenter.default.post(notification)
             }
-
+            
         }
         
         socket.on(clientEvent: .reconnect){ data, ack in
@@ -103,6 +100,30 @@ class SocketIOManager : NSObject {
         }
         
         
+    }
+    
+    func recursivelyConvertToJsonString(from dictionary: [String: Any]) -> [String : Any]  {
+        var convertedDictionary = dictionary
+        for (key, value) in dictionary {
+            if let nestedDictionary = value as? [String: Any] {
+                convertedDictionary[key] = recursivelyConvertToJsonString(from: nestedDictionary)
+            } else if let nestedArray = value as? [[String: Any]] {
+                convertedDictionary[key] = nestedArray.map { recursivelyConvertToJsonString(from: $0) }
+            }
+        }
+        return convertedDictionary
+    }
+    
+    func convertToJsonString(from dictionary: [String: Any]) -> String? {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                return jsonString
+            }
+        } catch {
+            print("Error converting dictionary to JSON: \(error)")
+        }
+        return nil
     }
     
     func joinRooms(room_ids : [String]) {
@@ -161,6 +182,9 @@ class SocketIOManager : NSObject {
                                      "sender_id" : sender_id]
         socket.emit("isRead", dict)
     }
+    
+    
+    
     
     
 }

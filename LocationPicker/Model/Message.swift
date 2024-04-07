@@ -4,9 +4,8 @@ enum MessageType : Int, Codable {
     case General = 0
     case PostShare = 1
     case UserShare = 2
+    case RestaurantShare = 3
     case ErrorType = -1
-    
-
 }
 
 
@@ -33,11 +32,24 @@ class Message: Equatable, Hashable {
     
     var postJson : PostDetailJson?
     
-    var restaurantJson : RestaurantJson?
+    var sharedPostRestaurant : Restaurant?
     
-    var snapshotMedia : Media?
+    var sharedRestaurant : Restaurant?
+    
+    var sharedUser : User?
+    
+    var senderUser : User?
+    
+    var senderUserImage : UIImage?
+    
+    var senderUserImageURL : URL?
+    
+    var snapshotImageURL : URL?
+    
+    var snapshotImage : UIImage?
     
     var messageType : MessageType!
+    
     init(messageType : MessageType, message_id: String? = nil, room_id : String, sender_id: Int, message: String, isRead: Bool,  created_time : String) {
         self.message_id = message_id
         self.room_id = room_id
@@ -50,6 +62,7 @@ class Message: Equatable, Hashable {
     }
     
     init(json : MessageJson) {
+        self.messageType = MessageType(rawValue: json.type ?? -1)!
         self.message_id = json.message_id
         self.room_id = json.room_id
         self.sender_id = json.sender_id
@@ -57,10 +70,44 @@ class Message: Equatable, Hashable {
         self.isRead = json.isRead
         self.created_time = json.created_time
         self.agoTime = json.created_time?.timeAgoFromString()
-        self.postJson = json.post
-        self.restaurantJson = json.restaurant
-        self.snapshotMedia = Media(json: json.post?.media?.first)
-        self.messageType = json.type
+        self.postJson = json.sharedPost
+        if let userJson = json.sharedUser {
+            self.sharedUser = User(userJson:userJson)
+        }
+        if let sharedPostRestaurantJson = json.sharedPostRestaurant {
+            self.sharedPostRestaurant = Restaurant(json: sharedPostRestaurantJson)
+        }
+        if let restaurantJson = json.sharedRestaurant {
+            self.sharedRestaurant = Restaurant(json: restaurantJson )
+        }
+
+
+        
+        switch self.messageType {
+        case .General :
+            return
+        case .PostShare :
+            guard let url = json.sharedPost?.media?.first?.url else {
+                return
+            }
+            self.snapshotImageURL = URL(string: url)
+        case .UserShare :
+            guard let url = json.sharedUser?.user_imageurl else {
+                return
+            }
+            self.snapshotImageURL = URL(string: url)
+        case .RestaurantShare :
+            guard let url = json.sharedRestaurant?.imageurl else {
+                return
+            }
+            self.snapshotImageURL = URL(string: url)
+        case .none:
+            return
+        case .some(.ErrorType):
+            return
+        }
+        
+
     }
     
     
@@ -80,11 +127,15 @@ struct MessageJson : Codable {
     
     var shared_Post_id : String?
     
-    var type : MessageType?
+    var type : Int?
     
-    var post : PostDetailJson?
+    var sharedPost : PostDetailJson?
     
-    var restaurant : RestaurantJson?
+    var sharedUser : UserJson?
+    
+    var sharedPostRestaurant : RestaurantJson?
+    
+    var sharedRestaurant : RestaurantJson?
     
     
     
@@ -96,8 +147,10 @@ struct MessageJson : Codable {
         case isRead = "isRead"
         case created_time = "created_time"
         case shared_Post_id = "shared_Post_id"
-        case post = "post"
-        case restaurant = "restaurant"
+        case sharedPost = "sharedPost"
+        case sharedPostRestaurant = "sharedPostRestaurant"
+        case sharedUser = "sharedUser"
+        case sharedRestaurant = "sharedRestaurant"
         case type = "type"
     }
     
@@ -110,10 +163,15 @@ struct MessageJson : Codable {
         self.isRead = try container.decodeIfPresent(Bool.self, forKey: .isRead)
         self.created_time = try container.decodeIfPresent(String.self, forKey: .created_time)
         self.shared_Post_id = try container.decodeIfPresent(String.self, forKey: .shared_Post_id)
-        self.post = try container.decodeIfPresent(PostDetailJson.self, forKey: .post)
-        self.restaurant = try container.decodeIfPresent(RestaurantJson.self, forKey: .restaurant)
-        let typeRawvalue = try container.decodeIfPresent(Int.self, forKey: .type)
-        self.type = MessageType(rawValue: typeRawvalue ?? -1)
+        self.sharedPost = try container.decodeIfPresent(PostDetailJson.self, forKey: .sharedPost)
+        
+        self.sharedPostRestaurant = try container.decodeIfPresent(RestaurantJson.self, forKey: .sharedPostRestaurant)
+        
+        self.sharedUser = try container.decodeIfPresent(UserJson.self, forKey: .sharedUser)
+
+        self.sharedRestaurant = try container.decodeIfPresent(RestaurantJson.self, forKey: .sharedRestaurant)
+        self.type = try container.decodeIfPresent(Int.self, forKey: .type)
+        
 
     }
     

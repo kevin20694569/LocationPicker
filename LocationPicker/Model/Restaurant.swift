@@ -186,7 +186,11 @@ struct RestaurantJson: Codable {
         self.posts_count = try container.decodeIfPresent(Int.self, forKey: .posts_count)
         self.average_grade = try container.decodeIfPresent(Double.self, forKey: .average_grade)
         
-        self.takeout = try container.decodeIfPresent(Bool.self, forKey: .takeout)
+        if let intValue = try? container.decode(Int.self, forKey: .takeout) {
+            self.takeout = intValue != 0
+        } else {
+            self.takeout = try container.decode(Bool.self, forKey: .takeout)
+        }
         
         self.reservable = try container.decodeIfPresent(Bool.self, forKey: .reservable)
         self.price_level = try container.decodeIfPresent(Int.self, forKey: .price_level)

@@ -112,9 +112,23 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     }
     
     @objc func leftButtonTapped(_ sender : UIView) {
-        Task {
-            await sendFriendRequest(to:   self.userProfile.user.user_id)
+        switch self.userProfile.userProfileStatus {
+        case .notFriend :
+            Task {
+                await sendFriendRequest(to:   self.userProfile.user.user_id)
+            }
+        case .isFriend :
+            let messageController = MessageViewController(chatRoomUser_ids: [Constant.user_id, userProfile.user.user_id])
+            messageController.navigationItem.title = self.userProfile.user.name
+            self.delegate?.show(messageController, sender: nil)
+        case .some(.isSelfProfile):
+            return
+        case .some(.default):
+            return
+        case .none:
+            return
         }
+
     }
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
@@ -217,7 +231,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         } else {
             if let imageURL = userProfile.user.imageURL {
                 Task {
-                    let image = await imageURL.getImageFromImageURL()
+                    let image = try await imageURL.getImageFromURL()
                     self.userProfile.user.image = image
                     userImageView.image = image
                 }
@@ -242,6 +256,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
             ]))
             
             leftConfig.baseBackgroundColor = userProfile.userProfileStatus.mainColor
+            
             leftConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
             leftConfig.image = userProfile.userProfileStatus.mainImage
             leftConfig.attributedTitle = arrtri

@@ -66,7 +66,7 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let media = self.medias[indexPath.row]
-        if media.urlIsImage() {
+        if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UploadMediaDetailImageViewCollectionCell", for: indexPath) as! UploadMediaDetailImageViewCollectionCell
             cell.textFieldDelegate = self.textFieldDelegate
             cell.mediaHeightScale = mediaHeightScale

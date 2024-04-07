@@ -23,7 +23,10 @@ class Media : Hashable, Equatable {
     init(title : String? = nil ,DownloadURL: URL, isImage : Bool? = true) {
         self.DonwloadURL = DownloadURL
         self.title = title
-        self.isImage = isImage ?? urlIsImage()
+        self.isImage = isImage
+        if let isImage = try? URL.urlIsImage(url: DownloadURL) {
+            self.isImage = isImage
+        }
         if !self.isImage {
             self.player = AVPlayer(url: DownloadURL)
         }
@@ -56,6 +59,7 @@ class Media : Hashable, Equatable {
             self.init()
             return
         }
+        
         if let url = URL(string: json.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!) {
             switch url.pathExtension {
             case "jpg", "png":
@@ -69,7 +73,8 @@ class Media : Hashable, Equatable {
             case "mp4", "MP4" :
                 self.init(title: json.itemtitle, DownloadURL: url, isImage: false)
                 return
-            default: break
+            default:
+                break
             }
         }
         self.init()
@@ -111,17 +116,6 @@ class Media : Hashable, Equatable {
         let player = AVPlayer(url: url!)
         return player
     }
-    
-    func urlIsImage() -> Bool {
-        if self.DonwloadURL.urlIsImage() {
-            return true
-        } else {
-            if player == nil {
-                self.player = AVPlayer(url: DonwloadURL)
-            }
-            return false
-        }
-    }
     func removePlayerRestartObserverToken() {
         if let token = self.playerRestartObserverToken {
             
@@ -137,15 +131,7 @@ class Media : Hashable, Equatable {
     }
     
     static func getSnapShot(media : Media) async -> UIImage? {
-        if media.isImage {
-            let image = await media.DonwloadURL.getImageFromImageURL()
-            media.image = image
-            return image
-        } else {
-            let image = await media.DonwloadURL.generateThumbnail()
-            media.image = image
-            return image
-        }
+        return try? await media.DonwloadURL.getImageFromURL()
     }
     
     static let title : String = "titlekjdwldjwdqjlqw"

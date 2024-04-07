@@ -254,17 +254,8 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 
                 let newposts = try await self.postsStatus.getPosts(user_id: Constant.user_id, distance: 0, date: "")
 
-                if newposts.count > 0 {
-
-                    insertPostsReloadSection(posts:  newposts)
-                } else {
-                    tableView.reloadSections([0], with: .fade)
-                }
+                insertPostsReloadSection(posts:  newposts)
                 currentTableViewIndexPath = IndexPath(row: 0, section: 0)
-                if  tableView.cellForRow(at: currentTableViewIndexPath) != nil {
-                    
-                    self.tableView.scrollToRow(at: currentTableViewIndexPath, at: .top, animated: true)
-                }
 
             } catch {
                 tableView.reloadSections([0], with: .fade)
@@ -276,7 +267,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     func insertPostsReloadSection(posts : [Post]) {
         self.posts.insert(contentsOf: posts, at: self.posts.count)
-        tableView.reloadSections([0], with: .fade)
+        tableView.reloadSections([0], with: .automatic)
     }
     
     func insertNewPosts(newPosts: [Post]) {
@@ -434,9 +425,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     
     
-    func segueToProFile(user_id: Int, user_name: String, user_image: UIImage?) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView,  user_id: user_id)
-        controller.navigationItem.title = user_name
+    func showUserProfile(user : User) {
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user,  user_id: user.user_id)
+        controller.navigationItem.title = user.name
         self.navigationController?.pushViewController(controller, animated: true)
     }
     

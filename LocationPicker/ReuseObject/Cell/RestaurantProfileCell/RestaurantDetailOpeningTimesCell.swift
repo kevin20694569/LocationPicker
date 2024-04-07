@@ -104,6 +104,7 @@ class RestaurantDetailOpeningTimesCell : BlurCollectionCell, RestaurantProfileCo
                 label.text = "休息"
                 label.textColor = .label
                 self.openingTimeStackView.addArrangedSubview(label)
+                self.openingSymbolView.backgroundColor = .systemRed
                 return
             }
             var opening : Bool = false
@@ -138,7 +139,6 @@ class RestaurantDetailOpeningTimesCell : BlurCollectionCell, RestaurantProfileCo
                 self.openingSymbolView.backgroundColor = .systemGreen
             } else {
                 self.openingSymbolView.backgroundColor = .systemRed
-                
             }
         } else {
             let label = UILabel()

@@ -33,6 +33,7 @@ class MessageManager {
     
     func getInitMessagesFromUser_ID( user_ids : [Int]) async throws -> [Message] {
         do {
+            print(user_ids)
             let urlstring = API
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -40,10 +41,11 @@ class MessageManager {
                 throw  APIError.URLnotFound(urlstring)
             }
             var req = URLRequest(url: url)
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
             req.httpMethod = "POST"
             req.timeoutInterval = 2.0
             
-            let params = [ "user_ids" : user_ids ]
+            let params : [String : Any] = [ "user_ids" : user_ids ]
             let jsonData = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
             req.httpBody = jsonData
             

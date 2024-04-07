@@ -61,14 +61,14 @@ class GridPostCell: UICollectionViewCell {
         }
         if media.isImage {
             Task(priority : .background) {
-                let image = await media.DonwloadURL.getImageFromImageURL()
+                let image = try await media.DonwloadURL.getImageFromURL()
                 media.image = image
                 self.imageView.image = image
                 self.imageView.contentMode = .scaleAspectFill
             }
         } else {
             Task(priority : .background)  {
-                let image = await media.DonwloadURL.generateThumbnail()
+                let image = try await media.DonwloadURL.generateThumbnail()
                 media.image = image
                 self.imageView.image = image
                 self.imageView.contentMode = .scaleAspectFill

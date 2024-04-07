@@ -18,9 +18,8 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
     
     func segueToUserProfileView(userRequst userRequest : UserFriendRequest) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: true, user_id: userRequest.user_ID)
-        controller.user_id = userRequest.user_ID
-        controller.navigationItem.title = userRequest.name
+        let controller = MainUserProfileViewController(presentForTabBarLessView: true, user: userRequest.user, user_id: userRequest.user?.user_id)
+        controller.navigationItem.title = userRequest.user?.name
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -105,10 +104,10 @@ extension FriendRequestViewController {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let cell = cell as! FriendRequestsTableViewCell
-        let userRequst = cell.userRequestInstance
+        let userRequest = cell.userRequestInstance
         Task {
-            let image = await userRequst?.user_imageurl?.getImageFromImageURL()
-            userRequst?.userimage = image
+            let image = try await userRequest?.user?.imageURL?.getImageFromURL()
+            userRequest?.user?.image = image
             cell.userImageView.image = image
         }
     }

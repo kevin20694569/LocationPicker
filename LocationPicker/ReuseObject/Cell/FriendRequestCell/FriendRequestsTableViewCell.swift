@@ -50,7 +50,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
 
         userRequestInstance = userRequest
         self.checkIsResponsed(request: userRequest)
-        userNameLabel.text = userRequest.name
+        userNameLabel.text = userRequest.user?.name
         sendTimeLabel.text = userRequest.sent_time.timeAgoFromString()
     }
     override func prepareForReuse() {
@@ -84,7 +84,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     @objc func acceptRequest(_ button: UIButton) {
         Task {
-            guard let user_id = self.userRequestInstance.user_ID,
+            guard let user_id = self.userRequestInstance.user?.user_id,
                   let request_id = self.userRequestInstance.request_ID else {
                 print("error ID錯誤")
                 return

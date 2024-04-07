@@ -63,7 +63,7 @@
 		232971032B21F168000C35D9 /* ImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232971022B21F168000C35D9 /* ImageViewCollectionCell.swift */; };
 		232971062B21F1A6000C35D9 /* NewPostImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232971052B21F1A6000C35D9 /* NewPostImageViewCollectionCell.swift */; };
 		232971082B21F1CA000C35D9 /* NewPostPlayerLayerCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232971072B21F1CA000C35D9 /* NewPostPlayerLayerCollectionCell.swift */; };
-		23324B772BA9DA3100C7D5C5 /* MessageSharedPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23324B762BA9DA3100C7D5C5 /* MessageSharedPostCell.swift */; };
+		23324B772BA9DA3100C7D5C5 /* SharedPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23324B762BA9DA3100C7D5C5 /* SharedPostCell.swift */; };
 		233276802B24EAF300CA505C /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2332767F2B24EAF300CA505C /* Constant.swift */; };
 		2339550F2AFD1E3100B17C28 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339550E2AFD1E3100B17C28 /* UserManager.swift */; };
 		233BC73B2B1AE22400844844 /* MainUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233BC73A2B1AE22400844844 /* MainUserProfileViewController.swift */; };
@@ -173,6 +173,8 @@
 		23F085EB2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085EA2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift */; };
 		23F085ED2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085EC2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift */; };
 		23F085F12BBF0CD600A024D6 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F02BBF0CD600A024D6 /* UserProfile.swift */; };
+		23F085F32BC144A400A024D6 /* SharedUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F22BC144A400A024D6 /* SharedUserCell.swift */; };
+		23F085F52BC172C500A024D6 /* ShareRestaurantCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F42BC172C500A024D6 /* ShareRestaurantCell.swift */; };
 		23FDBD052B37E64200285263 /* PreviewPostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -233,7 +235,7 @@
 		232971022B21F168000C35D9 /* ImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCollectionCell.swift; sourceTree = "<group>"; };
 		232971052B21F1A6000C35D9 /* NewPostImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostImageViewCollectionCell.swift; sourceTree = "<group>"; };
 		232971072B21F1CA000C35D9 /* NewPostPlayerLayerCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostPlayerLayerCollectionCell.swift; sourceTree = "<group>"; };
-		23324B762BA9DA3100C7D5C5 /* MessageSharedPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSharedPostCell.swift; sourceTree = "<group>"; };
+		23324B762BA9DA3100C7D5C5 /* SharedPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPostCell.swift; sourceTree = "<group>"; };
 		2332767F2B24EAF300CA505C /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		2339550E2AFD1E3100B17C28 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		233BC73A2B1AE22400844844 /* MainUserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileViewController.swift; sourceTree = "<group>"; };
@@ -347,6 +349,8 @@
 		23F085EA2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadMediaDetailImageViewCollectionCell.swift; sourceTree = "<group>"; };
 		23F085EC2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadMediaDetailPlayerLayerCollectionCell.swift; sourceTree = "<group>"; };
 		23F085F02BBF0CD600A024D6 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		23F085F22BC144A400A024D6 /* SharedUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUserCell.swift; sourceTree = "<group>"; };
+		23F085F42BC172C500A024D6 /* ShareRestaurantCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareRestaurantCell.swift; sourceTree = "<group>"; };
 		23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPostTableViewController.swift; sourceTree = "<group>"; };
 		B99DA1252FBB81990376BDC2 /* Pods-LocationPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.release.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.release.xcconfig"; sourceTree = "<group>"; };
 		E982666EE4E0DA419F62495A /* Pods-LocationPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.debug.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.debug.xcconfig"; sourceTree = "<group>"; };
@@ -979,7 +983,9 @@
 			isa = PBXGroup;
 			children = (
 				23B1E3E22B10A2F800424E21 /* MessageTableViewCell.swift */,
-				23324B762BA9DA3100C7D5C5 /* MessageSharedPostCell.swift */,
+				23324B762BA9DA3100C7D5C5 /* SharedPostCell.swift */,
+				23F085F22BC144A400A024D6 /* SharedUserCell.swift */,
+				23F085F42BC172C500A024D6 /* ShareRestaurantCell.swift */,
 			);
 			path = MessageCell;
 			sourceTree = "<group>";
@@ -1352,7 +1358,7 @@
 				23E8C7992B28859E007F0888 /* PostDetailSheetViewController.swift in Sources */,
 				233BC73B2B1AE22400844844 /* MainUserProfileViewController.swift in Sources */,
 				230793942B73649600266227 /* UniqueVariable.swift in Sources */,
-				23324B772BA9DA3100C7D5C5 /* MessageSharedPostCell.swift in Sources */,
+				23324B772BA9DA3100C7D5C5 /* SharedPostCell.swift in Sources */,
 				23A905002B62946F00409A0C /* BasicViewController.swift in Sources */,
 				23A904FE2B6286AA00409A0C /* PresentWholePageMediaViewControllerAnimator.swift in Sources */,
 				2307938D2B7363E000266227 /* SwipeEnableNavViewController.swift in Sources */,
@@ -1369,6 +1375,8 @@
 				23138C542B8630B6008E7146 /* ExtendedEmojiView.swift in Sources */,
 				232971062B21F1A6000C35D9 /* NewPostImageViewCollectionCell.swift in Sources */,
 				2307938B2B73451A00266227 /* TextField.swift in Sources */,
+				23F085F32BC144A400A024D6 /* SharedUserCell.swift in Sources */,
+				23F085F52BC172C500A024D6 /* ShareRestaurantCell.swift in Sources */,
 				23F085F12BBF0CD600A024D6 /* UserProfile.swift in Sources */,
 				236B95E72B8777C900E63999 /* StandardPostTitleTableCell.swift in Sources */,
 				230D07EC2BB288EB00FE2C5A /* TableCellProtocol.swift in Sources */,

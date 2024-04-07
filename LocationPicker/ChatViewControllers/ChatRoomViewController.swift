@@ -97,26 +97,33 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         Task {
-            defer {
-                self.tableView.refreshControl?.endRefreshing()
-            }
-            isLoadingNewChatRooms = true
-
-            ChatRoom.hasRecievedRoom_IDs.removeAll()
-            let newChatRooms = try await ChatRoomsManager.shared.getChatroomsPreviewFromUserID(user_id: Constant.user_id, date: "")
-            if newChatRooms.count > 0 {
-                chatrooms.removeAll()
-                self.chatrooms.insert(contentsOf: newChatRooms, at: self.chatrooms.count)
-                tableView.reloadSections([0], with: .none)
-                let room_ids = chatrooms.compactMap() {
-                    ChatRoom.hasRecievedRoom_IDs[$0.room_id] = $0.room_id
-                    return $0.room_id
+            do {
+                defer {
+                    isLoadingNewChatRooms = false
+                    self.tableView.refreshControl?.endRefreshing()
                 }
+                isLoadingNewChatRooms = true
                 
-                SocketIOManager.shared.joinRooms(room_ids: room_ids)
+                ChatRoom.hasRecievedRoom_IDs.removeAll()
+                chatrooms.removeAll()
+                let newChatRooms = try await ChatRoomsManager.shared.getChatroomsPreviewFromUserID(user_id: Constant.user_id, date: "")
+                if newChatRooms.count > 0 {
+  
+                    self.chatrooms.insert(contentsOf: newChatRooms, at: self.chatrooms.count)
+                    tableView.reloadSections([0], with: .automatic)
+                    let room_ids = chatrooms.compactMap() {
+                        ChatRoom.hasRecievedRoom_IDs[$0.room_id] = $0.room_id
+                        return $0.room_id
+                    }
+                    
+                    
+                }
+                chatRoomsHadBeenCompletedGet = false
+                
+            }   catch {
+                print(error)
             }
-            chatRoomsHadBeenCompletedGet = false
-            isLoadingNewChatRooms = false
+            
         }
     }
     
@@ -139,12 +146,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             let insertionIndexPaths = (self.chatrooms.count..<self.chatrooms.count + newChatRooms.count).map { IndexPath(row: $0, section: 0) }
             self.chatrooms.insert(contentsOf: newChatRooms, at: self.chatrooms.count)
             
-            self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
-            let room_ids = chatrooms.compactMap() {
-                ChatRoom.hasRecievedRoom_IDs[$0.room_id] = $0.room_id
-                return $0.room_id
-            }
-            SocketIOManager.shared.joinRooms(room_ids: room_ids)
+            self.tableView.insertRows(at:insertionIndexPaths, with: .automatic)
             
             
         } catch {
@@ -172,6 +174,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
     func viewStyleSet() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .systemBackground
         tableView.delaysContentTouches = true
         self.tableView.showsVerticalScrollIndicator = false
         tableView.rowHeight = self.view.bounds.height / 10
@@ -265,7 +268,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         }
         let chatRoom = chatrooms[indexPath.row]
         let controller = MessageViewController(chatRoom: chatRoom)
-        let cell = tableView.cellForRow(at: indexPath) as! ChatRoomTableCell
+       
         let userImage = chatRoom.user?.image
         if let user_id = chatRoom.user?.user_id {
             controller.userImageDict[user_id] = userImage

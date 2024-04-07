@@ -99,7 +99,6 @@ class User : Equatable, Hashable {
         self.name = userJson.name
         self.posts_count = userJson.posts_count
         self.friends_count = userJson.friends_count
-
         if let imageURL = userJson.user_imageurl {
             self.imageURL = URL(string: imageURL)
         }

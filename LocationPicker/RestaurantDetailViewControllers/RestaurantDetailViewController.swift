@@ -1,9 +1,10 @@
 import UIKit
 class RestaurantDetailViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, PostsTableForGridPostCellViewDelegate, UIViewControllerTransitioningDelegate, PresentDelegate {
     
-    init(presentForTabBarLessView : Bool) {
+    init(presentForTabBarLessView : Bool, restaurant : Restaurant?) {
         super.init(nibName: nil, bundle: nil)
         self.presentForTabBarLessView = presentForTabBarLessView
+        self.restaurant = restaurant
     }
     
     var presentForTabBarLessView : Bool! = false

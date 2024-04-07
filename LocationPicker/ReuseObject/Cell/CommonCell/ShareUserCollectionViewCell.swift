@@ -22,7 +22,7 @@ class ShareUserCollectionViewCell : UICollectionViewCell {
             userImageView.image = image
         } else {
             Task {
-                let image = await user.imageURL?.getImageFromImageURL()
+                let image = try await user.imageURL?.getImageFromURL()
                 userImageView.image = image
                 user.image = image
             }

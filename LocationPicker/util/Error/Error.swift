@@ -109,3 +109,15 @@ enum MessageError : LocalizedError {
         }
     }
 }
+
+
+enum GetImageError  : LocalizedError {
+    case URLExtensionError
+    
+    var errorDescription: String? {
+        switch self {
+        case .URLExtensionError :
+            return "URL檔案錯誤"
+        }
+    }
+}

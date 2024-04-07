@@ -39,19 +39,21 @@ extension UIImage {
 
 
 
+
+
 extension URL {
-    func urlIsImage() -> Bool {
-        switch self.pathExtension {
+    static func urlIsImage(url : URL) throws -> Bool {
+        switch url.pathExtension {
         case "jpg", "png":
             return true
         case "mp4", "MP4", "MOV", "mov" :
             return false
         default :
-            return true
+            throw GetImageError.URLExtensionError
         }
     }
     
-    func generateThumbnail() async -> UIImage {
+    func generateThumbnail() async throws -> UIImage {
         let asset = AVURLAsset(url: self)
         
         let generator = AVAssetImageGenerator(asset: asset)
@@ -71,23 +73,31 @@ extension URL {
             return UIImage()
         }
     }
-    func getImageFromImageURL() async -> UIImage {
+    func getImageFromURL() async throws -> UIImage {
         do {
             let cachedURLString = self.lastPathComponent.replacingOccurrences(of: "." + self.pathExtension, with: "")
             if let cachedImage = CacheManager.shared.getFromCache(key: cachedURLString) as? UIImage {
                 return cachedImage
             }
-            let (data, _) = try await URLSession.shared.data(from: self)
+            var imageResult : UIImage!
+            let isImage = try URL.urlIsImage(url: self)
             
-            guard let image = UIImage(data: data) else {
-                return UIImage()
+            if isImage {
+                let (data, _) = try await URLSession.shared.data(from: self)
+                
+                guard let image = UIImage(data: data) else {
+                    return UIImage()
+                }
+                
+                imageResult = image
+            } else {
+                imageResult = try await self.generateThumbnail()
             }
-            CacheManager.shared.cache(object: image, key: cachedURLString)
-            return image
+            CacheManager.shared.cache(object: imageResult, key: cachedURLString)
+            return imageResult
         } catch {
             print("下載Media image失敗", error)
             return UIImage(systemName: "pencil.circle.fill")!
-            
         }
     }
     

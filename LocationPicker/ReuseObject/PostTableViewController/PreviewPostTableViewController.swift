@@ -29,10 +29,8 @@ class PreviewPostTableViewController : MainPostTableViewController {
         return cell
     }
     
-    override func segueToProFile(user_id: Int, user_name: String, user_image: UIImage?) {
-        return
+    override  func showUserProfile(user : User) {
     }
-    
     override func configureBarButton() {
         return
     }

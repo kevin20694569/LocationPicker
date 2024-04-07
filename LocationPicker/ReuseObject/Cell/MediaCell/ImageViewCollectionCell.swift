@@ -59,7 +59,7 @@ class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
             self.imageView.image = image
         } else {
             Task(priority: .low) {
-                let image = await media.DonwloadURL.getImageFromImageURL()
+                let image = try await media.DonwloadURL.getImageFromURL()
                 media.image = image
                 self.imageView.image = image
            }

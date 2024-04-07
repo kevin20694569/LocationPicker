@@ -10,7 +10,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         
     
     
-    init(presentForTabBarLessView : Bool, user_id : Int?) {
+    init(presentForTabBarLessView : Bool, user : User?,  user_id : Int?) {
         super.init(nibName: nil, bundle: nil)
         self.user_id = user_id
         self.presentForTabBarLessView = presentForTabBarLessView

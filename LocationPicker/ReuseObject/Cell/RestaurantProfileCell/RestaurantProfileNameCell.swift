@@ -55,7 +55,7 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
             self.restaurantImageView.image = image
         } else if let restaurantImageURL = restaurant.imageURL {
             Task {
-                let image = await restaurantImageURL.getImageFromImageURL()
+                let image = try? await restaurantImageURL.getImageFromURL()
                 self.restaurantImageView.image = image
                 restaurant.image = image
             }

@@ -1,11 +1,22 @@
 import UIKit
-
+let MainViewTopBottomAnchor : CGFloat = 8
+let MainViewHorAnchorConstant : CGFloat = 12
 
 class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     var mainViewCornerRadius : CGFloat! {
         return 8
     }
+    
+    var MainViewTopBottomAnchor : CGFloat {
+        return 8
+    }
+    
+    var MainViewHorAnchorConstant : CGFloat {
+        return 12
+    }
+    
     var messageInstance : Message!
+    
     var mainView : UIView! = UIView()
     
     weak var messageTableCellDelegate :  MessageTableCellDelegate?
@@ -18,6 +29,7 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layoutMainView()
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -42,22 +54,33 @@ class RhsMessageTableViewCell : MessageTableViewCell {
             mainView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mainView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 80),
-            mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            mainView.bottomAnchor.constraint(greaterThanOrEqualTo: contentView.bottomAnchor, constant: -16),
+            mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -MainViewTopBottomAnchor * 2),
         ])
+    }
+    
+    func setGesture() {
+        
     }
 }
 
-class  LhsMessageTableViewCell : MessageTableViewCell {
+class LhsMessageTableViewCell : MessageTableViewCell {
     
     var userImageView : UIImageView! = UIImageView()
-    
-
 
     override func configure(message: Message) {
         super.configure(message: message)
         if let image = message.userImage {
             self.userImageView.image = image
+        } else {
+            if let url = message.senderUser?.imageURL {
+                Task {
+                    if let image = try? await url.getImageFromURL() {
+                        message.userImage = image
+                        self.userImageView.image = image
+                    }
+                }
+            }
         }
     }
     
@@ -66,7 +89,6 @@ class  LhsMessageTableViewCell : MessageTableViewCell {
         setGesture()
 
     }
-    
 
     func setGesture() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile))
@@ -80,9 +102,9 @@ class  LhsMessageTableViewCell : MessageTableViewCell {
         NSLayoutConstraint.activate([
             mainView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             mainView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -80),
-            mainView.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 16),
-            mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            mainView.bottomAnchor.constraint(greaterThanOrEqualTo: contentView.bottomAnchor, constant: -16),
+            mainView.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: MainViewHorAnchorConstant),
+            mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -MainViewTopBottomAnchor * 2),
         ])
     }
     
@@ -90,16 +112,20 @@ class  LhsMessageTableViewCell : MessageTableViewCell {
         userImageView.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(userImageView)
         NSLayoutConstraint.activate([
-            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            userImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            userImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: MainViewHorAnchorConstant),
             userImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.09),
             userImageView.heightAnchor.constraint(equalTo: userImageView.widthAnchor, multiplier: 1),
             
         ])
     }
     
+    func hiddenSenderUserImageView(_ bool : Bool) {
+        self.userImageView.isHidden = bool
+    }
+    
     @objc func showUserProfile() {
-        messageTableCellDelegate?.showUserProfile(user_id: self.messageInstance.sender_id)
+        messageTableCellDelegate?.showUserProfile(user_id: self.messageInstance.sender_id, user: self.messageInstance.senderUser)
     }
     
     required init?(coder: NSCoder) {
@@ -155,6 +181,8 @@ class LhsTextViewMessageTableViewCell: LhsMessageTableViewCell , MessageTextView
     
     var messageTextView : UITextView! = UITextView()
     
+    
+    
     override func configure(message: Message) {
         super.configure(message: message)
         self.messageTextView.text = message.message
@@ -182,6 +210,7 @@ class LhsTextViewMessageTableViewCell: LhsMessageTableViewCell , MessageTextView
     override func layoutMainView() {
         super.layoutMainView()
         layoutMessageTextView()
+        
 
     }
     

@@ -20,7 +20,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         friends.count
     }
 
-    var friends : [Friend]! = []//Friend.examples
+    var friends : [Friend]! = []
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendTableCell", for: indexPath) as! FriendTableCell
         let friend = friends[indexPath.row]
@@ -61,15 +61,13 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         if !self.presentForTabBarLessView  {
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: Constant.bottomBarViewHeight - Constant.safeAreaInsets.bottom , right: 0)
         }
-        tableView.rowHeight = bounds.height / 10
+        tableView.rowHeight = bounds.height / 11
         tableView.allowsSelection = false
         Task {
             tableView.delegate = self
             tableView.dataSource = self
             await insertFriends()
         }
-        
-
     }
     
     func registerCells() {

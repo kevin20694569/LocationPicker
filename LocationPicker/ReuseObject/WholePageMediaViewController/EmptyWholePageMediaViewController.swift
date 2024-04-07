@@ -19,19 +19,6 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-
-    
-    func getPostDetail() async {
-        do {
-            
-            
-            let post = try await PostManager.shared.getPostDetail(post_id: self.postID, request_user_id: Constant.user_id)
-            currentPost = post
-        } catch {
-            print("error", error)
-        }
-    }
     
     override func viewStyleSet() {
         super.viewStyleSet()
@@ -66,12 +53,18 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
         self.progressSlider.isHidden = true
         self.gradeStackView.isHidden = true
         Task {
-            await getPostDetail()
-            collectionView.delegate = self
-            collectionView.dataSource = self
-            self.configureData(post: currentPost)
-            self.panWholeViewGesture.isEnabled = false
-            updateCellPageControll(currentCollectionIndexPath: currentMediaIndexPath)
+            do {
+
+                let post = try await PostManager.shared.getPostDetail(post_id: self.postID, request_user_id: Constant.user_id)
+                currentPost = post
+                collectionView.delegate = self
+                collectionView.dataSource = self
+                self.configureData(post: currentPost)
+                self.panWholeViewGesture.isEnabled = false
+                updateCellPageControll(currentCollectionIndexPath: currentMediaIndexPath)
+            } catch {
+                print(error)
+            }
         }
     }
     

@@ -130,7 +130,6 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
         
         self.openingTimeStackView.arrangedSubviews.forEach() { view in
             openingTimeStackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
         }
         let date = Date()
         let dateFormatter = DateFormatter()
@@ -181,6 +180,8 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
                 label.adjustsFontForContentSizeCategory = true
                 label.text = "休息"
                 label.textColor = .label
+                openToggleView.backgroundColor = .systemRed
+                self.OpenToggleLabel.text = "休息中"
                 self.openingTimeStackView.addArrangedSubview(label)
                 return
             }
@@ -245,10 +246,10 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     
     
     @objc func presentRestaurantDetailViewController() {
-        let controller = RestaurantDetailViewController(presentForTabBarLessView: true)
+        let controller = RestaurantDetailViewController(presentForTabBarLessView: true, restaurant: restaurant)
         
         controller.posts = posts
-        controller.restaurant = self.restaurant
+
         
         self.show(controller, sender: nil)
         BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate.navigationController)
@@ -322,7 +323,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
                 self.RestaurantImageView.image = restaurantImage
             } else {
                 Task(priority : .background) {
-                    let restaurantImage = await self.restaurant.imageURL?.getImageFromImageURL()
+                    let restaurantImage = try? await self.restaurant.imageURL?.getImageFromURL()
                     self.restaurant.image = restaurantImage
                     self.RestaurantImageView.image = restaurantImage
                 }
@@ -366,6 +367,13 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
         RestaurantAddressLabel.text = restautrantaddress
         self.posts.removeAll()
         self.collectionView.reloadSections([self.enterCollectionIndexPath.section])
+        self.openingTimeStackView.arrangedSubviews.forEach() { view in
+            openingTimeStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
+    
+        
         Task {
             await getRestaurantSummary(restaurant_id: restaurantID)
         }

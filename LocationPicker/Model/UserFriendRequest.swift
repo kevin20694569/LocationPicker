@@ -11,21 +11,16 @@ class UserFriendRequest : Equatable, Hashable {
     
     var request_ID: Int!
     var sent_time: String!
-    var user_ID: Int!
-    var name: String!
-    var user_imageurl : URL?
-    var userimage : UIImage?
+
     var isResponsed : Bool! = false
+    
+    var user : User?
     
     
     
     init(request_ID: Int!, sent_time: String!, user_ID: Int!, name: String!, user_imageurl : URL?, userimage : UIImage? ) {
         self.request_ID = request_ID
         self.sent_time = sent_time
-        self.user_ID = user_ID
-        self.name = name
-        self.user_imageurl = user_imageurl
-        self.userimage = userimage
     }
     
     init(json: UserRequestJson) {
@@ -33,15 +28,9 @@ class UserFriendRequest : Equatable, Hashable {
             self.request_ID = Int(request.request_ID!)
             self.sent_time = request.sent_time
         }
+        
         if let userJson = json.user {
-            let user = User(userJson: userJson)
-            
-            self.user_ID = user.user_id
-            self.name = user.name
-            if let imageurstr = userJson.user_imageurl,
-               let URL = URL(string: imageurstr) {
-                self.user_imageurl = URL
-            }
+            self.user = User(userJson: userJson)
         }
         
         

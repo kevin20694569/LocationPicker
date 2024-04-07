@@ -25,8 +25,10 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
         }
     }
     
-    func segueToProFile(user_id: Int, user_name: String, user_image: UIImage?) {
-        return
+    func  showUserProfile(user : User) {
+        let controller = MainUserProfileViewController(presentForTabBarLessView: false, user: user,  user_id: user.user_id)
+        controller.navigationItem.title = user.name
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     @IBOutlet var PageControll : UIPageControl! { didSet {
         PageControll.hidesForSinglePage = true

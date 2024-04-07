@@ -7,12 +7,21 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     var room_user_ids : [Int]! = []
     
+    var notReadMessageIndexPaths : [IndexPath] = []
+    
+    var room_id : String?
+    
+    var allMessagesRead : Bool = false
+    
+    var lastTableViewContentYOffset : CGFloat! = 0
+    
     init(chatRoom : ChatRoom) {
         super.init(nibName: nil, bundle: nil)
         self.chatRoom = chatRoom
         if let user = chatRoom.user {
             self.room_user_ids = [user.user_id , Constant.user_id]
         }
+        self.room_id = chatRoom.room_id
     }
     
     init(chatRoomUser_ids : [Int]) {
@@ -26,38 +35,76 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = messages[indexPath.row]
+        
         switch message.sender_id {
         case Constant.user_id :
-            if message.postJson != nil {
+            if message.messageType == .PostShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RhsMessageSharedPostCell", for : indexPath) as! RhsMessageSharedPostCell
                 cell.messageTableCellDelegate = self
                 cell.configure(message: message)
                 return cell
             }
+            if message.messageType == .UserShare {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RhsMessageSharedUserCell", for : indexPath) as! RhsMessageSharedUserCell
+                cell.messageTableCellDelegate = self
+                cell.configure(message: message)
+                return cell
+            }
+            if message.messageType == .RestaurantShare {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RhsShareRestaurantCell", for : indexPath) as! RhsShareRestaurantCell
+                cell.messageTableCellDelegate = self
+                cell.configure(message: message)
+                return cell
+            }
+            
             let cell = tableView.dequeueReusableCell(withIdentifier: "RhsTextLabelMessageTableViewCell", for : indexPath) as! RhsTextViewMessageTableViewCell
             cell.messageTableCellDelegate = self
             cell.configure(message: message)
             return cell
         default :
-        
-            if message.postJson != nil  {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedPostCell", for : indexPath) as! LhsMessageSharedPostCell
-                cell.messageTableCellDelegate = self
-                if let image = userImageDict[message.sender_id] {
-                    message.userImage = image
+            if let image = userImageDict[message.sender_id] {
+                message.userImage = image
+            }
+            var hideSenderUserImageView : Bool = false
+            if indexPath.row - 1 > 0 {
+                let lastMessage = messages[indexPath.row - 1]
+                if lastMessage.sender_id == message.sender_id {
+                    hideSenderUserImageView = true
                 }
+            }
+            
+            
+            if message.messageType == .PostShare   {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedPostCell", for : indexPath) as! LhsMessageSharedPostCell
+                
+                cell.messageTableCellDelegate = self
+                
                 cell.configure(message: message)
+                cell.hiddenSenderUserImageView(hideSenderUserImageView)
+                return cell
+            }
+            if message.messageType == .UserShare {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedUserCell", for : indexPath) as! LhsMessageSharedUserCell
+                cell.messageTableCellDelegate = self
+                
+                cell.configure(message: message)
+                cell.hiddenSenderUserImageView(hideSenderUserImageView)
+                return cell
+            }
+            
+            if message.messageType == .RestaurantShare {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LhsShareRestaurantCell", for : indexPath) as! LhsShareRestaurantCell
+                cell.messageTableCellDelegate = self
+                cell.configure(message: message)
+                cell.hiddenSenderUserImageView(hideSenderUserImageView)
                 return cell
             }
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "LhsTextLabelMessageTableViewCell", for: indexPath) as! LhsTextViewMessageTableViewCell
-            
             cell.messageTableCellDelegate = self
-            if let image = userImageDict[message.sender_id] {
-                
-                message.userImage = image
-            }
+            
             cell.configure(message: message)
+            cell.hiddenSenderUserImageView(hideSenderUserImageView)
             return cell
         }
     }
@@ -94,8 +141,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @objc func sendMessage( _ button : UIButton) {
         guard !messageInputTextView.text.isEmpty,
-        let chatRoom = chatRoom,
-        let user = chatRoom.user else {
+              let chatRoom = chatRoom,
+              let user = chatRoom.user else {
             return
         }
         SocketIOManager.shared.sendMessageByToUserIDs(to_user_ids: [user.user_id], sender_id: Constant.user_id, message:  messageInputTextView.text)
@@ -129,13 +176,17 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         viewStyleSet()
         if chatRoom != nil {
             Task {
+                
                 do {
-                    try await loadMessagesByChatRoomID(date: "")
+                    
+                    let newMessages = try await loadMessagesByChatRoomID(date: "")
+                    self.insertRows(newMessages: newMessages, animated: false)
                     let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-                    if self.messages.first?.sender_id != Constant.user_id,
-                       let room_id = messages.first?.room_id {
+                    if self.messages.last?.sender_id != Constant.user_id,
+                       let room_id = messages.last?.room_id {
                         SocketIOManager.shared.markAsRead(room_id: room_id, sender_id: Constant.user_id)
+                        allMessagesRead = true
                     }
                     shouldTriggerLoad = true
                     
@@ -146,7 +197,9 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         } else {
             Task {
                 do {
-                    try await loadMessagesByRoom_User_IDs(date: "")
+                    
+                    let newMessages = try await loadMessagesByRoom_User_IDs(date: "")
+                    self.insertRows(newMessages: newMessages, animated : false)
                     let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
                     shouldTriggerLoad = true
@@ -164,13 +217,13 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        
     }
     
     
     @objc func dismissKeyBoard() {
         self.activeTextView?.resignFirstResponder()
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -203,12 +256,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             hasBeenShowedTheKeyBoard = true
             let info: NSDictionary = notification.userInfo! as NSDictionary
-            //取得鍵盤尺寸
+            
             let keyboardSize = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
             
-            //鍵盤頂部 Y軸的位置
+            
             let keyboardY = self.view.frame.height - keyboardSize.height
-            //編輯框底部 Y軸的位置
+            
             let offsetY: CGFloat = 20
             let editingTextViewY = activeTextView.convert(activeTextView.bounds, to: self.view).maxY
             let targetY = editingTextViewY - keyboardY
@@ -220,7 +273,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                         tableView.contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y -  moveHeight!)
                         self.view.layoutIfNeeded()
                     }) { bool in
-                      
+                        
                     }
                 }
             }
@@ -233,12 +286,15 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func layoutNavBar() {
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationItem.title = self.chatRoom?.name
+        if let name = chatRoom?.name {
+            self.navigationItem.title = name
+        }
         self.navigationController?.navigationBar.backgroundColor = .clear
     }
-    func showUserProfile(user_id: Int) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user_id: user_id)
-        controller.navigationItem.title = chatRoom?.name
+    
+    func showUserProfile(user_id: Int, user: User?) {
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user, user_id: user_id)
+        controller.navigationItem.title = user?.name
         self.view.endEditing(true)
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -265,6 +321,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.register(LhsTextViewMessageTableViewCell.self, forCellReuseIdentifier: "LhsTextLabelMessageTableViewCell")
         tableView.register(RhsMessageSharedPostCell.self, forCellReuseIdentifier: "RhsMessageSharedPostCell")
         tableView.register(LhsMessageSharedPostCell.self, forCellReuseIdentifier: "LhsMessageSharedPostCell")
+        tableView.register(RhsMessageSharedUserCell.self, forCellReuseIdentifier: "RhsMessageSharedUserCell")
+        tableView.register(LhsMessageSharedUserCell.self, forCellReuseIdentifier: "LhsMessageSharedUserCell")
+        tableView.register(RhsShareRestaurantCell.self, forCellReuseIdentifier: "RhsShareRestaurantCell")
+        tableView.register(LhsShareRestaurantCell.self, forCellReuseIdentifier: "LhsShareRestaurantCell")
     }
     
     var messageInputTextViewHeightAnchor : NSLayoutConstraint!
@@ -273,7 +333,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         inputMainView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInsetAdjustmentBehavior = .never
-
+        
         tableView.scrollsToTop = false
         self.view.addSubview(tableView)
         self.view.addSubview(inputMainView)
@@ -281,12 +341,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.addSubview(returnButton)
         returnButton.translatesAutoresizingMaskIntoConstraints = false
         messageInputTextView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         messageInputTextView.layer.cornerRadius = 16
         messageInputTextView.clipsToBounds = true
         
         messageInputTextView.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-
+        
         messageInputTextView.backgroundColor = .secondaryBackgroundColor
         let returnButtonOffset : CGFloat = 4
         messageInputTextView.textContainerInset = UIEdgeInsets(top: returnButtonOffset * 2, left: returnButtonOffset * 2, bottom: returnButtonOffset * 2, right: returnButtonOffset)
@@ -296,7 +356,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let size = messageInputTextView.sizeThatFits(constainSize)
         messageInputTextViewHeightAnchor = messageInputTextView.heightAnchor.constraint(equalToConstant: size.height)
         maxHeight = size.height * 4
-
+        
         var config = UIButton.Configuration.filled()
         
         config.image = UIImage(systemName: "arrowshape.turn.up.right.fill")!
@@ -315,14 +375,14 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-
+            
             tableView.bottomAnchor.constraint(equalTo: messageInputTextView.topAnchor),
             messageInputTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
             messageInputTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             inputTextViewBottomAnchorConstraint
-
+            
         ])
-
+        
         NSLayoutConstraint.activate([
             returnButton.bottomAnchor.constraint(equalTo: messageInputTextView.bottomAnchor, constant: -returnButtonOffset),
             returnButton.trailingAnchor.constraint(equalTo: messageInputTextView.trailingAnchor, constant: -returnButtonOffset ),
@@ -378,15 +438,18 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.allowsSelection = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: self.view.bounds.width / 2, bottom: 0, right: self.view.bounds.width / 2)
         tableView.rowHeight = UITableView.automaticDimension
-
+        
     }
     @objc func receiveMessage(_ notification: Notification) {
         if let message = notification.userInfo?["message"] as? Message {
             let bool = isTableViewScrolledToBottom()
             self.messages.append(message)
             let indexPath = IndexPath(row: messages.count - 1, section: 0)
-            self.tableView.insertRows(at: [indexPath], with: .none)
-            if  bool {
+            tableView.beginUpdates()
+            self.tableView.insertRows(at: [indexPath], with: .bottom)
+            tableView.endUpdates()
+            notReadMessageIndexPaths.append(indexPath)
+            if bool {
                 tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
             }
         }
@@ -398,16 +461,19 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.isUserInteractionEnabled = true
         self.view.addGestureRecognizer(gesture)
     }
-
-    func loadMessagesByRoom_User_IDs(date : String) async throws {
+    
+    func loadMessagesByRoom_User_IDs(date : String) async throws  -> [Message] {
         do {
             var messages = try await  MessageManager.shared.getInitMessagesFromUser_ID(user_ids: self.room_user_ids)
+            
             messages.reverse()
             guard messages.count > 0 else {
+                self.room_id = messages.first?.room_id
                 shouldTriggerLoad = false
-                throw MessageError.noMoreMessages
+                return []
             }
-            self.insertRows(newMessages: messages)
+            return messages
+            
             
         } catch {
             throw error
@@ -415,31 +481,67 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
-    func loadMessagesByChatRoomID(date : String) async throws {
+    func loadMessagesByChatRoomID(date : String) async throws -> [Message] {
         guard let chatRoom = chatRoom else {
-            return
+            return []
         }
         do {
+            shouldTriggerLoad = false
+            
             var messages = try await MessageManager.shared.getMessagesFromChatroomID(chatroom_id:  chatRoom.room_id, date: date)
+            
             messages.reverse()
             guard messages.count > 0 else {
+                
                 shouldTriggerLoad = false
-                throw MessageError.noMoreMessages
+                return []
             }
-            self.insertRows(newMessages: messages)
+            return messages
             
         } catch {
             throw error
         }
     }
     
-    func insertRows(newMessages: [Message]) {
+    func insertRows(newMessages: [Message], animated : Bool) {
         let indexPaths = Array (0..<newMessages.count).map {
             IndexPath(row: $0, section: 0)
         }
         self.messages.insert(contentsOf: newMessages, at: 0)
-        self.tableView.insertRows(at: indexPaths, with: .none)
-        shouldTriggerLoad = true
+        if animated {
+            tableView.beginUpdates()
+            self.tableView.insertRows(at: indexPaths, with: .bottom)
+            self.shouldTriggerLoad = true
+            self.allMessagesRead = false
+            tableView.endUpdates()
+        } else {
+            UIView.performWithoutAnimation {
+                tableView.beginUpdates()
+                self.tableView.insertRows(at: indexPaths, with: .none)
+                self.shouldTriggerLoad = true
+                self.allMessagesRead = false
+                tableView.endUpdates()
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard self.shouldTriggerLoad else {
+            return
+        }
+        if self.messages.count - indexPath.row == 20 - 4 {
+            shouldTriggerLoad = false
+
+            Task {
+                do {
+                    let newMessages = try await loadMessagesByChatRoomID(date: (messages.first?.created_time)!)
+                    self.insertRows(newMessages: newMessages, animated : true)
+                } catch {
+                    print(error)
+                }
+            }
+        }
+
     }
     
     func isTableViewScrolledToBottom() -> Bool {
@@ -452,20 +554,20 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard shouldTriggerLoad else {
-            return
-        }
-        let yoffset = tableView.contentOffset.y
-        if yoffset < 300 && shouldTriggerLoad {
-            shouldTriggerLoad = false
-            Task {
-                do {
-                    try await loadMessagesByChatRoomID(date: (messages.first?.created_time)!)
-                } catch {
-                    print(error)
+        lastTableViewContentYOffset = scrollView.contentOffset.y
+        if let firstNotReadMessageIndexPath = notReadMessageIndexPaths.first,
+           let lastNotReadMessageIndexPath = notReadMessageIndexPaths.last  {
+            if let visibleIndexPaths = tableView.indexPathsForVisibleRows, visibleIndexPaths.contains(firstNotReadMessageIndexPath) || visibleIndexPaths.contains(lastNotReadMessageIndexPath) {
+                allMessagesRead = true
+                if let room_id = self.room_id {
+                    SocketIOManager.shared.markAsRead(room_id: room_id , sender_id: Constant.user_id)
+                    self.notReadMessageIndexPaths.removeAll()
                 }
             }
         }
+        
+
+
     }
     
 }

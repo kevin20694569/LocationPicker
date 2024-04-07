@@ -67,7 +67,7 @@ class PlaylistCollectionCell : UICollectionViewCell {
             self.imageView.image = image
         } else {
             Task {
-                let image = await playlist.imageURL?.getImageFromImageURL()
+                let image = try await playlist.imageURL?.getImageFromURL()
                 playlist.image = image
                 self.imageView.image = image
             }

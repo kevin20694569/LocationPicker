@@ -25,7 +25,7 @@ protocol MediaCollectionCell : UICollectionViewCell {
 protocol MediaTableCellDelegate : MediaCellDelegate, UIViewController {
     
     func presentWholePageMediaViewController(post: Post?)
-    func segueToProFile(user_id : Int,  user_name : String, user_image : UIImage?)
+    func showUserProfile(user : User)
     func changeCurrentEmoji(emojiTag : Int?)
 }
 
