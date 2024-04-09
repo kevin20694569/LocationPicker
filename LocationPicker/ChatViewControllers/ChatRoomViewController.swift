@@ -164,7 +164,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         initRefreshControll()
         viewStyleSet()
         let bounds = UIScreen.main.bounds
-        searchBarViewMinY = (self.navigationController?.navigationBar.frame.maxY)! + (self.navigationController?.navigationBar.frame.height)!
+        searchBarViewMinY = (self.navigationController?.navigationBar.frame.maxY)! + UIApplication.shared.statusBarFrame.height
         self.searchBar.frame = CGRect(x: 0, y: searchBarViewMinY, width: bounds.width, height: searchBar.bounds.height)
         configureBarButton()
         SocketIOManager.shared.chatRoomViewController = self
@@ -175,7 +175,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .systemBackground
-        tableView.delaysContentTouches = true
+        tableView.delaysContentTouches = false
         self.tableView.showsVerticalScrollIndicator = false
         tableView.rowHeight = self.view.bounds.height / 10
         searchBar.translatesAutoresizingMaskIntoConstraints = true

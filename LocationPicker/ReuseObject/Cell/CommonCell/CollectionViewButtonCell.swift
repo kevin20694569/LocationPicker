@@ -22,7 +22,7 @@ class CollectionViewButtonCell : UICollectionViewCell {
         config.buttonSize = .medium
         
         config.baseBackgroundColor = .secondaryBackgroundColor
-        config.baseForegroundColor = .white
+        config.baseForegroundColor = .label
         config.image = image.withConfiguration(UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption1, weight: .bold)))
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
         config.imagePadding = 4

@@ -89,8 +89,8 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="hC0-Jt-0vo" firstAttribute="trailing" secondItem="1wl-Vt-WFo" secondAttribute="trailing" id="3kH-lG-4ec"/>
+                            <constraint firstItem="hC0-Jt-0vo" firstAttribute="top" secondItem="1wl-Vt-WFo" secondAttribute="top" id="5Sb-iD-JvP"/>
                             <constraint firstAttribute="bottom" secondItem="aN0-Ha-XC6" secondAttribute="bottom" id="8Zo-f5-YNe"/>
-                            <constraint firstItem="hC0-Jt-0vo" firstAttribute="top" secondItem="1wl-Vt-WFo" secondAttribute="top" id="CGP-Hq-xLg"/>
                             <constraint firstItem="aN0-Ha-XC6" firstAttribute="leading" secondItem="1wl-Vt-WFo" secondAttribute="leading" id="Iif-aW-MqE"/>
                             <constraint firstItem="1wl-Vt-WFo" firstAttribute="trailing" secondItem="aN0-Ha-XC6" secondAttribute="trailing" id="aF0-og-foA"/>
                             <constraint firstItem="aN0-Ha-XC6" firstAttribute="top" secondItem="hC0-Jt-0vo" secondAttribute="bottom" id="lUX-xt-Scu"/>

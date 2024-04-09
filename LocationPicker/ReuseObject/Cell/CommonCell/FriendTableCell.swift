@@ -39,7 +39,7 @@ class FriendTableCell : UITableViewCell {
             }
         }
         self.userNameLabel.text = friend.user.name
-        if friend.user.isFriend {
+        if friend.isFriend {
             self.mainButton.configuration?.baseBackgroundColor = .secondaryLabelColor
             self.mainButton.configuration?.title = ""
             self.mainButton.configuration?.baseForegroundColor = .secondaryBackgroundColor
@@ -80,9 +80,9 @@ class FriendTableCell : UITableViewCell {
             userImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
             
-            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
+            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 20),
             userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
-            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.leadingAnchor, constant: -12),
+            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.leadingAnchor, constant: -20),
             mainButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             mainButton.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
             mainButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
@@ -135,6 +135,7 @@ class FriendTableCell : UITableViewCell {
     
     @objc func showMessageViewController( _ button : UIButton) {
         let controller = MessageViewController(chatRoomUser_ids: [user.user_id, Constant.user_id])
+        controller.navigationItem.title = self.user.name
         delegate?.show(controller, sender: nil)
     }
     override func prepareForReuse() {

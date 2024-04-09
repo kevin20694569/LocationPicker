@@ -37,6 +37,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         setupTableView()
         setupLayout()
         
+        self.navigationItem.backButtonTitle = ""
     }
     
     

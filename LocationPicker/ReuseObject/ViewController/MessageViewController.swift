@@ -172,7 +172,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         layout()
         registerCells()
         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
-        //NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil)
         viewStyleSet()
         if chatRoom != nil {
             Task {
@@ -202,6 +201,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     self.insertRows(newMessages: newMessages, animated : false)
                     let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    
                     shouldTriggerLoad = true
                     
                 } catch {
