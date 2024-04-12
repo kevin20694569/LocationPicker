@@ -185,6 +185,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 do {
                     
                     let newMessages = try await loadMessagesByChatRoomID(date: "")
+                    self.tableView.dataSource = self
+                    self.tableView.delegate = self
                     self.insertRows(newMessages: newMessages, animated: false)
                     let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
@@ -194,8 +196,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                         allMessagesRead = true
                     }
                     shouldTriggerLoad = true
-                    self.tableView.dataSource = self
-                    self.tableView.delegate = self
+
                 } catch {
                     print(error)
                 }
@@ -205,6 +206,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 do {
                     
                     let newMessages = try await loadMessagesByRoom_User_IDs(date: "")
+                    self.tableView.dataSource = self
+                    self.tableView.delegate = self
                     self.insertRows(newMessages: newMessages, animated : false)
                     if self.messages.count > 0 {
                         let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
@@ -212,8 +215,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     }
                     
                     shouldTriggerLoad = true
-                    self.tableView.dataSource = self
-                    self.tableView.delegate = self
                     
                 } catch {
                     print(error)
