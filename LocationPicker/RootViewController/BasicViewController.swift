@@ -69,11 +69,6 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
-    override func viewLayoutMarginsDidChange() {
-        super.viewLayoutMarginsDidChange()
-        
-    }
-    
     private func startViewFadeIn() {
         UIView.animate(withDuration: 0.1, animations: {
             self.viewControllerArray.forEach { viewController in

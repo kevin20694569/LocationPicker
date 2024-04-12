@@ -5,26 +5,19 @@ import UIKit
 struct UserProfile  {
     
     var user : User!
-    
-    var isFriend : Bool? = false
-    
-    var userProfileStatus : UserStatus! = .default
+    var friendStatus : FriendStatus! = .default
     
     init(user: User, isFriend: Bool) {
         self.user = user
-        self.isFriend = isFriend
+        self.friendStatus = isFriend ? .isFriend : .notFriend
     }
     
     init(profileJson : UserProfileJson) {
         if let userJson = profileJson.userJson {
             self.user = User(userJson:userJson)
-            if userJson.user_id == Constant.user_id {
-                self.userProfileStatus = .isSelfProfile
-            } else {
-                self.userProfileStatus = profileJson.isFriend ?? false ? .isFriend : .notFriend
-            }
+            self.friendStatus = FriendStatus(rawValue: profileJson.friendStatus)
         }
-        self.isFriend = profileJson.isFriend
+
 
     }
     
@@ -37,19 +30,19 @@ struct UserProfile  {
 
 struct UserProfileJson : Codable {
     
-    var isFriend : Bool? = false
+    var friendStatus : String!
     
     var userJson : UserJson?
     
     enum CodingKeys : String, CodingKey {
         case userJson = "user"
-        case isFriend = "isFriend"
+        case friendStatus = "friendStatus"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.userJson = try container.decodeIfPresent(UserJson.self, forKey: .userJson)
-        self.isFriend = try container.decodeIfPresent(Bool.self, forKey: .isFriend)
+        self.friendStatus = try container.decodeIfPresent(String.self, forKey: .friendStatus)
     
     }
     

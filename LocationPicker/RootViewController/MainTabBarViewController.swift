@@ -15,6 +15,10 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
     
     var currentIndex : Int = 0
     
+    var standardTabBarFrameInView : CGRect! = .zero
+    
+    var standardBottomFrameInView : CGRect! = .zero
+    
     var currentViewController : SwipeEnableNavViewController! {
         return viewControllers[currentIndex]
     }
@@ -51,18 +55,31 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
             item.tag = index
         }
         tabBar.selectedItem?.isEnabled = true
+        tabBar.translatesAutoresizingMaskIntoConstraints = true
         showViewController(at: 0)
         finishFirstReload = true
         self.view.addSubview(tabBar)
         tabBar.layoutIfNeeded()
         
+        
         self.view.addSubview(bottomBarView)
+        standardTabBarFrameInView = tabBar.frame
     }
     @objc func tabBarButtonTapped(_ sender: UIButton) {
         // 在按鈕點擊時切換到相應的視圖
         if let index = tabBar.subviews.firstIndex(of: sender) {
             showViewController(at: index)
         }
+    
+    }
+    
+    func layoutTabBarAndBottomView() {
+        self.tabBar.frame = standardTabBarFrameInView
+        self.bottomBarView.frame = standardBottomFrameInView
+        wholeTabBarView.forEach() {
+            self.view.addSubview($0)
+        }
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,6 +89,8 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         Constant.bottomBarViewHeight = height
         bottomBarView.translatesAutoresizingMaskIntoConstraints = true
         bottomBarView.frame = CGRect(x: tabBar.frame.minX, y: tabBar.frame.maxY, width: tabBar.frame.width, height: height - tabBar.frame.height)
+        standardBottomFrameInView = bottomBarView.frame
+        
     }
     
     func showViewController(at index: Int) {

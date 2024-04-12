@@ -33,7 +33,6 @@ class MessageManager {
     
     func getInitMessagesFromUser_ID( user_ids : [Int]) async throws -> [Message] {
         do {
-            print(user_ids)
             let urlstring = API
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,

@@ -1,9 +1,20 @@
 import UIKit
 
-class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowViewControllerDelegate {
+class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowMessageControllerProtocol {
+    func showMessageViewController(user_ids: [Int]) {
+        let controller = MessageViewController(chatRoomUser_ids: user_ids)
+        controller.navigationItem.title = self.user.name
+        let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: view)
+        MainTabBarViewController.shared.tabBar.frame = tabBarframe
+        let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
+        MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
+        view.addSubview(MainTabBarViewController.shared.bottomBarView)
+        view.addSubview(MainTabBarViewController.shared.tabBar)
+        self.show(controller, sender: nil)
+    }
+    
     
     var user : User!
-    
     
     var presentForTabBarLessView : Bool! = false
     init(presentForTabBarLessView : Bool, user : User) {
@@ -30,6 +41,8 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
+    
+    
     var tableView : UITableView! = UITableView(frame: .zero)
     
     override func viewDidLoad() {
@@ -41,9 +54,9 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
-    func insertFriends() async  {
+    func insertFriends(dateString : String) async  {
         do {
-            let newFriends = try await FriendsManager.shared.getUserFriends(user_id: self.user.user_id)
+            let newFriends = try await FriendManager.shared.getUserFriendsFromUserID(user_id: self.user.user_id, Date: dateString)
             if newFriends.count > 0 {
                 let insertionIndexPaths = (self.friends.count..<self.friends.count + newFriends.count).map { IndexPath(row: $0, section: 0) }
                
@@ -67,7 +80,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         Task {
             tableView.delegate = self
             tableView.dataSource = self
-            await insertFriends()
+            await insertFriends(dateString: "")
         }
     }
     
@@ -77,12 +90,15 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         configureNavBar()
     }
          
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = true
+        MainTabBarViewController.shared.layoutTabBarAndBottomView()
+        
     }
     
     func setupLayout() {

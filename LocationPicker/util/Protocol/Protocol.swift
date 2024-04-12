@@ -25,8 +25,12 @@ protocol ShowViewControllerDelegate : UIViewController {
     var presentForTabBarLessView : Bool! { get }
 }
 
+protocol ShowMessageControllerProtocol : ShowViewControllerDelegate {
+    func showMessageViewController(user_ids : [Int])
+}
 
-protocol ProfileMainCellDelegate : ShowViewControllerDelegate {
-    
+
+protocol ProfileMainCellDelegate : ShowMessageControllerProtocol {
+
 }
 

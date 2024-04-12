@@ -3,7 +3,7 @@ struct Constant {
     static let standardCornerRadius : CGFloat = 46
     static var bottomBarViewHeight : CGFloat = 83
     
-    static let user_id : Int = 1
+    static let user_id : Int = 49
     
     static let GridPostCellRadius : CGFloat = 16
     

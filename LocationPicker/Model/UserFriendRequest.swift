@@ -25,7 +25,7 @@ class UserFriendRequest : Equatable, Hashable {
     
     init(json: UserRequestJson) {
         if let request = json.request {
-            self.request_ID = Int(request.request_ID!)
+           // self.request_ID = Int(request.request_ID!)
             self.sent_time = request.sent_time
         }
         
@@ -69,17 +69,17 @@ struct UserRequestJson : Codable {
 
 struct FriendRequestJson : Codable {
     var sent_time : String?
-    var request_ID : Double?
+   // var request_ID : Double?
     
     enum CodingKeys : String, CodingKey {
         case sent_time = "sent_time"
-        case request_ID = "request_ID"
+      //  case request_ID = "request_ID"
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.sent_time = try container.decodeIfPresent(String.self, forKey: .sent_time)
-        self.request_ID = try container.decode(Double.self, forKey: .request_ID)
+       // self.request_ID = try container.decode(Double.self, forKey: .request_ID)
     }
 }
 

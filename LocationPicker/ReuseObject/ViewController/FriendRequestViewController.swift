@@ -83,7 +83,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
 extension FriendRequestViewController {
     func loadUserFriendsRequests(user_id : Int) async {
         do {
-            let newRequests = try await FriendsManager.shared.getUserFriendReceiveRequestsFromUserID(user_id: Constant.user_id, date: "")
+            let newRequests = try await FriendManager.shared.getUserFriendReceiveRequestsFromUserID(user_id: Constant.user_id, date: "")
             
             if newRequests.count > 0 {
                 tableView.beginUpdates()

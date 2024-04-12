@@ -26,6 +26,11 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
         self.collectionView.backgroundColor = .clear
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       // MainTabBarViewController.shared.bottomBarView.isHidden = true
+    }
+    
     override func layoutNavBar() {
         super.layoutNavBar()
         self.navigationItem.title = ""

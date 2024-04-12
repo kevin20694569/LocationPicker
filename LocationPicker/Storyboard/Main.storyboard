@@ -148,8 +148,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="woN-Es-Jyz">
-                                <rect key="frame" x="0.0" y="103" width="393" height="749"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="woN-Es-Jyz">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -158,6 +158,7 @@
                         <constraints>
                             <constraint firstItem="woN-Es-Jyz" firstAttribute="leading" secondItem="aWB-iP-adh" secondAttribute="leading" id="7vT-0B-fbJ"/>
                             <constraint firstItem="aWB-iP-adh" firstAttribute="trailing" secondItem="woN-Es-Jyz" secondAttribute="trailing" id="F5E-4p-eUP"/>
+                            <constraint firstItem="aWB-iP-adh" firstAttribute="bottom" secondItem="woN-Es-Jyz" secondAttribute="bottom" id="gjr-if-kAI"/>
                             <constraint firstItem="woN-Es-Jyz" firstAttribute="top" secondItem="aWB-iP-adh" secondAttribute="top" id="qDA-DT-1uy"/>
                         </constraints>
                     </view>
@@ -177,7 +178,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vxc-4c-fmZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6199" y="1308"/>
+            <point key="canvasLocation" x="6197.7099236641216" y="1307.7464788732395"/>
         </scene>
         <!--Main User Profile View Controller-->
         <scene sceneID="lK4-KZ-jmX">
@@ -301,7 +302,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dJl-7C-Sym" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6529" y="-1135"/>
+            <point key="canvasLocation" x="6375" y="-1194"/>
         </scene>
         <!--Playlist Map View Controller-->
         <scene sceneID="jch-5z-xMz">
@@ -762,7 +763,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

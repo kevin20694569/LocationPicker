@@ -2,7 +2,7 @@ import UIKit
 
 
 
-class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate {
+class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate, ShowMessageControllerProtocol {
 
     
     var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [ : ]
@@ -71,8 +71,14 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         registerCells()
         layoutCollectionCellflow()
         viewDataStyleSet()
-        
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        MainTabBarViewController.shared.layoutTabBarAndBottomView()
+    }
+    
+    
     
     func viewDataStyleSet() {
         self.view.backgroundColor = .backgroundPrimary
@@ -133,6 +139,19 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
             print("getProfile問題")
         }
     }
+    
+    func showMessageViewController(user_ids: [Int]) {
+        let controller = MessageViewController(chatRoomUser_ids: user_ids)
+        controller.navigationItem.title = self.userProfile.user.name
+        let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
+        MainTabBarViewController.shared.tabBar.frame = tabBarframe
+        let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
+        MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
+        view.addSubview(MainTabBarViewController.shared.bottomBarView)
+        view.addSubview(MainTabBarViewController.shared.tabBar)
+        self.show(controller, sender: nil)
+    }
+    
     
     func registerCells() {
         collectionView.register(ProfileMainCell.self, forCellWithReuseIdentifier:   "ProfileMainCell")
@@ -288,6 +307,8 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
     }
     
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             let playlistEmpty = self.playlists.isEmpty ? 0 : 1
@@ -302,6 +323,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileMainCell", for: indexPath) as! ProfileMainCell
                 cell.configure(userProfile: self.userProfile)
+
                 cell.delegate = self
                 return cell
             } else {

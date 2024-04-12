@@ -3,7 +3,7 @@ import UIKit
 
 class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, MessageTableCellDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        messages.count
+        return messages.count
     }
     var room_user_ids : [Int]! = []
     
@@ -34,6 +34,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     /*   if messages.isEmpty {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyStartMessageCell", for: indexPath) as! EmptyStartMessageCell
+            cell.configure(message: <#T##Message#>)
+            return cell
+            
+        }*/
         let message = messages[indexPath.row]
         
         switch message.sender_id {
@@ -188,7 +194,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                         allMessagesRead = true
                     }
                     shouldTriggerLoad = true
-                    
+                    self.tableView.dataSource = self
+                    self.tableView.delegate = self
                 } catch {
                     print(error)
                 }
@@ -199,10 +206,14 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     
                     let newMessages = try await loadMessagesByRoom_User_IDs(date: "")
                     self.insertRows(newMessages: newMessages, animated : false)
-                    let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    if self.messages.count > 0 {
+                        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    }
                     
                     shouldTriggerLoad = true
+                    self.tableView.dataSource = self
+                    self.tableView.delegate = self
                     
                 } catch {
                     print(error)
@@ -217,8 +228,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+      //  MainTabBarViewController.shared.bottomBarView.isHidden = false
     }
+    
+    
     
     
     @objc func dismissKeyBoard() {
@@ -325,6 +338,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.register(LhsMessageSharedUserCell.self, forCellReuseIdentifier: "LhsMessageSharedUserCell")
         tableView.register(RhsShareRestaurantCell.self, forCellReuseIdentifier: "RhsShareRestaurantCell")
         tableView.register(LhsShareRestaurantCell.self, forCellReuseIdentifier: "LhsShareRestaurantCell")
+        tableView.register(EmptyStartMessageCell.self, forCellReuseIdentifier: "EmptyStartMessageCell")
     }
     
     var messageInputTextViewHeightAnchor : NSLayoutConstraint!
@@ -430,8 +444,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     func viewStyleSet() {
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
+
         messageInputTextView.delegate = self
         self.view.backgroundColor = .backgroundPrimary
         tableView.estimatedRowHeight = 95.0

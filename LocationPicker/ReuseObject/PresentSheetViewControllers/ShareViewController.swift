@@ -19,7 +19,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
     func loadFriends(user_id : Int, date : String) async  {
         do {
             isLoadingFriends = true
-            let newFriends = try await FriendsManager.shared.getUserFriendsFromUserID(user_id: user_id, Date: date)
+            let newFriends = try await FriendManager.shared.getUserFriendsFromUserID(user_id: user_id, Date: date)
             let indexPaths = Array (self.friends.count..<newFriends.count + self.friends.count).map {
                 IndexPath(row: $0, section: 0)
             }

@@ -253,6 +253,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return chatrooms.count
     }
     

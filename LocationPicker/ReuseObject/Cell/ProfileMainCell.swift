@@ -18,6 +18,9 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     var shareButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     let profileDetailButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
+    var leftLeftPairButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    var leftRightPairButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    
     var detailStackView : UIStackView! = UIStackView()
     
     var buttonStackView : UIStackView! = UIStackView()
@@ -108,29 +111,113 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
             button.configuration = smallButtonConfig
             self.buttonStackView.addArrangedSubview(button)
         }
+        
+        let pairButtonAttrContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .footnote  , weight: .medium)
+        ])
+        
+        
+        var leftPairButtonConfig = UIButton.Configuration.filled()
+
+        leftPairButtonConfig.baseBackgroundColor = .white
+        leftPairButtonConfig.attributedTitle = AttributedString("接受", attributes: pairButtonAttrContainer)
+        leftPairButtonConfig.image = UIImage(systemName: "checkmark")
+        leftPairButtonConfig.imagePlacement = .leading
+        leftPairButtonConfig.imagePadding = 4
+        leftPairButtonConfig.baseBackgroundColor = .tintOrange
+        leftPairButtonConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
+        leftLeftPairButton.addTarget(self, action: #selector(leftLeftPaitButtonTapped(_ :)), for: .touchUpInside)
+        leftLeftPairButton.configuration = leftPairButtonConfig
+        var rightPairButtonConfig = UIButton.Configuration.filled()
+
+        rightPairButtonConfig.baseBackgroundColor = .white
+        rightPairButtonConfig.attributedTitle = AttributedString("取消", attributes: pairButtonAttrContainer)
+        rightPairButtonConfig.image = UIImage(systemName: "xmark")
+        rightPairButtonConfig.imagePadding = 4
+        rightPairButtonConfig.imagePlacement = .leading
+        rightPairButtonConfig.baseBackgroundColor = .secondaryLabelColor
+        rightPairButtonConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
+        leftRightPairButton.addTarget(self, action: #selector(leftRightPaitButtonTapped(_ :)), for: .touchUpInside)
+        leftRightPairButton.configuration = rightPairButtonConfig
 
     }
     
     @objc func leftButtonTapped(_ sender : UIView) {
-        switch self.userProfile.userProfileStatus {
+        switch self.userProfile.friendStatus {
         case .notFriend :
             Task {
-                await sendFriendRequest(to:   self.userProfile.user.user_id)
+                await sendFriendRequest()
             }
         case .isFriend :
-            let messageController = MessageViewController(chatRoomUser_ids: [Constant.user_id, userProfile.user.user_id])
-            messageController.navigationItem.title = self.userProfile.user.name
-            self.delegate?.show(messageController, sender: nil)
-        case .some(.isSelfProfile):
-            return
-        case .some(.default):
-            return
+            self.delegate?.showMessageViewController(user_ids: [self.userProfile.user.user_id, Constant.user_id])
+        case .hasBeenSentRequest :
+            Task {
+                await self.cancelFriendRequest()
+                self.userProfile.friendStatus = .notFriend
+                
+                updateLeftButton()
+            }
         case .none:
-            return
+            break
+        case .some(.isSelf):
+            break
+        case .some(.requestNeedRespond):
+            break
+        case .some(.default):
+            break
         }
-
+        
     }
     
+    @objc func leftLeftPaitButtonTapped( _ button : UIButton) {
+        Task {
+            await self.acceptFriendRequest()
+        }
+        
+    }
+    
+    @objc func leftRightPaitButtonTapped( _ button : UIButton) {
+        Task {
+            await self.cancelFriendRequest()
+        }
+    }
+            
+    
+    func cancelFriendRequest() async {
+        do {
+            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.userProfile.user.user_id)
+            self.userProfile.friendStatus = .notFriend
+            self.configure(userProfile: userProfile)
+        } catch {
+            print(error)
+        }
+        
+    }
+    
+    
+    
+    func acceptFriendRequest() async {
+        do {
+            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: self.userProfile.user.user_id)
+            self.userProfile.friendStatus = .isFriend
+            self.configure(userProfile: userProfile)
+        } catch {
+            print(error)
+        }
+            
+    }
+    @objc func sendFriendRequest() async  {
+        Task {
+            do {
+                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: self.userProfile.user.user_id)
+                self.userProfile.friendStatus = .hasBeenSentRequest
+                self.configure(userProfile: userProfile)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let bounds = UIScreen.main.bounds
         
@@ -147,14 +234,6 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = self
         self.delegate?.present(controller, animated: true)
-    }
-    
-    func sendFriendRequest(to to_user_id : Int) async {
-        do {
-            try await FriendsManager.shared.sendFriendRequest(from: Constant.user_id, to: to_user_id)
-        } catch {
-            print(error)
-        }
     }
     
     func layoutDetailStackView() {
@@ -185,14 +264,16 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         self.mainView.addSubview(detailStackView)
         self.mainView.addSubview(buttonStackView)
         self.mainView.addSubview(leftButton)
-
+        self.mainView.addSubview(leftLeftPairButton)
+        self.mainView.addSubview(leftRightPairButton)
         
         self.mainView.translatesAutoresizingMaskIntoConstraints = false
         self.userImageView.translatesAutoresizingMaskIntoConstraints = false
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        
+        leftLeftPairButton.translatesAutoresizingMaskIntoConstraints = false
+        leftRightPairButton.translatesAutoresizingMaskIntoConstraints = false
          NSLayoutConstraint.activate([
              mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
              mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
@@ -209,7 +290,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
              
              leftButton.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 16 ),
              leftButton.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 16),
-
+             
              leftButton.trailingAnchor.constraint(equalTo: mainView.centerXAnchor, constant: -8),
              leftButton.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -12),
              
@@ -217,7 +298,16 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
              
              buttonStackView.leadingAnchor.constraint(equalTo: mainView.centerXAnchor, constant: 8),
              buttonStackView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -16),
-
+             
+             leftLeftPairButton.leadingAnchor.constraint(equalTo: leftButton.leadingAnchor),
+             leftLeftPairButton.widthAnchor.constraint(equalTo: leftButton.widthAnchor, multiplier: 0.5, constant: -2),
+             leftLeftPairButton.centerYAnchor.constraint(equalTo : leftButton.centerYAnchor),
+             leftRightPairButton.leadingAnchor.constraint(equalTo: leftLeftPairButton.trailingAnchor, constant: 4),
+             leftRightPairButton.trailingAnchor.constraint(equalTo : leftButton.trailingAnchor),
+             leftRightPairButton.widthAnchor.constraint(equalTo: leftButton.widthAnchor, multiplier: 0.5, constant: -2),
+             leftRightPairButton.centerYAnchor.constraint(equalTo : leftButton.centerYAnchor),
+             
+             
              
          ])
         mainView.layer.cornerRadius = 20
@@ -250,19 +340,31 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     
     func updateLeftButton() {
         
-        if var leftConfig = leftButton.configuration {
-            let arrtri = AttributedString( userProfile.userProfileStatus.mainButtonTitle, attributes: AttributeContainer([
-                .font : UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .bold),
-            ]))
-            
-            leftConfig.baseBackgroundColor = userProfile.userProfileStatus.mainColor
-            
-            leftConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
-            leftConfig.image = userProfile.userProfileStatus.mainImage
-            leftConfig.attributedTitle = arrtri
-            self.leftButton.configuration = leftConfig
-            
+        if self.userProfile.friendStatus == .requestNeedRespond {
+            self.leftButton.isHidden = true
+            self.leftLeftPairButton.isHidden = false
+            self.leftRightPairButton.isHidden = false
+        } else {
+            self.leftButton.isHidden = false
+            self.leftLeftPairButton.isHidden = true
+            self.leftRightPairButton.isHidden = true
+            if var leftConfig = leftButton.configuration {
+                let arrtri = AttributedString( userProfile.friendStatus.mainButtonTitle, attributes: AttributeContainer([
+                    .font : UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .bold),
+                ]))
+                
+                leftConfig.baseBackgroundColor = userProfile.friendStatus.backgroundColor
+                leftConfig.baseForegroundColor = userProfile.friendStatus.mainColor
+                leftConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
+                leftConfig.image = userProfile.friendStatus.mainImage
+                leftConfig.attributedTitle = arrtri
+                self.leftButton.configuration = leftConfig
+                
+            }
         }
+        
+        
+        
     }
     
     

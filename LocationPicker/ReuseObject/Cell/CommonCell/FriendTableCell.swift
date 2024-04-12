@@ -2,17 +2,23 @@ import UIKit
 
 class FriendTableCell : UITableViewCell {
     
-    var user : User! = User()
+    
+    var friend : Friend!
     
     var userImageView : UIImageView! = UIImageView()
     
     var userNameLabel : UILabel! = UILabel()
     
+    let mainButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .callout , weight: .medium)])
     
-    
+    let pairButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .callout , weight: .medium)])
+
     var mainButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
     
-    weak var delegate : ShowViewControllerDelegate?
+    weak var delegate : ShowMessageControllerProtocol?
+    
+    var leftPairButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
+    var rightPairButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -28,37 +34,113 @@ class FriendTableCell : UITableViewCell {
     
     func configure(friend : Friend) {
         
-        self.user = friend.user
+        self.friend = friend
+        let status =  friend.friendStatus
+
         if let image = friend.user.image {
             self.userImageView.image = image
         } else {
             Task {
-                let image = try await user.imageURL?.getImageFromURL()
+                let image = try await friend.user.imageURL?.getImageFromURL()
                 friend.user.image  = image
                 self.userImageView.image = image
             }
         }
         self.userNameLabel.text = friend.user.name
-        if friend.isFriend {
-            self.mainButton.configuration?.baseBackgroundColor = .secondaryLabelColor
-            self.mainButton.configuration?.title = ""
-            self.mainButton.configuration?.baseForegroundColor = .secondaryBackgroundColor
-            self.mainButton.configuration?.image = UIImage(systemName: "checkmark.message.fill")
-            self.mainButton.removeTarget(self, action: #selector(sendFriendRequest(_ :)), for: .touchUpInside)
-            self.mainButton.addTarget(self, action: #selector(showMessageViewController( _ :)), for: .touchUpInside)
+        if status == .requestNeedRespond {
+            self.mainButton.isHidden = true
+            self.leftPairButton.isHidden = false
+            self.rightPairButton.isHidden = false
         } else {
-            self.mainButton.configuration?.baseBackgroundColor = .tintOrange
-            self.mainButton.configuration?.image = nil
-            self.mainButton.configuration?.baseForegroundColor = .white
-            self.mainButton.configuration?.title = "加朋友"
-            self.mainButton.removeTarget(self, action: #selector(showMessageViewController(_ :)), for: .touchUpInside)
-            self.mainButton.addTarget(self, action: #selector(sendFriendRequest( _ :)), for: .touchUpInside)
+            self.mainButton.isHidden = false
+            self.leftPairButton.isHidden = true
+            self.rightPairButton.isHidden = true
+            self.mainButton.configuration?.baseBackgroundColor = status?.backgroundColor
+            self.mainButton.configuration?.baseForegroundColor = status?.mainColor
+            self.mainButton.configuration?.image = status?.mainImage
+            if let title = status?.mainButtonTitle {
+                mainButton.configuration?.attributedTitle = AttributedString(title, attributes: mainButtonAttributes)
+            }
+        }
+    }
+    
+    @objc func mainButtonTarget( _ button : UIButton)  {
+        switch self.friend.friendStatus {
+        case .isFriend :
+            showMessageViewController()
+           
+        case .notFriend :
+            sendFriendRequest()
+            
+        case .hasBeenSentRequest :
+            Task {
+                await cancelFriendRequest()
+            }
+        case .requestNeedRespond :
+            return
+        case .none:
+            return
+        case .some(_):
+            return
+        }
+    }
+    
+    @objc func leftPairButtonTapped( _ button  : UIButton) {
+        if friend.friendStatus == .requestNeedRespond {
+            Task {
+                await acceptFriendRequest()
+            }
+        }
+    }
+    
+    @objc func rightPairButtonTapped( _ button : UIButton) {
+        if friend.friendStatus == .requestNeedRespond {
+            Task {
+                await cancelFriendRequest()
+            }
+        }
+    }
+    
+    func cancelFriendRequest() async {
+        do {
+            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.friend.user.user_id)
+            self.friend.friendStatus = .notFriend
+            self.configure(friend: friend)
+        } catch {
+            print(error)
+        }
+    }
+    
+    
+    
+    func acceptFriendRequest() async {
+        do {
+            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: friend.user.user_id)
+            self.friend.friendStatus = .isFriend
+            self.configure(friend: friend)
+        } catch {
+            print(error)
         }
     }
     
     @objc func showUserProfileController( _ gesture : UITapGestureRecognizer) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: user, user_id: user.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: friend.user, user_id: friend.user.user_id)
         delegate?.show(controller, sender: nil)
+    }
+    @objc func sendFriendRequest() {
+        Task {
+            do {
+                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: friend.user.user_id)
+                self.friend.friendStatus = .hasBeenSentRequest
+                self.configure(friend: friend)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    @objc func showMessageViewController() {
+        delegate?.showMessageViewController(user_ids:  [friend.user.user_id, Constant.user_id])
     }
     
     func setupLayout() {
@@ -70,6 +152,8 @@ class FriendTableCell : UITableViewCell {
         self.contentView.addSubview(userImageView)
         self.contentView.addSubview(userNameLabel)
         self.contentView.addSubview(mainButton)
+        self.contentView.addSubview(leftPairButton)
+        self.contentView.addSubview(rightPairButton)
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -81,15 +165,26 @@ class FriendTableCell : UITableViewCell {
             userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
             
             userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 20),
+            
             userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
-            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.leadingAnchor, constant: -20),
-            mainButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
+            userNameLabel.trailingAnchor.constraint(equalTo: mainButton.leadingAnchor, constant: -8),
+            mainButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.3),
             mainButton.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
             mainButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            leftPairButton.leadingAnchor.constraint(equalTo: mainButton.leadingAnchor),
+            leftPairButton.widthAnchor.constraint(equalTo: mainButton.widthAnchor, multiplier: 0.5, constant: -2),
+            leftPairButton.centerYAnchor.constraint(equalTo: mainButton.centerYAnchor),
+            rightPairButton.trailingAnchor.constraint(equalTo: mainButton.trailingAnchor),
+            rightPairButton.leadingAnchor.constraint(equalTo: leftPairButton.trailingAnchor, constant: 4),
+            rightPairButton.widthAnchor.constraint(equalTo: mainButton.widthAnchor, multiplier: 0.5, constant: -2),
+            rightPairButton.centerYAnchor.constraint(equalTo: mainButton.centerYAnchor),
+
+            
         ])
     }
     
     func setupImageView() {
+        userImageView.backgroundColor = .secondaryBackgroundColor
         userImageView.contentMode = .scaleAspectFill
         userImageView.clipsToBounds = true
         userImageView.layer.cornerRadius = 16
@@ -98,7 +193,7 @@ class FriendTableCell : UITableViewCell {
     
     func setupLabel() {
         
-        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
+        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .bold)
         userNameLabel.adjustsFontSizeToFitWidth = true
     }
     
@@ -113,31 +208,50 @@ class FriendTableCell : UITableViewCell {
     
     func setupButton() {
         var config = UIButton.Configuration.filled()
-        let attrString = AttributedString("", attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)]) )
+      
+        let attrString = AttributedString("", attributes:  mainButtonAttributes  )
+
         config.attributedTitle = attrString
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20)
+        config.imagePadding = 8
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption1, weight: .regular))
         config.baseBackgroundColor = .secondaryBackgroundColor
         config.baseForegroundColor = .white
         mainButton.configuration = config
-        mainButton.addTarget(self, action: #selector(sendFriendRequest( _ :)), for: .touchUpInside)
+        mainButton.addTarget(self, action: #selector(mainButtonTarget( _ :)), for: .touchUpInside)
+        
+        var leftPairConfig = UIButton.Configuration.filled()
+      
+        let leftPairAttrString = AttributedString("接受", attributes:  pairButtonAttributes  )
+
+        leftPairConfig.attributedTitle = leftPairAttrString
+        leftPairConfig.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10)
+        leftPairConfig.imagePadding = 2
+        leftPairConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption2, weight: .regular))
+        leftPairConfig.baseBackgroundColor = .tintOrange
+        leftPairConfig.baseForegroundColor = .white
+        
+        leftPairButton.addTarget(self, action: #selector(leftPairButtonTapped( _ : )), for: .touchUpInside)
+        leftPairButton.configuration = leftPairConfig
+        
+        var rightPairConfig = UIButton.Configuration.filled()
+      
+        let rightPairAttrString = AttributedString("取消", attributes:  pairButtonAttributes  )
+
+        rightPairConfig.attributedTitle = rightPairAttrString
+        rightPairConfig.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10)
+        rightPairConfig.imagePadding = 2
+        rightPairConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption2, weight: .regular))
+        rightPairConfig.baseBackgroundColor = .secondaryLabelColor
+        rightPairConfig.baseForegroundColor = .white
+        rightPairButton.addTarget(self, action: #selector(rightPairButtonTapped( _ : )), for: .touchUpInside)
+        
+
+        rightPairButton.configuration = rightPairConfig
         
     }
     
-    @objc func sendFriendRequest( _ button : UIButton) {
-        Task {
-            do {
-                try await FriendsManager.shared.sendFriendRequest(from: Constant.user_id, to: self.user.user_id)
-            } catch {
-                print(error)
-            }
-        }
-    }
-    
-    @objc func showMessageViewController( _ button : UIButton) {
-        let controller = MessageViewController(chatRoomUser_ids: [user.user_id, Constant.user_id])
-        controller.navigationItem.title = self.user.name
-        delegate?.show(controller, sender: nil)
-    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
         self.userImageView.image = nil

@@ -1,49 +1,6 @@
 import UIKit
 
-enum UserStatus {
-    case isSelfProfile, isFriend, notFriend, `default`
-    
-    var mainButtonTitle : String {
-        switch self {
-        case .isSelfProfile :
-            return ""
-        case .isFriend:
-            return "朋友"
-        case .notFriend:
-            return "加朋友"
-        case .default:
-            return ""
-        }
-    }
 
-    var mainImage : UIImage? {
-        switch self {
-        case .isSelfProfile :
-            return UIImage(systemName: "checkmark")!
-        case .isFriend:
-            return UIImage(systemName: "person.fill.checkmark")!
-            
-        case .notFriend:
-            return UIImage(systemName: "person.fill.badge.plus")!
-        case .default:
-            return nil
-        }
-    }
-    
-    var mainColor : UIColor {
-        switch self {
-        case .isSelfProfile :
-            return .tintOrange
-        case .isFriend:
-            return .systemGreen
-            
-        case .notFriend:
-            return .secondaryLabelColor
-        case .default:
-            return .secondaryLabelColor
-        }
-    }
-}
 class User : Equatable, Hashable {
 
     static func == (lhs: User, rhs: User) -> Bool {
@@ -60,7 +17,6 @@ class User : Equatable, Hashable {
     var imageURL : URL?
     
     var posts_count : Int?
-    var isFriend : Bool! = false
     var friends_count : Int?
     
 
@@ -90,7 +46,7 @@ class User : Equatable, Hashable {
         self.name = name
         self.image = image
         self.imageURL = imageURL
-        self.isFriend = .random()
+        //self.isFriend = .random()
     }
     
     init(userJson: UserJson) {

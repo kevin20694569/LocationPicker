@@ -6,6 +6,7 @@ enum MessageType : Int, Codable {
     case UserShare = 2
     case RestaurantShare = 3
     case ErrorType = -1
+    case startEmptyMessage = -2
 }
 
 
@@ -24,9 +25,9 @@ class Message: Equatable, Hashable {
     var room_id: String!
     var sender_id: Int!
     var message: String?
-    var isRead: Bool!
-    var created_time: String!
-    var agoTime : String!
+    var isRead: Bool?
+    var created_time: String?
+    var agoTime : String?
     
     var userImage : UIImage?
     
@@ -50,14 +51,16 @@ class Message: Equatable, Hashable {
     
     var messageType : MessageType!
     
-    init(messageType : MessageType, message_id: String? = nil, room_id : String, sender_id: Int, message: String, isRead: Bool,  created_time : String) {
+    init(messageType : MessageType?, message_id: String? = nil, room_id : String?, sender_id: Int?, message: String?, isRead: Bool?,  created_time : String?) {
         self.message_id = message_id
         self.room_id = room_id
         self.sender_id = sender_id
         self.message = message
         self.isRead = isRead
         self.created_time = created_time
-        self.agoTime = created_time.timeAgoFromString()
+        if let created_time = created_time {
+            self.agoTime = created_time.timeAgoFromString()
+        }
         self.messageType = messageType
     }
     
@@ -105,10 +108,14 @@ class Message: Equatable, Hashable {
             return
         case .some(.ErrorType):
             return
+        case .some(.startEmptyMessage):
+            return
         }
         
 
     }
+    
+    //static var startMessage = 
     
     
     

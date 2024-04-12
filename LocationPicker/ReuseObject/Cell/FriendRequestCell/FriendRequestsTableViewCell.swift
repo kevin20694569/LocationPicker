@@ -95,7 +95,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     func acceptRequestToCreateFriendShip(request_id :Int , accept_user_id : Int) async  {
         do {
-            let statusCode = try await FriendsManager.shared.acceptFriendRequestFromRequestID(request_id: request_id, accept_user_id: accept_user_id)
+            let statusCode = try await FriendManager.shared.acceptFriendRequestFromRequestID(request_id: request_id, accept_user_id: accept_user_id)
             if 200...299 ~= statusCode {
                 self.userRequestInstance.isResponsed = true
                 checkIsResponsed(request: self.userRequestInstance)
