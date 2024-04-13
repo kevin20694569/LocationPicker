@@ -85,7 +85,6 @@
 		23749C212B0F0047007241A8 /* FriendRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C202B0F0047007241A8 /* FriendRequestViewController.swift */; };
 		23749C232B0F018C007241A8 /* FriendRequestsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C222B0F018C007241A8 /* FriendRequestsTableViewCell.swift */; };
 		23749C252B0F01DE007241A8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C242B0F01DE007241A8 /* User.swift */; };
-		23749C272B0F02AC007241A8 /* FriendsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23749C262B0F02AC007241A8 /* FriendsTableViewCell.xib */; };
 		23749C2B2B0F3359007241A8 /* FriendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C2A2B0F3359007241A8 /* FriendManager.swift */; };
 		23749C2D2B0F7C0B007241A8 /* ChatRoomsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C2C2B0F7C0B007241A8 /* ChatRoomsManager.swift */; };
 		23749C2F2B0F7CA7007241A8 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C2E2B0F7CA7007241A8 /* ChatRoom.swift */; };
@@ -176,6 +175,8 @@
 		23F085F32BC144A400A024D6 /* SharedUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F22BC144A400A024D6 /* SharedUserCell.swift */; };
 		23F085F52BC172C500A024D6 /* ShareRestaurantCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F085F42BC172C500A024D6 /* ShareRestaurantCell.swift */; };
 		23F21A812BC97D27000E1F98 /* EmptyStartMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A802BC97D27000E1F98 /* EmptyStartMessageCell.swift */; };
+		23F21A852BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */; };
+		23F21A872BCAF31C000E1F98 /* LoadingCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A862BCAF31C000E1F98 /* LoadingCollectionCell.swift */; };
 		23FDBD052B37E64200285263 /* PreviewPostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -261,7 +262,6 @@
 		23749C202B0F0047007241A8 /* FriendRequestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestViewController.swift; sourceTree = "<group>"; };
 		23749C222B0F018C007241A8 /* FriendRequestsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestsTableViewCell.swift; sourceTree = "<group>"; };
 		23749C242B0F01DE007241A8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		23749C262B0F02AC007241A8 /* FriendsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendsTableViewCell.xib; sourceTree = "<group>"; };
 		23749C2A2B0F3359007241A8 /* FriendManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendManager.swift; sourceTree = "<group>"; };
 		23749C2C2B0F7C0B007241A8 /* ChatRoomsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomsManager.swift; sourceTree = "<group>"; };
 		23749C2E2B0F7CA7007241A8 /* ChatRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
@@ -353,6 +353,8 @@
 		23F085F22BC144A400A024D6 /* SharedUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUserCell.swift; sourceTree = "<group>"; };
 		23F085F42BC172C500A024D6 /* ShareRestaurantCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareRestaurantCell.swift; sourceTree = "<group>"; };
 		23F21A802BC97D27000E1F98 /* EmptyStartMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStartMessageCell.swift; sourceTree = "<group>"; };
+		23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPostCollectoinCell.swift; sourceTree = "<group>"; };
+		23F21A862BCAF31C000E1F98 /* LoadingCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCollectionCell.swift; sourceTree = "<group>"; };
 		23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPostTableViewController.swift; sourceTree = "<group>"; };
 		B99DA1252FBB81990376BDC2 /* Pods-LocationPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.release.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.release.xcconfig"; sourceTree = "<group>"; };
 		E982666EE4E0DA419F62495A /* Pods-LocationPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.debug.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.debug.xcconfig"; sourceTree = "<group>"; };
@@ -670,7 +672,6 @@
 				23D814BA2B60E72200B75CAD /* MapViewController.storyboard */,
 				23DD48812AE98DC300C63821 /* ChatView.storyboard */,
 				239A00662B2C50AA00803B96 /* ReuseViewController.storyboard */,
-				23749C262B0F02AC007241A8 /* FriendsTableViewCell.xib */,
 				231B3FD62B5CE28300DB4132 /* LoginViewController.storyboard */,
 				235A13D12A53533A004156D3 /* LaunchScreen.storyboard */,
 				23DCB7062B94B13500D97BF2 /* RestaurantColllectionCell */,
@@ -754,6 +755,8 @@
 				23CDFACF2BA7198500549AA0 /* ShareUserCollectionViewCell.swift */,
 				233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */,
 				23DCB7132B95BE3500D97BF2 /* CollectionViewButtonCell.swift */,
+				23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */,
+				23F21A862BCAF31C000E1F98 /* LoadingCollectionCell.swift */,
 			);
 			path = CommonCell;
 			sourceTree = "<group>";
@@ -1179,7 +1182,6 @@
 				230D083D2BB2EBCA00FE2C5A /* user.jpg in Resources */,
 				230D08032BB2CBEA00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_4.jpg in Resources */,
 				23DCB7112B95BD8400D97BF2 /* RestaurantDetailCollectionViewButtonsCell.xib in Resources */,
-				23749C272B0F02AC007241A8 /* FriendsTableViewCell.xib in Resources */,
 				230D08372BB2E13000FE2C5A /* ChIJiyGm7cupQjQRvh4ipZERQcw_2.jpg in Resources */,
 				23DD48822AE98DC300C63821 /* ChatView.storyboard in Resources */,
 				231B3FD72B5CE28300DB4132 /* LoginViewController.storyboard in Resources */,
@@ -1397,10 +1399,12 @@
 				23DD486D2AE9886300C63821 /* NavMapViewController.swift in Sources */,
 				23B7FE1B2AEA3B050053EC79 /* MainPostTableCell.swift in Sources */,
 				23005C122B9C6B1C00425BEA /* RestaurantDetailOpeningTimesCell.swift in Sources */,
+				23F21A872BCAF31C000E1F98 /* LoadingCollectionCell.swift in Sources */,
 				233CC5FA2B67D15B0012238C /* DismissPostTableViewAnimator.swift in Sources */,
 				237CD14B2B5EBAD900644BDA /* UserProfilePostTableViewController.swift in Sources */,
 				23C3E0B52B66A2B100FF118A /* PresentGridCellAnimator.swift in Sources */,
 				230D07E02BB1C89000FE2C5A /* APIKey.swift in Sources */,
+				23F21A852BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift in Sources */,
 				23B7FE202AEA3B050053EC79 /* WholePlayerLayerCollectionCell.swift in Sources */,
 				23749C232B0F018C007241A8 /* FriendRequestsTableViewCell.swift in Sources */,
 				23278F8D2B5918AA00B365B9 /* PreviewPostTableCell.swift in Sources */,

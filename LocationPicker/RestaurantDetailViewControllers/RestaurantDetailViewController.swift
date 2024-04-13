@@ -248,11 +248,16 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         let RestaurantDetailCollectionViewDetailGridCell = UINib(nibName: "RestaurantDetailCollectionViewDetailGridCell", bundle: nil)
         self.collectionView.register(RestaurantDetailCollectionViewDetailGridCell, forCellWithReuseIdentifier: "RestaurantDetailCollectionViewDetailGridCell")
         self.collectionView.register(GridPostCell.self, forCellWithReuseIdentifier: "GridPostCell")
+        self.collectionView.register(EmptyPostCollectoinCell.self, forCellWithReuseIdentifier: "EmptyPostCollectoinCell")
+
         
     }
          
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section <= 2 {
+            return 1
+        }
+        if self.posts.isEmpty {
             return 1
         }
         return posts.count
@@ -314,6 +319,10 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
             let width = self.view.bounds.width / 3 - lineSpaceing * 2
             return CGSize(width: width  , height: width)
         }
+        if self.posts.isEmpty {
+            let width = bounds.width
+            return CGSize(width: width , height: bounds.height * 0.1 )
+        }
         return CGSize(width: bounds.width , height: bounds.height * 0.25
         )
     }
@@ -335,6 +344,10 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
             cell.configure(restaurant: self.restaurant)
             return cell
         }
+        if self.posts.isEmpty {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyPostCollectoinCell", for: indexPath) as! EmptyPostCollectoinCell
+            return cell
+        }
         let post = self.posts[indexPath.row]
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: "GridPostCell", for: indexPath) as! GridPostCell
         cell.configureImageView(post: post, image: nil, mediaIndex: post.CurrentIndex)
@@ -347,6 +360,9 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         }
 
         if indexPath.section == 3 {
+            guard !posts.isEmpty else {
+                return
+            }
             self.presentPostTableViewController(indexPath: indexPath)
         }
         self.collectionView.visibleCells.forEach() {

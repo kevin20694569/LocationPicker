@@ -158,7 +158,7 @@ final class PostManager : NSObject {
     
     func getFriendsNearLocationPosts(user_id: Int ,distance: Double) async throws -> [Post] {
         do {
-            let urlstring = API + "/nearlocation/friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&user_id=\(Constant.user_id)"
+            let urlstring = API + "/nearlocation/friendsbynearlocation?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&request_user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
@@ -180,7 +180,7 @@ final class PostManager : NSObject {
     
     func getFriendsPostsByCreatedTime(user_id: Int ,date: String) async throws -> [Post] {
         do {
-            let urlstring = API + "/friends/\(user_id)?latitude=\(latitude)&longitude=\(longitude)&date=\(date)&user_id=\(Constant.user_id)"
+            let urlstring = API + "/friendsbyordertime?latitude=\(latitude)&longitude=\(longitude)&date=\(date)&request_user_id=\(Constant.user_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
                   let url = URL(string: urlstring) else {

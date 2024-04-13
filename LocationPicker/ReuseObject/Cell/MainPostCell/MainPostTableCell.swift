@@ -47,11 +47,13 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         }
     }
     
-    var currentMediaIndexPath : IndexPath!
+    var currentMediaIndexPath : IndexPath! = IndexPath(row: 0, section: 0)
     var pageviewcontrollerHeight : CGFloat?
     
     
     var currentPost : Post!
+    
+    
     
     var currentCollectionCell : UICollectionViewCell? {
         let cell =  collectionView.cellForItem(at: currentMediaIndexPath)
@@ -95,6 +97,8 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         emojiReactionsStackView?.layer.borderColor = UIColor.secondaryLabelColor.cgColor
         emojiReactionsStackView?.isUserInteractionEnabled = true
     }}
+    
+    @IBOutlet var timeStampLabel : UILabel!
     
     var tapToProFileGesture : UITapGestureRecognizer!
     var doubleTapGesture : UITapGestureRecognizer!
@@ -146,6 +150,9 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
                 userImageView.image = userImage
             }
         }
+        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
+        timeStampLabel.textColor = .secondaryLabelColor
+        self.timeStampLabel.text = post.timestamp.timeAgeFromStringOrDateString()
         self.updateVisibleCellsMuteStatus()
         self.collectionView.scrollToItem(at: IndexPath(row: self.currentPost.CurrentIndex, section: self.currentMediaIndexPath.section), at: .centeredHorizontally, animated: false)
         updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0) )
@@ -309,7 +316,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         self.contentView.backgroundColor = UIColor.backgroundPrimary
         
         registerCollectionCell()
-        self.currentMediaIndexPath = IndexPath(row: 0, section: 0)
         autoLayoutActive()
         layoutEmojiStackView()
         setGesture()

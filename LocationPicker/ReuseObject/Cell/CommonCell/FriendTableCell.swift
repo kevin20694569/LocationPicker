@@ -68,10 +68,8 @@ class FriendTableCell : UITableViewCell {
         switch self.friend.friendStatus {
         case .isFriend :
             showMessageViewController()
-           
         case .notFriend :
             sendFriendRequest()
-            
         case .hasBeenSentRequest :
             Task {
                 await cancelFriendRequest()
@@ -147,7 +145,6 @@ class FriendTableCell : UITableViewCell {
         setupImageView()
         setupLabel()
         setupButton()
-
         self.isUserInteractionEnabled = true
         self.contentView.addSubview(userImageView)
         self.contentView.addSubview(userNameLabel)

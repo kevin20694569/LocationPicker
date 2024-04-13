@@ -16,8 +16,8 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBOutlet var rightBarButtonItem : UIBarButtonItem! = UIBarButtonItem()
     
-    
     func configureBarButton() {
+       
         let style = UIFont.TextStyle.title3
         let mapImage = UIImage(systemName: "map", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: style, weight: .bold)))
         leftBarButtonItem.image = mapImage
@@ -117,9 +117,20 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             case .PublicNear :
                 return "Public"
             case .FriendsNear :
-                return "Friends"
+                return "Friend"
             case .FriendsCreatedTime :
-                return "Friends"
+                return "Friend"
+            }
+        }
+        
+        var subTitleString : String! {
+            switch self {
+            case .PublicNear :
+                return "By Near"
+            case .FriendsNear :
+                return "By Near"
+            case .FriendsCreatedTime :
+                return "By Time"
             }
         }
     }
@@ -238,7 +249,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             do {
                 defer {
                     tableView.refreshControl?.endRefreshing()
-                    self.setTitleText(text : self.postsStatus.titleString)
+                    
                     isLoadingPost = false
                     tableView.isPagingEnabled  = true
                     self.playCurrentMedia()
@@ -316,41 +327,52 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         titleButton = ZoomAnimatedButton(type: .system)
         titleButton.frame.size = CGSize(width: self.view.bounds.width * 0.4, height: titleButton.bounds.height)
         navigationItem.titleView = titleButton
-        titleButton.layer.cornerRadius = 20
         titleButton.clipsToBounds = true
-        setTitleText(text: "Public")
+        setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
         titleButton.showsMenuAsPrimaryAction = true
         
-        let publicAction = UIAction(title: "Public", state: .on, handler: { action in
+        let publicAction = UIAction(title: "Public By Near", state: .on, handler: { action in
 
             guard self.postsStatus != .PublicNear else {
                 return
             }
-            
-
             self.postsStatus = .PublicNear
-            self.setTitleText(text: self.postsStatus.titleString)
+            self.setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
             self.refreshPosts()
             
         })
-        let friendsAction = UIAction(title: "Friends", state: .on, handler: { action in
+        let friendsNearAction = UIAction(title: "Friend By Near", state: .on, handler: { action in
             guard self.postsStatus != .FriendsNear else {
                 return
             }
-            
             self.postsStatus = .FriendsNear
-            self.setTitleText(text: self.postsStatus.titleString)
+            self.setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
             self.refreshPosts()
-
-            
             
         })
-        let publicImage = UIImage(systemName: "globe.asia.australia.fill", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)))?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
-        let friendsImage = UIImage(systemName: "person.3.fill", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)))?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
-        publicAction.image = publicImage
-        friendsAction.image = friendsImage
         
-        titleButton.menu = UIMenu(options: .singleSelection ,children: [publicAction, friendsAction])
+        let friendsOrderTimeAction = UIAction(title : "Friend By Time", state: .on) { action in
+            guard self.postsStatus != .FriendsCreatedTime else {
+                return
+            }
+            self.postsStatus = .FriendsCreatedTime
+            self.setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
+            self.refreshPosts()
+        }
+        
+        
+        let config = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
+        let publicImage = UIImage(systemName: "globe.asia.australia.fill", withConfiguration: config)?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
+        let friendsImage = UIImage(systemName: "person.3.fill", withConfiguration: config)?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
+        let timeImage = UIImage(systemName: "clock", withConfiguration: config)?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
+        
+        publicAction.image = publicImage
+
+        friendsNearAction.image = friendsImage
+        
+        friendsOrderTimeAction.image = timeImage
+        
+        titleButton.menu = UIMenu(options: .singleSelection ,children: [publicAction, friendsNearAction, friendsOrderTimeAction])
         titleButton.menu?.preferredElementSize = .large
     }
     
@@ -559,12 +581,22 @@ extension MainPostTableViewController {
 
 
 extension MainPostTableViewController {
-    func setTitleText(text : String) {
-        titleButton.setTitle(text, for: .normal)
-        titleButton.setTitleColor(.tintColor, for: .normal)
-        titleButton.backgroundColor = .secondaryBackgroundColor
-        titleButton.titleLabel?.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .bold)
-        
+    
+    func setTitleText(text : String, subText : String) {
+        let imageConfig = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption2, weight: .bold))
+        let container = AttributeContainer([ .font : UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .bold), .foregroundColor : UIColor.tintOrange])
+        let attriString = AttributedString(text + " " + subText, attributes: container)
+        let clockImage = UIImage(systemName: "clock", withConfiguration: imageConfig)
+        let nearImage = UIImage(systemName: "person.line.dotted.person", withConfiguration: imageConfig)
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .secondaryBackgroundColor
+        config.titleAlignment = .center
+        config.cornerStyle = .capsule
+        config.baseForegroundColor = .secondaryLabelColor
+        config.attributedTitle = attriString
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20)
+        self.titleButton.configuration = config
+        self.titleButton.layoutIfNeeded()
     }
     
     

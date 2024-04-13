@@ -16,6 +16,8 @@ class UserFriendRequest : Equatable, Hashable {
     
     var user : User?
     
+    var friendStatus : FriendStatus! = .requestNeedRespond
+    
     
     
     init(request_ID: Int!, sent_time: String!, user_ID: Int!, name: String!, user_imageurl : URL?, userimage : UIImage? ) {
@@ -25,6 +27,7 @@ class UserFriendRequest : Equatable, Hashable {
     
     init(json: UserRequestJson) {
         if let request = json.request {
+            
            // self.request_ID = Int(request.request_ID!)
             self.sent_time = request.sent_time
         }

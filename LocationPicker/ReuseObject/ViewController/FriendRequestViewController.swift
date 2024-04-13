@@ -10,7 +10,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let userRequest = userRequests[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell") as! FriendRequestsTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FriendRequestsTableViewCell") as! FriendRequestsTableViewCell
         cell.friendRequestsDelegate = self
         cell.configure(userRequest: userRequest)
         return cell
@@ -45,6 +45,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     override func viewDidLoad() {
         super.viewDidLoad()
         viewStyleSet()
+        registerCells()
         Task {
             tableView.dataSource = self
             tableView.delegate = self
@@ -53,16 +54,18 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
         
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        1
+    
+    func registerCells() {
+        tableView.register(FriendRequestsTableViewCell.self, forCellReuseIdentifier: "FriendRequestsTableViewCell")
     }
     
     func viewStyleSet() {
         let bounds = UIScreen.main.bounds
-        tableView.register(UINib(nibName: "FriendsTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendsTableViewCell")
+        //tableView.register(UINib(nibName: "FriendsTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendsTableViewCell")
 
         tableView.allowsSelection = false
-        tableView.rowHeight = bounds.height / 8.5
+        tableView.delaysContentTouches = false
+        tableView.rowHeight = bounds.height / 10
         SearchBar.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         headerViewMinY = self.navigationController?.navigationBar.frame.maxY

@@ -63,7 +63,7 @@
                         <color key="tintColor" systemColor="labelColor"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="店名" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iz7-RT-sl5">
-                        <rect key="frame" x="44" y="406.33333333333331" width="305" height="28.666666666666686"/>
+                        <rect key="frame" x="44" y="408.33333333333331" width="305" height="28.666666666666686"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -77,9 +77,9 @@
                         <color key="currentPageIndicatorTintColor" red="0.85490196080000003" green="0.37647058820000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </pageControl>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="60m" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YhL-XO-tgk">
-                        <rect key="frame" x="180.66666666666666" y="443" width="31.666666666666657" height="18"/>
+                        <rect key="frame" x="180.66666666666666" y="445" width="31.666666666666657" height="18"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                        <color key="textColor" systemColor="systemGrayColor"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heart" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="CzH-T5-ZDz">
@@ -120,9 +120,15 @@
                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                         </preferredSymbolConfiguration>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="60m" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U6x-Q9-TvB">
+                        <rect key="frame" x="341.33333333333331" y="559" width="31.666666666666686" height="18"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                        <color key="textColor" systemColor="systemGrayColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Iz7-RT-sl5" firstAttribute="top" secondItem="GSG-D5-fvn" secondAttribute="bottom" constant="2" id="3JX-51-Icx"/>
+                    <constraint firstItem="Iz7-RT-sl5" firstAttribute="top" secondItem="GSG-D5-fvn" secondAttribute="bottom" constant="4" id="3JX-51-Icx"/>
                     <constraint firstItem="lUw-x5-WQQ" firstAttribute="centerX" secondItem="Iz7-RT-sl5" secondAttribute="centerX" id="4Y0-ua-XPX"/>
                     <constraint firstItem="GSG-D5-fvn" firstAttribute="leading" secondItem="Ha6-Vo-41g" secondAttribute="trailing" constant="8" id="8Cf-Rh-dCl"/>
                     <constraint firstItem="2D9-ff-QGA" firstAttribute="top" secondItem="lLx-e4-hgv" secondAttribute="top" constant="10" id="AyD-Kk-ZcZ"/>
@@ -134,6 +140,7 @@
                     <constraint firstItem="GSG-D5-fvn" firstAttribute="top" secondItem="2D9-ff-QGA" secondAttribute="bottom" constant="4" id="Jih-9X-Hgh"/>
                     <constraint firstItem="YhL-XO-tgk" firstAttribute="top" secondItem="Iz7-RT-sl5" secondAttribute="bottom" constant="8" id="NaB-je-URa"/>
                     <constraint firstItem="YhL-XO-tgk" firstAttribute="centerX" secondItem="Iz7-RT-sl5" secondAttribute="centerX" id="Pzr-pb-Un9"/>
+                    <constraint firstItem="640-rD-Mli" firstAttribute="top" secondItem="U6x-Q9-TvB" secondAttribute="bottom" constant="16" id="W2j-GK-kip"/>
                     <constraint firstAttribute="trailing" secondItem="2D9-ff-QGA" secondAttribute="trailing" id="X5I-qJ-R54"/>
                     <constraint firstItem="CzH-T5-ZDz" firstAttribute="trailing" secondItem="2D9-ff-QGA" secondAttribute="trailing" constant="-20" id="XZe-nQ-jxI"/>
                     <constraint firstItem="Iz7-RT-sl5" firstAttribute="leading" secondItem="lLx-e4-hgv" secondAttribute="leadingMargin" constant="24" id="b7Y-BY-OHR"/>
@@ -142,6 +149,7 @@
                     <constraint firstItem="Ha6-Vo-41g" firstAttribute="centerY" secondItem="GSG-D5-fvn" secondAttribute="centerY" id="fvx-lL-IyS"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Iz7-RT-sl5" secondAttribute="trailing" constant="24" id="o8l-VU-8aT"/>
                     <constraint firstItem="lUw-x5-WQQ" firstAttribute="centerX" secondItem="lLx-e4-hgv" secondAttribute="centerX" id="oIG-H8-hob"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="U6x-Q9-TvB" secondAttribute="trailing" id="q37-0d-gTP"/>
                     <constraint firstAttribute="bottom" secondItem="640-rD-Mli" secondAttribute="bottom" constant="28" id="rbd-e1-rPX"/>
                     <constraint firstAttribute="trailing" secondItem="GSG-D5-fvn" secondAttribute="trailing" constant="16" id="sPZ-zI-HBe"/>
                     <constraint firstItem="Iz7-RT-sl5" firstAttribute="centerX" secondItem="lLx-e4-hgv" secondAttribute="centerX" id="vYZ-cn-sO0"/>
@@ -158,6 +166,7 @@
                 <outlet property="pageControll" destination="lUw-x5-WQQ" id="6oU-hB-EzS"/>
                 <outlet property="restaurantNameLabel" destination="Iz7-RT-sl5" id="bEp-5R-6XQ"/>
                 <outlet property="shareImageView" destination="GSG-D5-fvn" id="LY8-CR-S0o"/>
+                <outlet property="timeStampLabel" destination="U6x-Q9-TvB" id="KcJ-MN-sKO"/>
                 <outlet property="userImageView" destination="f7e-M2-Ih8" id="T4f-4E-c9O"/>
             </connections>
             <point key="canvasLocation" x="131" y="-11"/>
@@ -175,7 +184,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

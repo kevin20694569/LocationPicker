@@ -7,6 +7,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [ : ]
     var getServerData : Bool = Constant.getServerData
+    
+    var completeNoPosts : Bool! = false
         
     
     
@@ -71,6 +73,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         registerCells()
         layoutCollectionCellflow()
         viewDataStyleSet()
+        configureNavBar(title: self.userProfile.user?.name)
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -99,13 +103,14 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        configureNavBar(title: self.userProfile.user?.name)
         if !getUserProfileFinish {
             Task(priority : .background)  {
                 await configure(user_id: user_id)
+
             }
         }
+        
+
     }
     
     func configureNavBar(title : String?) {
@@ -124,6 +129,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         do {
             Task(priority : .background) {
                 await getUserPosts(user_id : user_id, date : "")
+
             }
 
             guard let userProfile = try await UserProfileManager.shared.getProfileByID(user_ID: user_id) else {
@@ -157,6 +163,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         collectionView.register(ProfileMainCell.self, forCellWithReuseIdentifier:   "ProfileMainCell")
         collectionView.register(ProfileCollectionViewPlaylistCell.self, forCellWithReuseIdentifier: "ProfileCollectionViewPlaylistCell")
         collectionView.register(GridPostCell.self, forCellWithReuseIdentifier:   "GridPostCell")
+        collectionView.register(EmptyPostCollectoinCell.self, forCellWithReuseIdentifier: "EmptyPostCollectoinCell")
+        collectionView.register(LoadingCollectionCell.self, forCellWithReuseIdentifier: "LoadingCollectionCell")
     }
 
     func getUserPosts(user_id : Int, date : String) async {
@@ -167,10 +175,24 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
             } else {
                 newPosts = Post.localPostsExamples
             }
+
+
+            
             if newPosts.count > 0 {
-                let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
-                self.posts.insert(contentsOf: newPosts, at: self.posts.count)
-                self.collectionView.insertItems(at: insertionIndexPaths)
+                collectionView.performBatchUpdates {
+                    if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
+                        self.collectionView.deleteItems(at: [IndexPath(row: 0, section: 1)])
+                    }
+                    let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
+                    self.posts.insert(contentsOf: newPosts, at: self.posts.count)
+                    self.collectionView.insertItems(at: insertionIndexPaths)
+                }
+                
+            } else {
+                if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
+                    completeNoPosts = true
+                    self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 1)])
+                }
             }
         } catch {
             print("沒拿到posts")
@@ -275,7 +297,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
             return 1
         } else {
             return 0
-        }// 根据需要设置行之间的最小间距
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -297,6 +319,10 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
                 return CGSize(width: bounds.width , height: bounds.height * 0.15)
             }
         } else {
+            if self.posts.isEmpty {
+                let width = bounds.width
+                return CGSize(width: width , height: bounds.height * 0.1 )
+            }
             let width = bounds.width / 3 - 1 * 2
             return CGSize(width: width , height: width )
         }
@@ -314,16 +340,19 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
             let playlistEmpty = self.playlists.isEmpty ? 0 : 1
             return 1 + playlistEmpty
         } else {
+            if self.posts.isEmpty {
+                return 1
+            }
             return posts.count
         }
     }
     
    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
+
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileMainCell", for: indexPath) as! ProfileMainCell
                 cell.configure(userProfile: self.userProfile)
-
                 cell.delegate = self
                 return cell
             } else {
@@ -332,15 +361,25 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
                 return cell
             }
         } else {
+            if self.posts.isEmpty {
+                if completeNoPosts {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyPostCollectoinCell", for: indexPath) as! EmptyPostCollectoinCell
+                    return cell
+                } else {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LoadingCollectionCell", for: indexPath) as! LoadingCollectionCell
+                    return cell
+                }
+            }
             let post = posts[indexPath.row]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridPostCell", for: indexPath) as! GridPostCell
             cell.configureImageView(post: post, image: nil, mediaIndex: post.CurrentIndex)
             return cell
         }
-    }
+   }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.section != 0 else {
+        guard indexPath.section != 0,
+        !posts.isEmpty else {
             return
         }
         presentPostTableViewController(indexPath: indexPath)

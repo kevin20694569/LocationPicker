@@ -237,6 +237,52 @@ extension String {
         
         return timeAgoString + "前"
     }
+    
+    func timeAgeFromStringOrDateString() ->  String? {
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        
+        guard let date = dateFormatter.date(from: self) else {
+            print(self)
+            print("timeAgoFromString 失敗")
+            return nil
+        }
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.maximumUnitCount = 1
+        formatter.calendar?.locale = Locale(identifier: "zh_TW")
+        let now = Date()
+        let components = Calendar.current.dateComponents([.year, .month, .weekOfMonth, .day, .hour, .minute, .second], from: date, to: now)
+        if let weeks = components.weekOfMonth, weeks >= 1 {
+            let outputDateFormatter = DateFormatter()
+            outputDateFormatter.dateFormat = "MMMM d EEE" // "April 4 Mon."
+            
+            let formattedDate = outputDateFormatter.string(from: date)
+            return formattedDate
+        }
+        if components.year! == 0 && components.month! == 0 && components.hour! == 0 && components.minute! == 0 {
+            if components.second! < 5 {
+                return "剛剛"
+            }
+        }
+
+        
+        guard let timeAgoString = formatter.string(from: components)
+        else {
+            return "剛剛"
+        }
+        
+        return timeAgoString + "前"
+
+        // 假设原始日期字符串为 "2024-04-11T12:34:56.789Z"
+        
+    }
+    
+    
+    
 }
 
 extension AVPlayer {

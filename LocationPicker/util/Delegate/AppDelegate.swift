@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navBarAppearance.titleTextAttributes = [
             .font : UIFont.systemFont(ofSize: pointSize, weight: .bold)
          ]
-        var backButtonImage = UIImage(systemName: "chevron.backward", withConfiguration:  UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)))
+        var backButtonImage = UIImage(systemName: "chevron.backward", withConfiguration:  UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .bold)))
         backButtonImage = backButtonImage?.withAlignmentRectInsets(UIEdgeInsets(top: 0 , left: -8, bottom: 0, right: 0)).withTintColor(.label, renderingMode: .alwaysOriginal)
         
         navBarAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)

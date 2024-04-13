@@ -247,10 +247,8 @@ extension BasicViewController {
                     guard let post = mainTableViewController.tableViewCurrentCell?.currentPost  else {
                         return
                     }
-                    Task {
-                        mapViewController?.Restaurant  = Restaurant(name: post.restaurant?.name, Address: post.restaurant?.Address, restaurantID: post.restaurant!.restaurantID, image: nil)
-                        mapViewController?.configure(restaurantName: post.restaurant!.name, address: post.restaurant!.Address, restaurantID:  post.restaurant!.restaurantID)
-                    }
+                    mapViewController?.Restaurant  = Restaurant(name: post.restaurant?.name, Address: post.restaurant?.Address, restaurantID: post.restaurant!.restaurantID, image: nil)
+                    mapViewController?.configure(restaurantName: post.restaurant!.name, address: post.restaurant!.Address, restaurantID:  post.restaurant!.restaurantID)
                 }
             }
             if let fromMediaViewController = BasicViewController.topMostViewController(self.viewControllerArray[lastPage]) as? MediaDelegate {

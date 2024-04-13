@@ -90,6 +90,7 @@
                                                 <rect key="frame" x="56" y="1" width="49.666666666666657" height="48.666666666666671"/>
                                                 <color key="tintColor" name="tintOrange"/>
                                                 <constraints>
+                                                    <constraint firstAttribute="width" secondItem="dTT-Dz-VCT" secondAttribute="height" id="63V-QU-MyG"/>
                                                     <constraint firstAttribute="width" secondItem="dTT-Dz-VCT" secondAttribute="height" id="zcN-B0-uzL"/>
                                                 </constraints>
                                             </imageView>
@@ -98,6 +99,7 @@
                                                 <color key="tintColor" name="tintOrange"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="G3K-dB-84u" secondAttribute="height" id="HmK-ey-4Ao"/>
+                                                    <constraint firstAttribute="width" secondItem="G3K-dB-84u" secondAttribute="height" id="wHg-sg-vbW"/>
                                                 </constraints>
                                             </imageView>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dollarsign.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="oos-aD-GDI">
@@ -105,12 +107,14 @@
                                                 <color key="tintColor" name="tintOrange"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="oos-aD-GDI" secondAttribute="height" id="q1w-wD-Ia0"/>
+                                                    <constraint firstAttribute="width" secondItem="oos-aD-GDI" secondAttribute="height" id="xpQ-O1-KuC"/>
                                                 </constraints>
                                             </imageView>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dollarsign.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="4fr-F1-Yji">
                                                 <rect key="frame" x="223.66666666666666" y="1" width="49.999999999999972" height="48.666666666666671"/>
                                                 <color key="tintColor" name="tintOrange"/>
                                                 <constraints>
+                                                    <constraint firstAttribute="width" secondItem="4fr-F1-Yji" secondAttribute="height" id="inY-ie-uOH"/>
                                                     <constraint firstAttribute="width" secondItem="4fr-F1-Yji" secondAttribute="height" id="isE-k9-OzN"/>
                                                 </constraints>
                                             </imageView>
@@ -121,12 +125,6 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="dTT-Dz-VCT" firstAttribute="width" secondItem="dTT-Dz-VCT" secondAttribute="height" id="63V-QU-MyG"/>
-                                            <constraint firstItem="4fr-F1-Yji" firstAttribute="width" secondItem="4fr-F1-Yji" secondAttribute="height" id="inY-ie-uOH"/>
-                                            <constraint firstItem="G3K-dB-84u" firstAttribute="width" secondItem="G3K-dB-84u" secondAttribute="height" id="wHg-sg-vbW"/>
-                                            <constraint firstItem="oos-aD-GDI" firstAttribute="width" secondItem="oos-aD-GDI" secondAttribute="height" id="xpQ-O1-KuC"/>
-                                        </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="7x8-ip-FG2">
                                         <rect key="frame" x="0.0" y="108.00000000000001" width="337" height="49.666666666666671"/>
@@ -277,7 +275,7 @@
             <color red="0.85399997234344482" green="0.37799999117851257" blue="0.19900000095367432" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGray2Color">
-            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
