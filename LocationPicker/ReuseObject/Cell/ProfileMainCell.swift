@@ -2,17 +2,10 @@ import UIKit
 
 class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelegate {
     
-    var mainView : UIView! = UIView() { didSet {
-
-        mainView.backgroundColor = .secondaryBackgroundColor
-    }}
-    
+    var mainView : UIView! = UIView()
     weak var delegate : ProfileMainCellDelegate?
     
-    var userImageView : UIImageView! = UIImageView()  { didSet {
-        userImageView.layer.cornerRadius = 8.0
-        userImageView.contentMode = .scaleAspectFit
-    }}
+    var userImageView : UIImageView! = UIImageView()
     
     var leftButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     var shareButton : ZoomAnimatedButton! = ZoomAnimatedButton()
@@ -65,6 +58,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         layoutButtons()
         layoutDetailStackView()
         layout()
+        imageViewSetup()
         setGesture()
     }
     
@@ -148,7 +142,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
                 await sendFriendRequest()
             }
         case .isFriend :
-            self.delegate?.showMessageViewController(user_ids: [self.userProfile.user.user_id, Constant.user_id])
+            self.delegate?.showMessageViewController(user_ids: [self.userProfile.user.id, Constant.user_id])
         case .hasBeenSentRequest :
             Task {
                 await self.cancelFriendRequest()
@@ -156,9 +150,10 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
                 
                 updateLeftButton()
             }
-        case .none:
+        case .isSelf :
+            delegate?.showEditUserProfileViewController(userProfile: self.userProfile)
             break
-        case .some(.isSelf):
+        case .none:
             break
         case .some(.requestNeedRespond):
             break
@@ -184,7 +179,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     
     func cancelFriendRequest() async {
         do {
-            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.userProfile.user.user_id)
+            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.userProfile.user.id)
             self.userProfile.friendStatus = .notFriend
             self.configure(userProfile: userProfile)
         } catch {
@@ -197,7 +192,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     
     func acceptFriendRequest() async {
         do {
-            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: self.userProfile.user.user_id)
+            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: self.userProfile.user.id)
             self.userProfile.friendStatus = .isFriend
             self.configure(userProfile: userProfile)
         } catch {
@@ -208,7 +203,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     @objc func sendFriendRequest() async  {
         Task {
             do {
-                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: self.userProfile.user.user_id)
+                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: self.userProfile.user.id)
                 self.userProfile.friendStatus = .hasBeenSentRequest
                 self.configure(userProfile: userProfile)
             } catch {
@@ -280,7 +275,7 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
              mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
              mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
              userImageView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 12),
-             userImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 24),
+             userImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 30),
              userImageView.trailingAnchor.constraint(equalTo: detailStackView.leadingAnchor, constant: -24),
              userImageView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.48),
              userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
@@ -312,6 +307,13 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
          ])
         mainView.layer.cornerRadius = 20
         mainView.clipsToBounds = true
+    }
+    
+    func imageViewSetup() {
+        userImageView.clipsToBounds = true
+        userImageView.layer.cornerRadius = 12.0
+        userImageView.backgroundColor = .secondaryLabelColor
+        userImageView.contentMode = .scaleAspectFill
     }
     
     func configure(userProfile : UserProfile ) {

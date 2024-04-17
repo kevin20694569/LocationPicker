@@ -101,7 +101,7 @@ class FriendTableCell : UITableViewCell {
     
     func cancelFriendRequest() async {
         do {
-            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.friend.user.user_id)
+            try await FriendManager.shared.cancelFriendRequest(from: Constant.user_id, to: self.friend.user.id)
             self.friend.friendStatus = .notFriend
             self.configure(friend: friend)
         } catch {
@@ -113,7 +113,7 @@ class FriendTableCell : UITableViewCell {
     
     func acceptFriendRequest() async {
         do {
-            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: friend.user.user_id)
+            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: Constant.user_id, sentReqeust_user_id: friend.user.id)
             self.friend.friendStatus = .isFriend
             self.configure(friend: friend)
         } catch {
@@ -122,13 +122,13 @@ class FriendTableCell : UITableViewCell {
     }
     
     @objc func showUserProfileController( _ gesture : UITapGestureRecognizer) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: friend.user, user_id: friend.user.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: friend.user, user_id: friend.user.id)
         delegate?.show(controller, sender: nil)
     }
     @objc func sendFriendRequest() {
         Task {
             do {
-                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: friend.user.user_id)
+                try await FriendManager.shared.sendFriendRequest(from: Constant.user_id, to: friend.user.id)
                 self.friend.friendStatus = .hasBeenSentRequest
                 self.configure(friend: friend)
             } catch {
@@ -138,7 +138,7 @@ class FriendTableCell : UITableViewCell {
     }
     
     @objc func showMessageViewController() {
-        delegate?.showMessageViewController(user_ids:  [friend.user.user_id, Constant.user_id])
+        delegate?.showMessageViewController(user_ids:  [friend.user.id, Constant.user_id])
     }
     
     func setupLayout() {

@@ -46,7 +46,7 @@ final class PostManager : NSObject {
         }
     }
     
-    func uploadPostTask(post_title : String? = nil, post_content : String? = nil, medias : [Media]!, user_id: Int, placemodel : Restaurant, grade : Double?) async throws {
+    func uploadPostTask(post_title : String? = nil, post_content : String? = nil, medias : [Media]!, user_id: String, placemodel : Restaurant, grade : Double?) async throws {
         let urlString = API
         guard let url = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             throw APIError.URLnotFound(urlString)
@@ -54,7 +54,7 @@ final class PostManager : NSObject {
         
         guard let placeName = placemodel.name ,
               let placeAddress = placemodel.Address,
-              let placeID = placemodel.restaurantID,
+              let placeID = placemodel.ID,
               let socket_id = SocketIOManager.shared.socket_id else {
             throw PostError.uploadDetailError
         }
@@ -66,20 +66,29 @@ final class PostManager : NSObject {
             for media in medias {
                 post_itemtitles.append(media.title ?? "")
             }
-            let parameters: [String: Any?] = [
-                "post_title" : post_title,
-                "post_content" : post_content,
+            let parameters: [String: any Encodable] = [
+                "title" : post_title,
+                "content" : post_content,
                 "user_id" : user_id,
-                "post_itemtitles" : post_itemtitles,
-                "restaurant_name" : placeName,
-                "restaurant_address" : placeAddress,
-                "restaurant_ID" : placeID,
+                "media_titles" : post_itemtitles,
+                "restaurant_id" : placeID,
                 "socket_id" : socket_id,
                 "grade" : grade
             ]
-            
-            let jsonData = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
-            multipartFormData.append(jsonData, withName: "json", mimeType: "application/json")
+            let jsonEncoder = JSONEncoder()
+            jsonEncoder.outputFormatting = .prettyPrinted
+            for (key, value) in parameters {
+                if let string = value as? String {
+                    
+                    if let data = string.data(using: .utf8) {
+                        multipartFormData.append(data, withName: key, mimeType: "application/json")
+                    }
+                    continue
+                }
+                if let data = try? jsonEncoder.encode(value) {
+                    multipartFormData.append(data, withName: key, mimeType: "application/json")
+                }
+            }
             
             let tupleArray = try await Media.compress(inputMedias: medias)
             for (media, data) in tupleArray {
@@ -134,7 +143,7 @@ final class PostManager : NSObject {
         }
     }
     
-    func getUserPostsByID(user_id : Int, date : String) async throws -> [Post] {
+    func getUserPostsByID(user_id : String, date : String) async throws -> [Post] {
         do {
             let urlstring = API + "/users/\(user_id)?date=\(date)&user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -156,7 +165,7 @@ final class PostManager : NSObject {
         }
     }
     
-    func getFriendsNearLocationPosts(user_id: Int ,distance: Double) async throws -> [Post] {
+    func getFriendsNearLocationPosts(user_id: String ,distance: Double) async throws -> [Post] {
         do {
             let urlstring = API + "/nearlocation/friendsbynearlocation?latitude=\(latitude)&longitude=\(longitude)&distance=\(distance)&request_user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -178,7 +187,7 @@ final class PostManager : NSObject {
         }
     }
     
-    func getFriendsPostsByCreatedTime(user_id: Int ,date: String) async throws -> [Post] {
+    func getFriendsPostsByCreatedTime(user_id: String ,date: String) async throws -> [Post] {
         do {
             let urlstring = API + "/friendsbyordertime?latitude=\(latitude)&longitude=\(longitude)&date=\(date)&request_user_id=\(Constant.user_id)"
             
@@ -201,7 +210,7 @@ final class PostManager : NSObject {
         }
     }
     
-    func getPostDetail(post_id : String, request_user_id: Int ) async throws -> Post {
+    func getPostDetail(post_id : String, request_user_id: String ) async throws -> Post {
         do {
             let urlstring = API + "/\(post_id)?request_user_id=\(request_user_id)"
             

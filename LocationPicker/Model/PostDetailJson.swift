@@ -65,11 +65,11 @@ struct PostJson : Codable {
 
 
 struct PostDetailJson : Codable {
-    var post_id : String?
-    var post_title : String?
-    var post_content : String?
+    var id : String?
+    var title : String?
+    var content : String?
     var media : [mediaJSON]?
-    var user_id: Int?
+    var user_id: String?
     var restaurant_id : String!
     var created_at : String?
     var distance : Double?
@@ -79,10 +79,10 @@ struct PostDetailJson : Codable {
     
     
     enum CodingKeys: String, CodingKey {
-        case post_id = "post_id"
-        case post_title = "post_title"
-        case post_content = "post_content"
-        case media = "media_data"
+        case id = "id"
+        case title = "title"
+        case content = "content"
+        case media = "media"
         case user_id = "user_id"
         case restaurant_id = "restaurant_id"
         case created_at = "created_at"
@@ -91,9 +91,9 @@ struct PostDetailJson : Codable {
         case distance = "distance"
     }
     
-    init(contenttext : String, media : [mediaJSON]!, user_id: Int, restaurant_id : String, restaurantname: String?, restaurantaddress : String?) {
+    init(contenttext : String, media : [mediaJSON]!, user_id: String, restaurant_id : String, restaurantname: String?, restaurantaddress : String?) {
         
-        self.post_content = contenttext
+        self.content = contenttext
         self.media = media
         self.user_id = user_id
         self.restaurant_id = restaurant_id
@@ -102,30 +102,31 @@ struct PostDetailJson : Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.post_id = try container.decodeIfPresent(String.self, forKey: .post_id)
-        self.post_title = try container.decodeIfPresent(String.self, forKey: .post_title)
-        self.post_content = try container.decodeIfPresent(String.self, forKey: .post_content)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        self.content = try container.decodeIfPresent(String.self, forKey: .content)
         self.media = try container.decodeIfPresent([mediaJSON].self, forKey: .media)
-        self.user_id = try container.decode(Int.self, forKey: .user_id)
+        self.user_id = try container.decode(String.self, forKey: .user_id)
         self.restaurant_id = try container.decodeIfPresent(String.self, forKey: .restaurant_id)
         self.created_at = try container.decodeIfPresent(String.self, forKey: .created_at)
         self.reactionsCount = try container.decodeIfPresent(ReactionsCount.self, forKey: .reactionsCount)
+        self.grade = try container.decodeIfPresent(Double.self, forKey: .grade)
         self.distance = try container.decodeIfPresent(Double.self, forKey: .distance)
     }
 }
 
 struct mediaJSON : Codable {
     var url : String!
-    var itemtitle : String? = ""
+    var title : String? = ""
     
     enum CodingKeys: String, CodingKey {
         case url = "url"
-        case itemtitle = "itemtitle"
+        case title = "itemtitle"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.url = try container.decodeIfPresent(String.self, forKey: .url)
-        self.itemtitle = try container.decodeIfPresent(String.self, forKey: .itemtitle)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
     }
 }

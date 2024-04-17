@@ -1,8 +1,5 @@
 import UIKit
 import AVFoundation
-enum Section {
-    case Main
-}
 
 class MainPostTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MediaTableCellDelegate, CollectionViewInTableViewMediaAnimatorDelegate, MediaTableViewCellDelegate, WholePageMediaViewControllerDelegate {
     
@@ -94,7 +91,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         case PublicNear
         case FriendsNear
         case FriendsCreatedTime
-        func getPosts(user_id : Int , distance : Double, date : String) async throws -> [Post] {
+        func getPosts(user_id : String , distance : Double, date : String) async throws -> [Post] {
             var results : [Post] = []
             do {
                 switch self {
@@ -259,14 +256,23 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 self.pauseCurrentMedia()
                 self.posts.removeAll()
                 if !getServerData {
-                    insertPostsReloadSection(posts:  Post.localPostsExamples)
+                    self.posts.insert(contentsOf: posts, at: self.posts.count)
+                    tableView.reloadSections([0], with: .automatic)
                     return
                 }
                 
                 let newposts = try await self.postsStatus.getPosts(user_id: Constant.user_id, distance: 0, date: "")
-
-                insertPostsReloadSection(posts:  newposts)
-                currentTableViewIndexPath = IndexPath(row: 0, section: 0)
+                self.posts.insert(contentsOf: newposts, at: self.posts.count)
+                if currentTableViewIndexPath != IndexPath(row: 0, section: 0) {
+                    currentTableViewIndexPath = IndexPath(row: 0, section: 0)
+                    
+                    if self.posts.first != nil {
+                        self.tableView.scrollToRow(at: currentTableViewIndexPath, at: .none, animated: true)
+                    }
+                }
+                tableView.reloadSections([0], with: .fade)
+               
+               
 
             } catch {
                 tableView.reloadSections([0], with: .fade)
@@ -274,11 +280,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 
             }
         }
-    }
-    
-    func insertPostsReloadSection(posts : [Post]) {
-        self.posts.insert(contentsOf: posts, at: self.posts.count)
-        tableView.reloadSections([0], with: .automatic)
     }
     
     func insertNewPosts(newPosts: [Post]) {
@@ -348,7 +349,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             self.postsStatus = .FriendsNear
             self.setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
             self.refreshPosts()
-            
         })
         
         let friendsOrderTimeAction = UIAction(title : "Friend By Time", state: .on) { action in
@@ -358,6 +358,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             self.postsStatus = .FriendsCreatedTime
             self.setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
             self.refreshPosts()
+
         }
         
         
@@ -448,7 +449,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     
     func showUserProfile(user : User) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user,  user_id: user.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user,  user_id: user.id)
         controller.navigationItem.title = user.name
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -596,7 +597,7 @@ extension MainPostTableViewController {
         config.attributedTitle = attriString
         config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20)
         self.titleButton.configuration = config
-        self.titleButton.layoutIfNeeded()
+
     }
     
     

@@ -55,7 +55,7 @@ class RhsMessageSharedUserCell : RhsMessageTableViewCell, MessageSharedUserCell 
             return
         }
      
-        self.messageTableCellDelegate?.showUserProfile(user_id: user.user_id, user: user) 
+        self.messageTableCellDelegate?.showUserProfile(user_id: user.id, user: user) 
     }
     
     override func prepareForReuse() {
@@ -159,7 +159,7 @@ class LhsMessageSharedUserCell : LhsMessageTableViewCell, MessageSharedUserCell 
             return
         }
      
-        self.messageTableCellDelegate?.showUserProfile(user_id: user.user_id, user: user)
+        self.messageTableCellDelegate?.showUserProfile(user_id: user.id, user: user)
     }
     
     override func prepareForReuse() {

@@ -2,7 +2,7 @@ import UIKit
 
 class ChatRoomTableCell: UITableViewCell {
     
-    var chatroomInstance : ChatRoom!
+    var chatroomInstance : ChatRoomPreview!
     
     @IBOutlet weak var nameLabel : UILabel!
     @IBOutlet weak var lastMessageLabel : UILabel!
@@ -13,7 +13,7 @@ class ChatRoomTableCell: UITableViewCell {
         
     }}
     
-    func configure(chatroom : ChatRoom) {
+    func configure(chatroom : ChatRoomPreview) {
         self.chatroomInstance = chatroom
         self.nameLabel.text = chatroom.name
         self.lastMessageLabel.text = chatroom.lastMessage.message

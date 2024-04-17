@@ -2,7 +2,7 @@
 import UIKit
 
 protocol MessageTableCellDelegate : UIViewController {
-    func showUserProfile(user_id : Int , user: User?)
+    func showUserProfile(user_id : String , user: User?)
     func showWholePageMediaViewController(cell : UITableViewCell)
 }
 

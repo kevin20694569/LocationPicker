@@ -1,7 +1,7 @@
 import UIKit
 
-class ChatRoom : Hashable , Equatable {
-    static func == (lhs: ChatRoom, rhs: ChatRoom) -> Bool {
+class ChatRoomPreview : Hashable , Equatable {
+    static func == (lhs: ChatRoomPreview, rhs: ChatRoomPreview) -> Bool {
         lhs.room_id == rhs.room_id
     }
     func hash(into hasher: inout Hasher) {
@@ -11,73 +11,72 @@ class ChatRoom : Hashable , Equatable {
     var room_id : String!
     var lastTimeStamp : String?
     var name : String!
-    
-   /* var lastMessage : String?
-    var senderId : Int?
-    var isRead : Bool?*/
-    
-
-
-    
-    
     var lastMessage : Message!
-    
     var user : User?
     
-    init(room_id: String!, lastMessage: String? = nil, senderId: Int? = nil, isRead: Bool? = nil, room_name: String!, lastTimeStamp : String? ,  user : User?) {
-        /*self.room_id = room_id
-        self.lastMessage = lastMessage
-        self.senderId = senderId
-        self.isRead = isRead
-        self.lastTimeStamp = lastTimeStamp
-        self.room_name = room_name*/
-        self.user = user
-    }
+    var chatRoom : ChatRoom!
     
-    init (lastMessage : MessageJson, user : UserJson){
-        self.room_id = lastMessage.room_id
-        self.lastTimeStamp = lastMessage.created_time
+    init (lastMessage : MessageJson?, user : UserJson, chatroomJson : ChatRoomJson){
+        
+        if let messageJson = lastMessage {
+            self.lastMessage = Message(json: messageJson)
+            self.room_id = messageJson.room_id
+            self.lastTimeStamp = messageJson.created_time
+        }
+        self.chatRoom = ChatRoom(json: chatroomJson)
         self.name = user.name
-        self.lastMessage = Message(json: lastMessage)
+       
         self.user = User(userJson: user)
     }
-    
-    
-   /* convenience init(json : ChatroomJson) {
-        var user : User?
-        if let userJson = json.user {
-            user = User(userJson: userJson)
-        }
-        let messageJson = json.lastMessageJson!
-        let room_id = json.lastMessageJson.room_id!
-        var lastMessage = json.lastMessageJson.message
-        let message = M messageJson.message
-
-        self.init(room_id: messageJson.room_id, lastMessage: lastMessage,  senderId: messageJson.sender_id, isRead: messageJson.isRead , room_name: user?.name, lastTimeStamp: messageJson.created_time, user: user)
-    }*/
     
     static var hasRecievedRoom_IDs : [String : String]! = [ : ]
     
 }
 
-struct ChatroomJson : Codable {
+struct ChatRoom {
+    var user_ids : [String]! = []
+    var room_id : String!
     
-    var lastMessageJson : MessageJson!
+    
+    init(json : ChatRoomJson) {
+        self.user_ids = json.user_ids
+        self.room_id = json.room_id
+    }
+}
 
+struct ChatRoomPreviewJson : Codable {
+    
+    var message : MessageJson?
+    
+    var chatroom : ChatRoomJson!
     
     var user : UserJson!
     
     
     enum CodingKeys : String, CodingKey {
         case user = "user"
-        case lastMessageJson = "message"
+        case message = "message"
+        case chatroom = "chatroom"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.lastMessageJson = try container.decodeIfPresent(MessageJson.self, forKey: .lastMessageJson)
+        self.message = try container.decodeIfPresent(MessageJson.self, forKey: .message)
         self.user = try container.decodeIfPresent(UserJson.self, forKey: .user)
+        self.chatroom = try container.decodeIfPresent(ChatRoomJson.self, forKey: .chatroom)
     }
     
+}
+
+struct ChatRoomJson : Codable {
+    var user_ids : [String]!
+    
+    var room_id : String!
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.user_ids = try container.decodeIfPresent([String].self, forKey: .user_ids)
+        self.room_id = try container.decodeIfPresent(String.self, forKey: .room_id)
+    }
     
 }

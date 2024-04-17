@@ -204,6 +204,15 @@ extension Date {
     }
 }
 
+extension Character {
+    var isChinese: Bool {
+        let scalar = String(self)
+        let range = UnicodeScalar(0x4E00)!...UnicodeScalar(0x9FA5)!
+        return scalar.unicodeScalars.allSatisfy { range.contains($0) }
+    }
+}
+
+
 extension String {
     func timeAgoFromString() -> String? {
         
@@ -276,9 +285,18 @@ extension String {
         }
         
         return timeAgoString + "前"
-
-        // 假设原始日期字符串为 "2024-04-11T12:34:56.789Z"
         
+    }
+    
+    func isValidEmail() -> Bool {
+        // 定义电子邮件地址的正则表达式
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        
+        // 创建 NSPredicate 对象，并使用正则表达式初始化
+        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
+        
+        // 调用 evaluate(with:) 方法来检查字符串是否匹配正则表达式
+        return emailPredicate.evaluate(with: self)
     }
     
     

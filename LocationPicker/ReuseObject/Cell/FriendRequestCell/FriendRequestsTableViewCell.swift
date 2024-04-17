@@ -1,24 +1,15 @@
 import UIKit
 class FriendRequestsTableViewCell : UITableViewCell  {
     
-    var pairButtonContainer : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)])
+    var pairButtonContainer : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)])
     
     
     var userRequestInstance : UserFriendRequest!
     
     weak var friendRequestsDelegate : FriendRequestsCellDelegate!
     
-    var userImageView: UIImageView! = UIImageView() { didSet {
-        userImageView.isUserInteractionEnabled = true
-        userImageView.contentMode = .scaleAspectFit
-        userImageView.layer.cornerRadius = 10.0
-        userImageView.clipsToBounds = true
-        userImageView.backgroundColor = .secondaryBackgroundColor
-    }}
-    var userNameLabel : UILabel! = UILabel() { didSet {
-        userNameLabel.isUserInteractionEnabled  = true
-    }}
-    
+    var userImageView: UIImageView! = UIImageView()
+    var userNameLabel : UILabel! = UILabel()
 
     
     var sendTimeLabel : UILabel! = UILabel()
@@ -75,8 +66,6 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         if request.isResponsed {
             self.leftButton.isHidden = true
             self.rightButton.isHidden = true
-      //      let rect = buttonStackView.frame
-        //    viewUserProfileButton.frame = rect
             mainButton.isHidden = false
         } else {
             self.leftButton.isHidden = false
@@ -87,6 +76,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layoutSetup()
+        imageViewSetup()
         labelsSetup()
         buttonsSetup()
         gestureSetup()
@@ -96,7 +86,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     
     func layoutSetup() {
-        userImageView.backgroundColor = .secondaryBackgroundColor
+        
         contentView.addSubview(userImageView)
         contentView.addSubview(userNameLabel)
         contentView.addSubview(sendTimeLabel)
@@ -112,16 +102,16 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         NSLayoutConstraint.activate([
             userImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:  20),
             
-            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant:  6),
-            userImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant:  -6),
+            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant:  10),
+            userImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant:  -10),
             userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
             
-            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
+            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 16),
             userNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
             
             sendTimeLabel.centerYAnchor.constraint(equalTo: rightButton.centerYAnchor),
-            sendTimeLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
+            sendTimeLabel.leadingAnchor.constraint(equalTo: userNameLabel.leadingAnchor),
             
             rightButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             rightButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant :  -10),
@@ -140,11 +130,21 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         ])
     }
     
+    func imageViewSetup() {
+        userImageView.isUserInteractionEnabled = true
+        userImageView.contentMode = .scaleAspectFill
+        userImageView.layer.cornerRadius = 10.0
+        userImageView.clipsToBounds = true
+        userImageView.backgroundColor = .secondaryBackgroundColor
+    }
+    
     func labelsSetup() {
-        self.userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+        self.userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
         self.sendTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .regular)
         userNameLabel.textColor = .label
         sendTimeLabel.textColor = .secondaryLabelColor
+        userNameLabel.isUserInteractionEnabled  = true
+        sendTimeLabel.isUserInteractionEnabled = true
     }
     
     func buttonsSetup() {
@@ -159,7 +159,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         rightButton.configuration = config
         mainButton.configuration = config
         
-        let pairButtonsInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20)
+        let pairButtonsInsets = NSDirectionalEdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20)
         var leftConfig = leftButton.configuration
         let leftAttrString = AttributedString("接受", attributes:  pairButtonContainer    )
         leftConfig?.attributedTitle = leftAttrString
@@ -177,7 +177,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         var showUserProfileConfig = mainButton.configuration
         let showUserProfileAttrString = AttributedString("查看個人檔案", attributes:  pairButtonContainer    )
         showUserProfileConfig?.attributedTitle = showUserProfileAttrString
-        showUserProfileConfig?.contentInsets = NSDirectionalEdgeInsets(top: 8,  leading: 20, bottom: 9, trailing: 20)
+        showUserProfileConfig?.contentInsets = pairButtonsInsets
         showUserProfileConfig?.baseBackgroundColor = .secondaryLabelColor
         mainButton.configuration = showUserProfileConfig
         leftButton.addTarget(self, action: #selector(leftButtonTapped( _ :)), for: .touchUpInside)
@@ -202,7 +202,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     @objc func leftButtonTapped(_ button: UIButton) {
         Task {
-            guard let user_id = self.userRequestInstance.user?.user_id else {
+            guard let user_id = self.userRequestInstance.user?.id else {
                 print("error ID錯誤")
                 return
             }
@@ -212,7 +212,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     @objc func rightButtonTapped( _ button : UIButton) {
         Task {
-            guard let user_id = self.userRequestInstance.user?.user_id else {
+            guard let user_id = self.userRequestInstance.user?.id else {
                 print("error ID錯誤")
                 return
             }
@@ -220,7 +220,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         }
     }
     
-    func cacelFriendRequest(cacel_user_id : Int, to_user_id : Int) async {
+    func cacelFriendRequest(cacel_user_id : String, to_user_id : String) async {
         do {
             try await FriendManager.shared.cancelFriendRequest(from: cacel_user_id, to: to_user_id)
             self.userRequestInstance.friendStatus = .notFriend
@@ -230,7 +230,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         }
     }
     
-    func acceptRequestToCreateFriendShip(accept_user_id :Int , to_user_id : Int) async  {
+    func acceptRequestToCreateFriendShip(accept_user_id :String , to_user_id : String) async  {
         do {
            try await FriendManager.shared.acceptFriendRequestByEachUserID(accept_user_id: accept_user_id, sentReqeust_user_id: to_user_id)
             self.userRequestInstance.friendStatus = .isFriend

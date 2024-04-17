@@ -37,7 +37,7 @@ class PlaceFindtableViewController: UIViewController, UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let location = self.locationModel[indexPath.row]
-        guard location.restaurantID != String(0) else {
+        guard location.ID != String(0) else {
             return
         }
         sourceController.changePlaceModel(model: location)

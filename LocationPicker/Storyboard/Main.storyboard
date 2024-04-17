@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -163,7 +164,8 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="dab-W2-yHd">
-                        <barButtonItem key="leftBarButtonItem" image="map" catalog="system" id="5Zu-Ev-oup">
+                        <barButtonItem key="leftBarButtonItem" id="5Zu-Ev-oup">
+                            <imageReference key="image" image="map" catalog="system" symbolScale="large"/>
                             <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="message" catalog="system" id="wHb-78-DZu">

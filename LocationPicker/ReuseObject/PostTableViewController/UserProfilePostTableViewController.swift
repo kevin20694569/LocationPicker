@@ -6,7 +6,7 @@ class UserProfilePostTableViewController : PostTableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard !isLoadingPost, posts.count - indexPath.row == 1,
-              let user_id = user.user_id else {
+              let user_id = user.id else {
             return
         }
         

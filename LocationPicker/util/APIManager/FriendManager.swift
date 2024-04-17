@@ -7,7 +7,7 @@ class FriendManager {
     static let shared = FriendManager()
     lazy var API = ip + "/friends"
     
-    func getUserFriendsFromUserID(user_id : Int, Date : String) async throws -> [Friend]  {
+    func getUserFriendsFromUserID(user_id : String, Date : String) async throws -> [Friend]  {
         do {
             let urlstring = API + "/friendships/\(user_id)?request_user_id=\(Constant.user_id)"
             guard  urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -36,7 +36,7 @@ class FriendManager {
         }
     }
     
-    func getUserFriendReceiveRequestsFromUserID(user_id : Int, date : String) async throws -> [UserFriendRequest]  {
+    func getUserFriendReceiveRequestsFromUserID(user_id : String, date : String) async throws -> [UserFriendRequest]  {
         do {
             let urlstring = API + "/friendrequests/receive-friend-request?request_user_id=\(user_id)&date=\(date)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -60,7 +60,7 @@ class FriendManager {
         }
     }
     
-    func getUserFriendSentRequestsFromUserID(user_id : Int, date : String) async throws -> [UserFriendRequest]  {
+    func getUserFriendSentRequestsFromUserID(user_id : String, date : String) async throws -> [UserFriendRequest]  {
         do {
             let urlstring = API + "/friendrequests/sent-friend-request?request_user_id=\(user_id)&date=\(date)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -83,7 +83,7 @@ class FriendManager {
         }
     }
     
-    func acceptFriendRequestFromRequestID(request_id: Int, accept_user_id : Int) async throws -> Int {
+    func acceptFriendRequestFromRequestID(request_id: String, accept_user_id : String) async throws -> Int {
         
         do {
             let urlstring = self.API + "/friendrequests/accept/\(request_id)"
@@ -94,7 +94,7 @@ class FriendManager {
             var req = URLRequest(url: url)
             req.httpMethod = "POST"
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            let parameters: [String: Int] = [
+            let parameters: [String: String] = [
                 "accept_user_id": accept_user_id,
             ]
             let body = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
@@ -108,7 +108,7 @@ class FriendManager {
         }
     }
     
-    func acceptFriendRequestByEachUserID(accept_user_id: Int, sentReqeust_user_id : Int) async throws {
+    func acceptFriendRequestByEachUserID(accept_user_id: String, sentReqeust_user_id : String) async throws {
         
         do {
             let urlstring = self.API + "/friendships/accept"
@@ -119,7 +119,7 @@ class FriendManager {
             var req = URLRequest(url: url)
             req.httpMethod = "POST"
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            let parameters: [String: Int] = [
+            let parameters: [String: String] = [
                 "accept_user_id": accept_user_id,
                 "request_user_id" : sentReqeust_user_id
             ]
@@ -140,7 +140,7 @@ class FriendManager {
         }
     }
     
-    func sendFriendRequest(from from_user_id : Int,  to to_user_id : Int)  async throws {
+    func sendFriendRequest(from from_user_id : String,  to to_user_id : String)  async throws {
         do {
             let urlstring = API + "/friendrequests/send"
             
@@ -169,7 +169,7 @@ class FriendManager {
         }
     }
     
-    func cancelFriendRequest(from from_user_id : Int, to to_user_id : Int) async throws {
+    func cancelFriendRequest(from from_user_id : String, to to_user_id : String) async throws {
         do {
             let urlstring = API + "/friendrequests"
             
@@ -199,8 +199,8 @@ class FriendManager {
     }
     
     struct FriendRequestBody : Encodable {
-        var request_user_id : Int
-        var to_user_id : Int
+        var request_user_id : String
+        var to_user_id : String
     }
     
     

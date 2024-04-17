@@ -4,13 +4,13 @@ import AVKit
 
 class Post : Hashable, Equatable {
     static func == (lhs: Post, rhs: Post) -> Bool {
-        lhs.PostID == rhs.PostID
+        lhs.id == rhs.id
     }
     func hash(into hasher: inout Hasher) {
-        hasher.combine(PostID)
+        hasher.combine(id)
     }
     
-    var PostID : String!
+    var id : String!
     var timestamp : String!
     var distance : Double?
     var media : [Media]! = []
@@ -47,8 +47,8 @@ class Post : Hashable, Equatable {
     }
     init() { }
     
-    init(postId : String, username : String?, restanrantname: String?, restaurantaddress: String?, mediacontents: [Media], timestamp : String, distance : Double?, RestaurantID : String, userID : Int, content : String? , title : String?, selfReaction : Reaction?, publicReactions : [Reaction]?, liked : Bool?, likedTotal : Int, lovedTotal : Int?, vomitedTotal : Int?, angryTotal : Int?, sadTotal : Int?, surpriseTotal : Int?, grade : Double?) {
-        self.PostID = postId
+    init(postId : String, username : String?, restanrantname: String?, restaurantaddress: String?, mediacontents: [Media], timestamp : String, distance : Double?, RestaurantID : String, userID : String, content : String? , title : String?, selfReaction : Reaction?, publicReactions : [Reaction]?, liked : Bool?, likedTotal : Int, lovedTotal : Int?, vomitedTotal : Int?, angryTotal : Int?, sadTotal : Int?, surpriseTotal : Int?, grade : Double?) {
+        self.id = postId
         self.liked = liked ?? false
         self.media = mediacontents
         self.timestamp = timestamp
@@ -70,19 +70,16 @@ class Post : Hashable, Equatable {
     
     convenience init(postJson: PostJson) {
         
-        let post_title = postJson.postDetail?.post_title
-        let post_content = postJson.postDetail?.post_content
-        let post_id = postJson.postDetail?.post_id
+        let post_title = postJson.postDetail?.title
+        let post_content = postJson.postDetail?.content
+        let post_id = postJson.postDetail?.id
         let created_at = (postJson.postDetail?.created_at!)!
         let restaurant_id = (postJson.postDetail?.restaurant_id!)!
         let user_id = (postJson.postDetail?.user_id!)!
         let grade : Double? = postJson.postDetail?.grade
-        
-        
-        let media = postJson.postDetail?.media
         let user_name = postJson.user?.name
-        let restaurant_name = postJson.restaurant?.restaurant_name
-        let restaurant_address = postJson.restaurant?.restaurant_address?.formattedAddress()
+        let restaurant_name = postJson.restaurant?.name
+        let restaurant_address = postJson.restaurant?.address?.formattedAddress()
         let distance = postJson.postDetail?.distance
         
         let liked = postJson.selfReaction?.liked
@@ -117,14 +114,14 @@ class Post : Hashable, Equatable {
                     switch url.pathExtension {
                     case "jpg", "png":
                         if let image = CacheManager.shared.getFromCache(key: url.absoluteString) as? UIImage {
-                            let cachedMedia = Media(title: mediaJson.itemtitle, DownloadURL: url, image: image)
+                            let cachedMedia = Media(title: mediaJson.title, DownloadURL: url, image: image)
                             mediaArray.append(cachedMedia)
                         } else {
-                            let media = Media(title: mediaJson.itemtitle, DownloadURL: url)
+                            let media = Media(title:mediaJson.title, DownloadURL: url)
                             mediaArray.append(media)
                         }
                     case "mp4", "MP4" :
-                        mediaArray.append(Media(title: mediaJson.itemtitle, DownloadURL: url, isImage: false))
+                        mediaArray.append(Media(title: mediaJson.title, DownloadURL: url, isImage: false))
                     default:
                         mediaArray.append(Media())
                     }
@@ -145,7 +142,7 @@ class Post : Hashable, Equatable {
     
     
     init(restaurant : Restaurant? ,  like: Bool! = false, currentIndex: Int = 0 , Media : [Media] , user : User, postTitle : String? = nil, postContent : String? = nil, grade : Double? = nil) {
-        self.PostID = UUID().uuidString
+        self.id = UUID().uuidString
         self.restaurant = restaurant
         self.liked = like
         self.CurrentIndex = currentIndex
@@ -157,7 +154,7 @@ class Post : Hashable, Equatable {
     }
     
     init(postDetailJson : PostDetailJson, restaurant : Restaurant?,  Media : [Media] , user : User) {
-        self.PostID = UUID().uuidString
+        self.id = UUID().uuidString
         self.restaurant = restaurant
         self.media = Media
         self.user = user
@@ -212,7 +209,7 @@ class Post : Hashable, Equatable {
         let reactionInt : Int?  = reactionTag
         var reaction : Reaction?
         
-        reaction = Reaction(post_id: PostID, reaction: reactionInt ,  user_id: Constant.user_id, liked: liked ?? false , update_at: nil, isFriend: nil)
+        reaction = Reaction(post_id: id, reaction: reactionInt ,  user_id: Constant.user_id, liked: liked ?? false , update_at: nil, isFriend: nil)
         self.selfReaction = reaction
         self.shouldPostReaction = true
     }
@@ -229,7 +226,7 @@ class Post : Hashable, Equatable {
                 
                 self.cacelTimer()
                 do {
-                    try await ReactionsManager.shared.postReactionToPost(post_id: reaction.post_id, user_id: reaction.user_id, reaction: reaction.reactionInt, liked: reaction.liked! )
+                    try await ReactionsManager.shared.postReactionToPost(post_id: reaction.post_id, user_id: reaction.user_id , reaction: reaction.reactionInt, liked: reaction.liked! )
                     lastReactionInDataBase = reaction
                 } catch {
                     print(error )

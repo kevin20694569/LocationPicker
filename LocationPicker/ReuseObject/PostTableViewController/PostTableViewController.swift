@@ -115,6 +115,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     }
     override func viewStyleSet() {
         super.viewStyleSet()
+        tableView.delaysContentTouches = false
         self.view.backgroundColor = .backgroundPrimary
         self.tableView.backgroundColor = UIColor.backgroundPrimary
         if self.presentForTabBarLessView {
@@ -166,13 +167,13 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         if deinitPost.CurrentIndex == 0 {
             return
         }
-        if let targetPost = postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.PostID]  {
+        if let targetPost = postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.id]  {
             targetPost.CurrentIndex = deinitPost.CurrentIndex
         } else {
-            postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.PostID] = deinitPost
+            postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.id] = deinitPost
         }
         posts.forEach() { post in
-            if postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[post.PostID] != nil {
+            if postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[post.id] != nil {
                 return
             }
             post.CurrentIndex = 0

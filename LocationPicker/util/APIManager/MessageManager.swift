@@ -3,7 +3,7 @@ import UIKit
 
 class MessageManager {
     let ip = APIKey.IP
-    let user_id : Int = Constant.user_id
+    let user_id : String = Constant.user_id
     static let shared = MessageManager()
     lazy var API =  ip + "/chatrooms/messages"
     
@@ -31,7 +31,7 @@ class MessageManager {
         }
     }
     
-    func getInitMessagesFromUser_ID( user_ids : [Int]) async throws -> [Message] {
+    func getInitMessagesFromUser_ID( user_ids : [String]) async throws -> [Message] {
         do {
             let urlstring = API
             

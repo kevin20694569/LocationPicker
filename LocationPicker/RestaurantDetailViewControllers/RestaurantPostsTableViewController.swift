@@ -7,7 +7,7 @@ class RestaurantPostsTableViewController : PostTableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard !isLoadingPost, posts.count - indexPath.row == 1,
-              let restaurantID  = restaurant.restaurantID else {
+              let restaurantID  = restaurant.ID else {
             return
         }
         

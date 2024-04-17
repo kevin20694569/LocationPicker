@@ -120,8 +120,8 @@
                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                         </preferredSymbolConfiguration>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="60m" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U6x-Q9-TvB">
-                        <rect key="frame" x="341.33333333333331" y="559" width="31.666666666666686" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U6x-Q9-TvB">
+                        <rect key="frame" x="377" y="577" width="0.0" height="0.0"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <color key="textColor" systemColor="systemGrayColor"/>
                         <nil key="highlightedColor"/>
@@ -147,9 +147,9 @@
                     <constraint firstAttribute="trailingMargin" secondItem="640-rD-Mli" secondAttribute="trailing" constant="16" id="e3Y-Uv-4W3"/>
                     <constraint firstItem="CzH-T5-ZDz" firstAttribute="top" secondItem="2D9-ff-QGA" secondAttribute="top" constant="20" id="fCd-rg-MZl"/>
                     <constraint firstItem="Ha6-Vo-41g" firstAttribute="centerY" secondItem="GSG-D5-fvn" secondAttribute="centerY" id="fvx-lL-IyS"/>
+                    <constraint firstAttribute="trailing" secondItem="U6x-Q9-TvB" secondAttribute="trailing" constant="16" id="iDn-1Z-yjc"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Iz7-RT-sl5" secondAttribute="trailing" constant="24" id="o8l-VU-8aT"/>
                     <constraint firstItem="lUw-x5-WQQ" firstAttribute="centerX" secondItem="lLx-e4-hgv" secondAttribute="centerX" id="oIG-H8-hob"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="U6x-Q9-TvB" secondAttribute="trailing" id="q37-0d-gTP"/>
                     <constraint firstAttribute="bottom" secondItem="640-rD-Mli" secondAttribute="bottom" constant="28" id="rbd-e1-rPX"/>
                     <constraint firstAttribute="trailing" secondItem="GSG-D5-fvn" secondAttribute="trailing" constant="16" id="sPZ-zI-HBe"/>
                     <constraint firstItem="Iz7-RT-sl5" firstAttribute="centerX" secondItem="lLx-e4-hgv" secondAttribute="centerX" id="vYZ-cn-sO0"/>

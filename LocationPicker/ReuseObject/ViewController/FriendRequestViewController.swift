@@ -18,7 +18,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
     
     func segueToUserProfileView(userRequst userRequest : UserFriendRequest) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: true, user: userRequest.user, user_id: userRequest.user?.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: true, user: userRequest.user, user_id: userRequest.user?.id)
         controller.navigationItem.title = userRequest.user?.name
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -84,7 +84,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
 }
 extension FriendRequestViewController {
-    func loadUserFriendsRequests(user_id : Int) async {
+    func loadUserFriendsRequests(user_id : String) async {
         do {
             let newRequests = try await FriendManager.shared.getUserFriendReceiveRequestsFromUserID(user_id: Constant.user_id, date: "")
             

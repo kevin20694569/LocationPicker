@@ -26,7 +26,7 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     }
     
     func  showUserProfile(user : User) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: false, user: user,  user_id: user.user_id)
+        let controller = MainUserProfileViewController(presentForTabBarLessView: false, user: user,  user_id: user.id)
         controller.navigationItem.title = user.name
         self.navigationController?.pushViewController(controller, animated: true)
     }

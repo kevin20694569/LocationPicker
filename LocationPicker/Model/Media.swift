@@ -64,14 +64,14 @@ class Media : Hashable, Equatable {
             switch url.pathExtension {
             case "jpg", "png":
                 if let image = CacheManager.shared.getFromCache(key: url.absoluteString) as? UIImage {
-                    self.init(title: json.itemtitle, DownloadURL: url, image: image)
+                    self.init(title: json.title, DownloadURL: url, image: image)
                     return
                 } else {
-                    self.init(title: json.itemtitle, DownloadURL: url)
+                    self.init(title: json.title, DownloadURL: url)
                     return
                 }
             case "mp4", "MP4" :
-                self.init(title: json.itemtitle, DownloadURL: url, isImage: false)
+                self.init(title: json.title, DownloadURL: url, isImage: false)
                 return
             default:
                 break

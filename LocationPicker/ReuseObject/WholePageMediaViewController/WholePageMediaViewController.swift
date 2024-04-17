@@ -310,7 +310,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     func configureData(post : Post) {
         
         currentPost = post
-        self.postID = currentPost.PostID
+        self.postID = currentPost.id
         
         
         self.currentMediaIndexPath = IndexPath(row:  currentPost.CurrentIndex, section: 0)
@@ -364,6 +364,8 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             self.postTitleButton.isUserInteractionEnabled = false
             self.postTitleButton.animatedEnable = false
             self.itemTitleButton.animatedEnable = false
+        } else {
+            self.postTitleButton.isUserInteractionEnabled = true
         }
         
         
@@ -426,18 +428,16 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             let verTotalInset =  itemTitleButton.configuration!.contentInsets.top + itemTitleButton.configuration!.contentInsets.bottom
             let horTotalInset = itemTitleButton.configuration!.contentInsets.trailing + itemTitleButton.configuration!.contentInsets.leading
             var width = ( targetString as NSString).size(withAttributes: attributes).width + horTotalInset
-            
-            // let height = ( targetString as NSString).size(withAttributes: attributes).height
             let bounds = UIScreen.main.bounds
             width = width > bounds.width * 0.2 ? width : bounds.width * 0.2
             itemTitleButtonBlurView = UIVisualEffectView(frame: CGRect(x: itemTitleButton.bounds.origin.x, y: itemTitleButton.bounds.origin.y, width: width, height: itemTitleButton.bounds.height), style: .light)
             itemTitleButtonBlurView.isUserInteractionEnabled = false
             itemTitleButton.insertSubview(itemTitleButtonBlurView, belowSubview: itemTitleButton.titleLabel!)
-            if !postTitleButton.isHidden {
-                activeButton = postTitleButton
-            } else {
-                activeButton = itemTitleButton
-            }
+        }
+        if !postTitleButton.isHidden {
+            activeButton = postTitleButton
+        } else {
+            activeButton = itemTitleButton
         }
         
         
@@ -1335,8 +1335,7 @@ extension WholePageMediaViewController {
     }
     
     @objc func showUserProfile( _ imageView : UIImageView) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView, user: self.currentPost.user, user_id: self.currentPost.user?.user_id)
-        controller.user_id = currentPost.user?.user_id
+        let controller = MainUserProfileViewController(presentForTabBarLessView: presentForTabBarLessView, user: self.currentPost.user, user_id: self.currentPost.user?.id)
         controller.navigationItem.title = currentPost.user?.name
         self.show(controller, sender: nil)
     }

@@ -27,6 +27,8 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         return self.collectionView.cellForItem(at: enterCollectionIndexPath)
     }
     
+    var completeNoPosts : Bool! = false
+    
     let getServerData : Bool = Constant.getServerData
     
     var dismissAlertGesture : UITapGestureRecognizer!
@@ -88,14 +90,14 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
                 newPosts = Post.localPostsExamples
             }
             if newPosts.count > 0 {
-                insertPostsReloadSection(newPosts: newPosts)
+                let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
+                self.posts.insert(contentsOf: newPosts, at: self.posts.count)
+                if reload {
+                    self.collectionView.reloadSections([self.enterCollectionIndexPath.section])
+                } else {
+                    self.collectionView.insertItems(at: insertionIndexPaths)
+                }
             }
-            if reload {
-                self.posts = newPosts
-                self.collectionView.reloadSections([self.enterCollectionIndexPath.section])
-                return
-            }
-
         } catch {
             print(error.localizedDescription)
         }
@@ -111,15 +113,6 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
             collectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
         ])
-    }
-    
-    func insertPostsReloadSection(newPosts : [Post]) {
-        
-        let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
-        self.posts.insert(contentsOf: newPosts, at: self.posts.count)
-        self.collectionView.insertItems(at: insertionIndexPaths)
-
-        
     }
     
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -145,14 +138,16 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
             guard let self = self else {
                 return
             }
-            await getRestaurantSummary(restaurant_id: self.restaurant.restaurantID)
+            await getRestaurantSummary(restaurant_id: self.restaurant.ID)
         }
         Task(priority : .background) { [weak self] in
             guard let self = self else {
                 return
             }
             self.collectionView.refreshControl?.beginRefreshing()
-            await self.getRestaurantPosts(restaurantID: self.restaurant.restaurantID, afterDate: posts.last?.timestamp ?? "", reload: posts.isEmpty )
+
+            await self.getRestaurantPosts(restaurantID: self.restaurant.ID, afterDate: posts.last?.timestamp ?? "", reload: posts.isEmpty )
+            
             self.collectionView.refreshControl?.endRefreshing()
         }
     }
@@ -249,8 +244,7 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         self.collectionView.register(RestaurantDetailCollectionViewDetailGridCell, forCellWithReuseIdentifier: "RestaurantDetailCollectionViewDetailGridCell")
         self.collectionView.register(GridPostCell.self, forCellWithReuseIdentifier: "GridPostCell")
         self.collectionView.register(EmptyPostCollectoinCell.self, forCellWithReuseIdentifier: "EmptyPostCollectoinCell")
-
-        
+        self.collectionView.register(LoadingCollectionCell.self, forCellWithReuseIdentifier: "LoadingCollectionCell")
     }
          
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -315,14 +309,16 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         } else if section == 2 {
             return CGSize(width: bounds.width , height: bounds.width * 2 / 3 )
         } else if section == 3 {
+            if self.posts.isEmpty {
+                let width = bounds.width
+                return CGSize(width: width , height: bounds.height * 0.1 )
+            }
             let lineSpaceing : CGFloat = 1
             let width = self.view.bounds.width / 3 - lineSpaceing * 2
             return CGSize(width: width  , height: width)
         }
-        if self.posts.isEmpty {
-            let width = bounds.width
-            return CGSize(width: width , height: bounds.height * 0.1 )
-        }
+        
+
         return CGSize(width: bounds.width , height: bounds.height * 0.25
         )
     }
@@ -345,8 +341,14 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
             return cell
         }
         if self.posts.isEmpty {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyPostCollectoinCell", for: indexPath) as! EmptyPostCollectoinCell
-            return cell
+            if completeNoPosts {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyPostCollectoinCell", for: indexPath) as! EmptyPostCollectoinCell
+                cell.configure(title: "尚未有貼文")
+                return cell
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LoadingCollectionCell", for: indexPath) as! LoadingCollectionCell
+                return cell
+            }
         }
         let post = self.posts[indexPath.row]
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: "GridPostCell", for: indexPath) as! GridPostCell

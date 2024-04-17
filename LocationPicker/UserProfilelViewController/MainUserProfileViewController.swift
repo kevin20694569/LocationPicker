@@ -12,9 +12,11 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         
     
     
-    init(presentForTabBarLessView : Bool, user : User?,  user_id : Int?) {
+    init(presentForTabBarLessView : Bool, user : User?,  user_id : String?) {
         super.init(nibName: nil, bundle: nil)
-        self.user_id = user_id
+        if let user_id = user_id {
+            self.user_id = user_id
+        }
         self.presentForTabBarLessView = presentForTabBarLessView
     }
     
@@ -55,7 +57,9 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         return self.collectionView.cellForItem(at: enterCollectionIndexPath)
     }
     
-    var user_id : Int! = Constant.user_id
+
+    
+    var user_id : String! = Constant.user_id
     
     var userProfile: UserProfile! = UserProfile()
     
@@ -114,8 +118,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
     
     func configureNavBar(title : String?) {
-       self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+       self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = true
         self.navigationController?.navigationBar.isTranslucent = true
         if let title = title {
@@ -125,7 +129,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
 
 
-    func configure(user_id: Int)  async {
+    func configure(user_id: String)  async {
         do {
             Task(priority : .background) {
                 await getUserPosts(user_id : user_id, date : "")
@@ -146,15 +150,20 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         }
     }
     
-    func showMessageViewController(user_ids: [Int]) {
-        let controller = MessageViewController(chatRoomUser_ids: user_ids)
-        controller.navigationItem.title = self.userProfile.user.name
+    func showMessageViewController(user_ids: [String]) {
+        
+        let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.userProfile.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
         MainTabBarViewController.shared.tabBar.frame = tabBarframe
         let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
         MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
         view.addSubview(MainTabBarViewController.shared.bottomBarView)
         view.addSubview(MainTabBarViewController.shared.tabBar)
+        self.show(controller, sender: nil)
+    }
+    
+    func showEditUserProfileViewController(userProfile: UserProfile) {
+        let controller = EditUserProfileViewController(profile: self.userProfile)
         self.show(controller, sender: nil)
     }
     
@@ -167,7 +176,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         collectionView.register(LoadingCollectionCell.self, forCellWithReuseIdentifier: "LoadingCollectionCell")
     }
 
-    func getUserPosts(user_id : Int, date : String) async {
+    func getUserPosts(user_id : String, date : String) async {
         do {
             var newPosts : [Post]! = []
             if getServerData {
@@ -364,6 +373,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
             if self.posts.isEmpty {
                 if completeNoPosts {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyPostCollectoinCell", for: indexPath) as! EmptyPostCollectoinCell
+                    cell.configure(title: "尚未有貼文")
                     return cell
                 } else {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LoadingCollectionCell", for: indexPath) as! LoadingCollectionCell

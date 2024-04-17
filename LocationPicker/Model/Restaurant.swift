@@ -4,17 +4,17 @@ import MapKit
 
 class Restaurant: Hashable, Equatable {
     static func == (lhs: Restaurant, rhs: Restaurant) -> Bool {
-        return lhs.restaurantID == rhs.restaurantID
+        return lhs.ID == rhs.ID
     }
     func hash(into hasher: inout Hasher) {
-        hasher.combine(restaurantID)
+        hasher.combine(ID)
     }
     
     init() { }
     
     var name : String!
     var Address :  String!
-    var restaurantID : String!
+    var ID : String!
     
     var imageURL : URL?
     var distance : String?
@@ -63,14 +63,15 @@ class Restaurant: Hashable, Equatable {
     init(name: String!, Address: String!, restaurantID : String, image : UIImage?) {
         self.name = name
         self.Address = Address
-        self.restaurantID = restaurantID
+        self.ID = restaurantID
         self.image = image
     }
     
     init(json: RestaurantJson)   {
-        self.name = json.restaurant_name
-        self.Address = json.restaurant_address?.formattedAddress()
-        self.restaurantID = json.restaurant_id
+        self.ID = json.id
+        self.name = json.name
+        self.Address = json.address?.formattedAddress()
+ 
         if let str = json.imageurl?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
            let url = URL(string: str) {
             
@@ -97,7 +98,7 @@ class Restaurant: Hashable, Equatable {
     init(json : GoogleMapLocationJsonModel) {
         self.name = json.name
         self.Address = json.formatted_address?.formattedAddress() ?? json.vicinity?.formattedAddress()
-        self.restaurantID = json.place_id
+        self.ID = json.place_id
     }
     
     static var example : Restaurant = Restaurant(name: "雞二拉麵", Address: "台灣台北市大安區文昌街30號", restaurantID: "ChIJ6VOxmM2rQjQRfiQ6tvqm-3I", image: UIImage(named: "ChIJ6VOxmM2rQjQRfiQ6tvqm-3I_1")!)
@@ -133,10 +134,10 @@ class Restaurant: Hashable, Equatable {
 struct RestaurantJson: Codable {
     
     var imageurl : String?
-    var restaurant_id : String!
-    var restaurant_name: String?
-    var restaurant_address: String?
-    var distance : Double?
+    var id : String!
+    var name: String?
+    var address: String?
+
     var latitude : Double?
     var longitude : Double?
     var posts_count : Int?
@@ -155,11 +156,11 @@ struct RestaurantJson: Codable {
     
     enum CodingKeys: String, CodingKey {
         case imageurl = "restaurant_imageurl"
-        case restaurant_id = "restaurant_id"
-        case  restaurant_name = "restaurant_name"
-        case  restaurant_address = "restaurant_address"
-        case   latitude  = "restautant_latitude"
-        case  longitude  = "restautant_longitude"
+        case id = "id"
+        case name = "name"
+        case address = "address"
+        case latitude  = "latitude"
+        case longitude  = "longitude"
         case opening_days = "opening_hours"
         case posts_count = "posts_count"
         case average_grade = "average_grade"
@@ -177,9 +178,9 @@ struct RestaurantJson: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.imageurl = try container.decodeIfPresent(String.self, forKey: .imageurl)
-        self.restaurant_id = try container.decodeIfPresent(String.self, forKey: .restaurant_id)
-        self.restaurant_name = try container.decodeIfPresent(String.self, forKey: .restaurant_name)
-        self.restaurant_address = try container.decodeIfPresent(String.self, forKey: .restaurant_address)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id )
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.address = try container.decodeIfPresent(String.self, forKey: .address)
         self.latitude = try container.decodeIfPresent(Double.self, forKey: .latitude)
         self.longitude = try container.decodeIfPresent(Double.self, forKey: .longitude)
         self.opening_days = try container.decodeIfPresent(OpeningDays.self, forKey: .opening_days)
@@ -284,7 +285,6 @@ enum WeekDay : String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         let dayString = dateFormatter.string(from: date)
-        
         return rawValue == dayString
     }
     

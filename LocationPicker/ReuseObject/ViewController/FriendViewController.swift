@@ -1,9 +1,9 @@
 import UIKit
 
 class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowMessageControllerProtocol {
-    func showMessageViewController(user_ids: [Int]) {
-        let controller = MessageViewController(chatRoomUser_ids: user_ids)
-        controller.navigationItem.title = self.user.name
+    func showMessageViewController(user_ids: [String]) {
+        
+        let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: view)
         MainTabBarViewController.shared.tabBar.frame = tabBarframe
         let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
@@ -56,7 +56,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     
     func insertFriends(dateString : String) async  {
         do {
-            let newFriends = try await FriendManager.shared.getUserFriendsFromUserID(user_id: self.user.user_id, Date: dateString)
+            let newFriends = try await FriendManager.shared.getUserFriendsFromUserID(user_id: self.user.id, Date: dateString)
             if newFriends.count > 0 {
                 let insertionIndexPaths = (self.friends.count..<self.friends.count + newFriends.count).map { IndexPath(row: $0, section: 0) }
                

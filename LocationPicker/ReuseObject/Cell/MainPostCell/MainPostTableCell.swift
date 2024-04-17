@@ -110,9 +110,9 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     var presentShareViewControllerTapGesture : UITapGestureRecognizer!
     
-    @IBOutlet var gradeLabel : UILabel?
+    @IBOutlet var gradeLabel : UILabel!
     
-    @IBOutlet var gradeStackView : UIStackView?
+    @IBOutlet var gradeStackView : UIStackView!
     
     
     func configureData(post: Post)  {
@@ -122,19 +122,18 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         self.layoutIfNeeded()
         
-        
         if let grade = post.grade {
-            self.gradeLabel?.isHidden = false
-            gradeStackView?.isHidden = false
-            self.gradeLabel?.text = String(grade)
-            self.gradeLabel?.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
+            self.gradeLabel.isHidden = false
+            gradeStackView.isHidden = false
+            self.gradeLabel.text = String(grade)
+            self.gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
         } else {
-            gradeStackView?.isHidden = true
-            self.gradeLabel?.isHidden = true
+            gradeStackView.isHidden = true
+            self.gradeLabel.isHidden = true
         }
         layoutSelfReaction(targetTag: post.selfReaction?.reactionInt)
         
-        
+       
         currentMediaIndexPath = IndexPath(row: post.CurrentIndex, section: 0)
         distanceLabel?.text = currentPost.distance?.milesTransform()
         restaurantNameLabel?.text = currentPost.restaurant?.name

@@ -5,7 +5,7 @@ struct Reaction : Equatable {
     var reactionInt : Int? { didSet {
         self.reactionType = ReactionType(rawValue: reactionInt!)
     }}
-    var user_id : Int!
+    var user_id : String!
     var liked : Bool?
     var updated_at : String?
     var isFriend : Bool?
@@ -13,7 +13,7 @@ struct Reaction : Equatable {
         self.reactionInt = reactionType?.rawValue
     }}
     
-    init (post_id : String ,reaction : Int? = nil, user_id : Int, liked : Bool = false, update_at : String? = nil, isFriend : Bool? = nil) {
+    init (post_id : String ,reaction : Int? = nil, user_id : String, liked : Bool = false, update_at : String? = nil, isFriend : Bool? = nil) {
         self.post_id = post_id
         self.reactionInt = reaction
         self.user_id = user_id
@@ -110,7 +110,7 @@ enum ReactionType : Int {
 struct ReactionJson : Codable {
     var post_id : String?
     var reaction : Int?
-    var user_id : Int?
+    var user_id : String?
     var liked : Bool?
     var updated_at : String?
     var isFriend : Bool?
@@ -129,7 +129,7 @@ struct ReactionJson : Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.post_id = try container.decodeIfPresent(String.self, forKey: .post_id)
         self.reaction = try container.decodeIfPresent(Int.self, forKey: .reaction)
-        self.user_id = try container.decodeIfPresent(Int.self, forKey: .user_id)
+        self.user_id = try container.decodeIfPresent(String.self, forKey: .user_id)
         self.liked = try container.decodeIfPresent(Bool.self, forKey: .liked)
         self.updated_at = try container.decodeIfPresent(String.self, forKey: .updated_at)
         self.isFriend = try container.decodeIfPresent(Bool.self, forKey: .isFriend)
@@ -145,7 +145,7 @@ class ReactionsManager {
     static let shared = ReactionsManager()
     lazy var API = ip + "/reactions"
     
-    func postReactionToPost(post_id : String, user_id : Int ,reaction : Int? = nil, liked : Bool? = false) async throws   {
+    func postReactionToPost(post_id : String, user_id : String ,reaction : Int? = nil, liked : Bool? = false) async throws   {
         do {
             
             let urlstring = API + "/post/\(post_id)"

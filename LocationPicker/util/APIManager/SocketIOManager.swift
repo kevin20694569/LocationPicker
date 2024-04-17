@@ -23,23 +23,21 @@ class SocketIOManager : NSObject {
     override init () {
         super.init()
         socket = manager.defaultSocket
+        listening()
         socket.connect()
+
     }
     
     
     func listening() {
-
         socket.on(clientEvent: .connect) {data, ack in
             print("Socket has been connected")
             if let dict = data[1] as? Dictionary<String, Any>,
                let id = dict["sid"] as? String {
                 self.socket_id = id
             }
-            
             let dict : Dictionary<String, any Hashable> = ["socket_id" : self.socket_id ,"user_id": Constant.user_id]
             self.socket.emit("connectParams", dict )
-            
-            
         }
         
         socket.on(clientEvent: .error) {data, ack in
@@ -134,7 +132,8 @@ class SocketIOManager : NSObject {
     
 
     
-    func sendMessageByRoomID(to_room_id: String , sender_id : Int, message: String) {
+    func sendMessageByRoomID(to_room_id: String , sender_id : String, message: String) {
+        
         let dict : [String : Any?] = [ "room_id" : to_room_id,
                                       "message" : message,
                                       "sender_id" : sender_id,
@@ -143,7 +142,8 @@ class SocketIOManager : NSObject {
         socket.emit("message", dict)
     }
     
-    func sendMessageByToUserIDs(to_user_ids: [Int] , sender_id : Int, message: String) {
+    func sendMessageByToUserIDs(to_user_ids: [String] , sender_id : String, message: String) {
+        
         let dict : [String : Any?] = [ "receive_ids" : to_user_ids,
                                       "message" : message,
                                       "sender_id" : sender_id,
@@ -152,32 +152,32 @@ class SocketIOManager : NSObject {
         socket.emit("message", dict)
     }
     
-    func sharePost(to_user_ids: [Int], sender_id : Int, post : Post) {
+    func sharePost(to_user_ids: [String], sender_id : String, post : Post) {
         let dict : [String : Any?] = [ "sender_id" : sender_id,
                                        "receive_ids" : to_user_ids,
-                                      "shared_post_id" : post.PostID,
+                                      "shared_post_id" : post.id,
         ]
         
         socket.emit("sharePostByMessage", dict)
     }
     
-    func shareRestaurant(to_user_ids : [Int], sender_id : Int, restaurant : Restaurant) {
+    func shareRestaurant(to_user_ids : [String], sender_id : String, restaurant : Restaurant) {
         let dict : [String : Any?] = [ "sender_id" : sender_id,
                                        "receive_ids" : to_user_ids,
-                                       "shared_restaurant_id" : restaurant.restaurantID,
+                                       "shared_restaurant_id" : restaurant.ID,
         ]
         socket.emit("shareRestaurantByMessage", dict)
     }
     
-    func shareUser(to_user_ids : [Int], sender_id : Int, user : User) {
+    func shareUser(to_user_ids : [String], sender_id : String, user : User) {
         let dict : [String : Any?] = [ "sender_id" : sender_id,
                                        "receive_ids" : to_user_ids,
-                                       "shared_user_id" : user.user_id,
+                                       "shared_user_id" : user.id,
         ]
         socket.emit("shareUserByMessage", dict)
     }
     
-    func markAsRead(room_id : String, sender_id : Int) {
+    func markAsRead(room_id : String, sender_id : String) {
         let dict : [String : Any] = ["room_id": room_id,
                                      "sender_id" : sender_id]
         socket.emit("isRead", dict)

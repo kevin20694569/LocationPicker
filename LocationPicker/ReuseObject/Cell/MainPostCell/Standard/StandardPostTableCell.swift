@@ -21,6 +21,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
     }}
     
+    
     override  func getEmojiButtonConfig(image : UIImage) -> UIButton.Configuration {
         let bounds = UIScreen.main.bounds
         var config = UIButton.Configuration.filled()
@@ -147,8 +148,11 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
 
         pageControll?.numberOfPages = post.media.count
-        self.userNameLabel.text = post.user?.name
-        self.userNameLabel.textColor = .label
+        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        timeStampLabel.textColor = .secondaryLabelColor
+        timeStampLabel.text = post.timestamp.timeAgeFromStringOrDateString()
+        userNameLabel.text = post.user?.name
+        userNameLabel.textColor = .label
 
         if let grade = post.grade {
             self.gradeLabel?.text = String(grade)
@@ -157,6 +161,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
         updateCellPageControll(currentCollectionIndexPath: IndexPath(row: post.CurrentIndex, section: self.currentMediaIndexPath.section))
         self.layoutIfNeeded()
+        
         DispatchQueue.main.async {
             self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
         }
@@ -300,7 +305,9 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         let centerInFrame = self.emojiButton.superview!.convert(emojiButton.center, to: contentView)
         let newFrame = CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: frame.height * 0.8)
         if currentEmojiTag == nil {
-            self.emojiButton.alpha = 0
+            if targetTag != nil {
+                self.emojiButton.alpha = 0
+            }
             if emojiButton.imageView?.image != UIImage(systemName: "smiley") {
                 self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")!)
             }

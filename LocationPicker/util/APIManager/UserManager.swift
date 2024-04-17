@@ -15,7 +15,7 @@ final class UserProfileManager {
     private init() { }
     lazy var API = self.ip + "/users"
     
-    func getProfileByID(user_ID: Int) async throws -> UserProfile? {
+    func getProfileByID(user_ID: String) async throws -> UserProfile? {
         do {
             let urlstring = API + "/\(user_ID)?request_user_id=\(Constant.user_id)"
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,

@@ -26,11 +26,15 @@ protocol ShowViewControllerDelegate : UIViewController {
 }
 
 protocol ShowMessageControllerProtocol : ShowViewControllerDelegate {
-    func showMessageViewController(user_ids : [Int])
+    func showMessageViewController(user_ids : [String])
 }
 
 
 protocol ProfileMainCellDelegate : ShowMessageControllerProtocol {
+    func showEditUserProfileViewController(userProfile : UserProfile)
+}
 
+protocol EditUserProfileCellDelegate : ShowViewControllerDelegate {
+    func saveButtonEnableToggle(_ enable : Bool)
 }
 

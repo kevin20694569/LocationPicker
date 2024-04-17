@@ -16,7 +16,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         return friends.count
     }
     
-    func loadFriends(user_id : Int, date : String) async  {
+    func loadFriends(user_id : String, date : String) async  {
         do {
             isLoadingFriends = true
             let newFriends = try await FriendManager.shared.getUserFriendsFromUserID(user_id: user_id, Date: date)
@@ -200,7 +200,7 @@ class SharePostViewController : ShareViewController {
     
     @objc func sharePost( _ button : UIButton) {
         let ids = selectedSharedUserDict.values.compactMap() {
-            return $0.user.user_id
+            return $0.user.id
         }
         
         SocketIOManager.shared.sharePost(to_user_ids: ids, sender_id: Constant.user_id, post: currentPost)
@@ -229,7 +229,7 @@ class ShareRestaurantController : ShareViewController {
     
     @objc func shareRestaurant( _ button : UIButton) {
         let ids = selectedSharedUserDict.values.compactMap() {
-            return $0.user.user_id
+            return $0.user.id
         }
         SocketIOManager.shared.shareRestaurant(to_user_ids: ids, sender_id: Constant.user_id, restaurant: restaurant)
         self.dismiss(animated: true)
@@ -256,7 +256,7 @@ class ShareUserController : ShareViewController {
     
     @objc func shareUser( _ button : UIButton) {
         let ids = selectedSharedUserDict.values.compactMap() {
-            return $0.user.user_id
+            return $0.user.id
         }
         SocketIOManager.shared.shareUser(to_user_ids: ids, sender_id: Constant.user_id, user: user)
         self.dismiss(animated: true)

@@ -15,6 +15,10 @@ class EmptyPostCollectoinCell : UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(title : String) {
+        descriptionLabel.text = title
+    }
+    
     func layoutSetup() {
         blurView.clipsToBounds = true
         blurView.backgroundColor = .secondaryBackgroundColor
@@ -37,6 +41,6 @@ class EmptyPostCollectoinCell : UICollectionViewCell {
     
     func labelSetup() {
         self.descriptionLabel.font = .weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        descriptionLabel.text = "尚未有Post"
+       
     }
 }

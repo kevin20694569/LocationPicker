@@ -4,17 +4,19 @@ import UIKit
 class User : Equatable, Hashable {
 
     static func == (lhs: User, rhs: User) -> Bool {
-        lhs.user_id == rhs.user_id
+        lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(user_id)
+        hasher.combine(id)
     }
     
-    var user_id : Int!
+    var id : String!
     var name : String!
     var image : UIImage?
     var imageURL : URL?
+    
+    var email : String?
     
     var posts_count : Int?
     var friends_count : Int?
@@ -26,7 +28,7 @@ class User : Equatable, Hashable {
     static var examples : [User] = {
         var array : [User] = []
         for id in 1...50 {
-            let user = User( user_id: id, name: "kevin" , image : UIImage(named: "user"), imageURL: nil)
+            let user = User( user_id: String(id), name: "kevin" , image : UIImage(named: "user"), imageURL: nil)
             array.append(user)
         }
         return array
@@ -41,27 +43,24 @@ class User : Equatable, Hashable {
     
     
     
-    init(user_id: Int, name: String , image : UIImage?, imageURL : URL?) {
-        self.user_id = user_id
+    init(user_id: String, name: String , image : UIImage?, imageURL : URL?) {
+        self.id = user_id
         self.name = name
         self.image = image
         self.imageURL = imageURL
-        //self.isFriend = .random()
     }
     
     init(userJson: UserJson) {
-        
-        self.user_id = userJson.user_id
+        self.id = userJson.id
         self.name = userJson.name
         self.posts_count = userJson.posts_count
         self.friends_count = userJson.friends_count
-        if let imageURL = userJson.user_imageurl {
+        if let imageURL = userJson.imageurl {
             self.imageURL = URL(string: imageURL)
         }
         self.posts_count = userJson.posts_count
         self.friends_count = userJson.friends_count
-
-
+        self.email = userJson.email
     }
     
     
@@ -71,30 +70,29 @@ class User : Equatable, Hashable {
 
 
 struct UserJson : Codable {
-    var user_id : Int!
+    var id : String!
     var name : String?
-
-    
     var posts_count : Int?
-    
+    var email : String?
     var friends_count : Int?
-    var user_imageurl : String?
+    var imageurl : String?
     
     
     enum CodingKeys : String, CodingKey {
-        case user_id = "user_id"
-        case name = "user_name"
-        case user_imageurl = "user_imageurl"
+        case id = "id"
+        case name = "name"
+        case imageurl = "user_imageurl"
         case posts_count = "posts_count"
         case friends_count = "friends_count"
+        case email = "email"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.user_id = try container.decodeIfPresent(Int.self, forKey: .user_id)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
-        self.user_imageurl = try container.decodeIfPresent(String.self, forKey: .user_imageurl)
-       
+        self.imageurl = try container.decodeIfPresent(String.self, forKey: .imageurl)
+        self.email = try container.decodeIfPresent(String.self, forKey: .email)
         self.posts_count = try container.decodeIfPresent(Int.self, forKey: .posts_count)
         self.friends_count = try container.decodeIfPresent(Int.self, forKey: .friends_count)
     }
