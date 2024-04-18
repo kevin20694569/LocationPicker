@@ -122,7 +122,7 @@
 		23CDFACA2BA6EE2100549AA0 /* PresentSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CDFAC92BA6EE2100549AA0 /* PresentSheetViewController.swift */; };
 		23CDFACC2BA704D900549AA0 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CDFACB2BA704D900549AA0 /* Friend.swift */; };
 		23CDFACE2BA7195100549AA0 /* AddCollectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CDFACD2BA7195100549AA0 /* AddCollectTableViewCell.swift */; };
-		23CDFAD02BA7198500549AA0 /* ShareUserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CDFACF2BA7198500549AA0 /* ShareUserCollectionViewCell.swift */; };
+		23CDFAD02BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23CDFACF2BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift */; };
 		23D3677E2BB472F500D53CFF /* DismissLikePopAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D3677D2BB472F500D53CFF /* DismissLikePopAnimator.swift */; };
 		23D367892BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D367882BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift */; };
 		23D3FD7D2BA33ED50011964D /* AddCollectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D3FD7C2BA33ED50011964D /* AddCollectViewController.swift */; };
@@ -140,7 +140,6 @@
 		23DD48402AE9886300C63821 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD47ED2AE9886300C63821 /* Media.swift */; };
 		23DD48412AE9886300C63821 /* PostDetailJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD47EE2AE9886300C63821 /* PostDetailJson.swift */; };
 		23DD48502AE9886300C63821 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD47FF2AE9886300C63821 /* ChatRoomViewController.swift */; };
-		23DD48512AE9886300C63821 /* NavUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD48002AE9886300C63821 /* NavUserProfileViewController.swift */; };
 		23DD48542AE9886300C63821 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD48052AE9886300C63821 /* CameraController.swift */; };
 		23DD485E2AE9886300C63821 /* NewPostWholePageMediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD48122AE9886300C63821 /* NewPostWholePageMediaViewController.swift */; };
 		23DD485F2AE9886300C63821 /* PostDetailViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD48132AE9886300C63821 /* PostDetailViewcontroller.swift */; };
@@ -303,7 +302,7 @@
 		23CDFAC92BA6EE2100549AA0 /* PresentSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentSheetViewController.swift; sourceTree = "<group>"; };
 		23CDFACB2BA704D900549AA0 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		23CDFACD2BA7195100549AA0 /* AddCollectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCollectTableViewCell.swift; sourceTree = "<group>"; };
-		23CDFACF2BA7198500549AA0 /* ShareUserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareUserCollectionViewCell.swift; sourceTree = "<group>"; };
+		23CDFACF2BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedToFriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		23D3677D2BB472F500D53CFF /* DismissLikePopAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissLikePopAnimator.swift; sourceTree = "<group>"; };
 		23D367882BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyWholePageMediaViewController.swift; sourceTree = "<group>"; };
 		23D3FD7C2BA33ED50011964D /* AddCollectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCollectViewController.swift; sourceTree = "<group>"; };
@@ -322,7 +321,6 @@
 		23DD47ED2AE9886300C63821 /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		23DD47EE2AE9886300C63821 /* PostDetailJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailJson.swift; sourceTree = "<group>"; };
 		23DD47FF2AE9886300C63821 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
-		23DD48002AE9886300C63821 /* NavUserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavUserProfileViewController.swift; sourceTree = "<group>"; };
 		23DD48052AE9886300C63821 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		23DD48122AE9886300C63821 /* NewPostWholePageMediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPostWholePageMediaViewController.swift; sourceTree = "<group>"; };
 		23DD48132AE9886300C63821 /* PostDetailViewcontroller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewcontroller.swift; sourceTree = "<group>"; };
@@ -760,7 +758,7 @@
 				23B7FE0D2AEA3B050053EC79 /* GridPostCell.swift */,
 				23005C132B9C6B3D00425BEA /* BlurCollectionCell.swift */,
 				23CDFACD2BA7195100549AA0 /* AddCollectTableViewCell.swift */,
-				23CDFACF2BA7198500549AA0 /* ShareUserCollectionViewCell.swift */,
+				23CDFACF2BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift */,
 				233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */,
 				23DCB7132B95BE3500D97BF2 /* CollectionViewButtonCell.swift */,
 				23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */,
@@ -869,7 +867,6 @@
 		23DD47FE2AE9886300C63821 /* ChatViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				23DD48002AE9886300C63821 /* NavUserProfileViewController.swift */,
 				23DD47FF2AE9886300C63821 /* ChatRoomViewController.swift */,
 			);
 			path = ChatViewControllers;
@@ -1358,7 +1355,7 @@
 				23DD485E2AE9886300C63821 /* NewPostWholePageMediaViewController.swift in Sources */,
 				230D07EE2BB2A26A00FE2C5A /* WholePageMediaProtocol.swift in Sources */,
 				230D07F62BB2A35400FE2C5A /* UploadViewProtocol.swift in Sources */,
-				23CDFAD02BA7198500549AA0 /* ShareUserCollectionViewCell.swift in Sources */,
+				23CDFAD02BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift in Sources */,
 				23F085E72BBE5FB700A024D6 /* StandardImageViewCollectionCell.swift in Sources */,
 				23D367892BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift in Sources */,
 				23D3FD7D2BA33ED50011964D /* AddCollectViewController.swift in Sources */,
@@ -1434,7 +1431,6 @@
 				23278F8D2B5918AA00B365B9 /* PreviewPostTableCell.swift in Sources */,
 				23B7FE212AEA3B050053EC79 /* ChatRoomTableCell.swift in Sources */,
 				23DD487D2AE9886300C63821 /* RestaurantManager.swift in Sources */,
-				23DD48512AE9886300C63821 /* NavUserProfileViewController.swift in Sources */,
 				23DD485F2AE9886300C63821 /* PostDetailViewcontroller.swift in Sources */,
 				23DD48652AE9886300C63821 /* SignUpViewController.swift in Sources */,
 				23DCB70F2B94C89A00D97BF2 /* RestaurantProfileNameCell.swift in Sources */,

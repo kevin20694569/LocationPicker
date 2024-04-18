@@ -7,7 +7,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let friend = friends[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ShareUserCollectionViewCell", for: indexPath) as! ShareUserCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SharedToFriendCollectionViewCell", for: indexPath) as! SharedToFriendCollectionViewCell
         cell.configure(user: friend.user)
         return cell
     }
@@ -43,7 +43,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
     
     
     func registerCells() {
-        self.collectionView.register(ShareUserCollectionViewCell.self, forCellWithReuseIdentifier: "ShareUserCollectionViewCell")
+        self.collectionView.register(SharedToFriendCollectionViewCell.self, forCellWithReuseIdentifier: "SharedToFriendCollectionViewCell")
     }
     
     override func layout() {
@@ -153,14 +153,14 @@ extension ShareViewController {
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as? ShareUserCollectionViewCell
+        let cell = collectionView.cellForItem(at: indexPath) as? SharedToFriendCollectionViewCell
         cell?.beSelected(selected: true)
         let friend = self.friends[indexPath.row]
         selectedSharedUserDict[indexPath] = friend
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as? ShareUserCollectionViewCell
+        let cell = collectionView.cellForItem(at: indexPath) as? SharedToFriendCollectionViewCell
         cell?.beSelected(selected: false)
         selectedSharedUserDict.removeValue(forKey: indexPath)
         return
@@ -168,7 +168,7 @@ extension ShareViewController {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if selectedSharedUserDict[indexPath] != nil {
-            let cell = cell as! ShareUserCollectionViewCell
+            let cell = cell as! SharedToFriendCollectionViewCell
             cell.beSelected(selected: true)
         }
         guard !isLoadingFriends else {

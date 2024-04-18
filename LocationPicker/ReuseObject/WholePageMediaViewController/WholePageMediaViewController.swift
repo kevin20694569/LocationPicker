@@ -384,7 +384,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         configureHeartImage()
         
         if let image = self.currentPost.selfReaction?.reactionType?.reactionImage {
-            self.currentEmojiTag = self.currentPost.selfReaction?.reactionInt
+            self.currentEmojiTag = self.currentPost.selfReaction?.reactionType?.reactionTag
             self.updateEmojiButtonImage(image: image)
         }
         self.collectionView.performBatchUpdates(nil, completion: { bool in
@@ -903,7 +903,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
 extension WholePageMediaViewController {
     @objc func emojiTargetTapped(_ button : UIButton) {
         let tag = button.tag
-        if self.currentPost.selfReaction?.reactionInt == tag {
+        if self.currentPost.selfReaction?.reactionType?.reactionTag == tag {
             currentEmojiTag = nil
         } else {
             currentEmojiTag = tag
@@ -976,7 +976,7 @@ extension WholePageMediaViewController {
             extendedEmojiBlurView.layer.cornerRadius = 20
             
             emojiButton.alpha = 1
-            let tag = self.currentPost.selfReaction?.reactionInt
+            let tag = self.currentPost.selfReaction?.reactionType?.reactionTag
             let emojiTargetWidth =  (blurViewWidth - ( blurViewXOffset * 2 )) / 5
             self.emojiTargetButtons.forEach() {
                 $0.transform = .identity

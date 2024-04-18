@@ -104,12 +104,11 @@ class Post : Hashable, Equatable {
                 publicReactions?.append( Reaction(json: reactionJson))
             }
         }
-        let mediaContents : [Media] = test(mediajsonArray: postJson.postDetail!.media!)
+        let mediaContents : [Media] = initMedia(mediajsonArray: postJson.postDetail!.media!)
         
-        func test(mediajsonArray : [mediaJSON] ) -> [Media] {
+        func initMedia(mediajsonArray : [mediaJSON] ) -> [Media] {
             var mediaArray : [Media] = []
             for mediaJson in mediajsonArray {
-                
                 if let url = URL(string: mediaJson.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!) {
                     switch url.pathExtension {
                     case "jpg", "png":
@@ -222,11 +221,11 @@ class Post : Hashable, Equatable {
             guard let self = self else {
                 return
             }
-            if lastReactionInDataBase?.reactionInt != reaction.reactionInt || lastReactionInDataBase?.liked != reaction.liked {
+            if lastReactionInDataBase?.reactionType?.reactionTag != reaction.reactionType?.reactionTag || lastReactionInDataBase?.liked != reaction.liked {
                 
                 self.cacelTimer()
                 do {
-                    try await ReactionsManager.shared.postReactionToPost(post_id: reaction.post_id, user_id: reaction.user_id , reaction: reaction.reactionInt, liked: reaction.liked! )
+                    try await ReactionsManager.shared.postReactionToPost(post_id: reaction.post_id, user_id: reaction.user_id , reaction: reaction.reactionType?.reactionTag, liked: reaction.liked! )
                     lastReactionInDataBase = reaction
                 } catch {
                     print(error )

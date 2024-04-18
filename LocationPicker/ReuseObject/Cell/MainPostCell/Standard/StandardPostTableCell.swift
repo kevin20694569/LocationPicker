@@ -8,6 +8,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
            $0.player?.seek(to: CMTime.zero)
        }
     }
+    
+    
 
     var collectionViewHeight : CGFloat!
     
@@ -18,7 +20,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     }}
     
     @IBOutlet weak var userNameLabel : UILabel! { didSet {
-        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
+        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium)
     }}
     
     
@@ -132,10 +134,13 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
 
         if let image = post.selfReaction?.reactionType?.reactionImage {
-            self.currentEmojiTag = post.selfReaction?.reactionInt
-            self.emojiButton.contentMode = .scaleAspectFit
+            self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
             self.updateEmojiButtonImage(image: image)
+        } else {
+           
+            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")!)
         }
+        
         setHeartImage()
         if let userImage = currentPost.user?.image {
             userImageView?.image = userImage
@@ -196,7 +201,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     @objc override func emojiTargetTapped(_ button: UIButton) {
 
         let tag = button.tag
-        if self.currentPost.selfReaction?.reactionInt == tag {
+        if self.currentPost.selfReaction?.reactionType?.reactionTag == tag {
             currentEmojiTag = nil
         } else {
             currentEmojiTag = tag
@@ -260,7 +265,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             extendedEmojiBlurView.transform = .identity
             extendedEmojiBlurView.frame = targetBlurFrame
             extendedEmojiBlurView.layer.cornerRadius = 20
-            let tag = self.currentPost.selfReaction?.reactionInt
+            let tag = self.currentPost.selfReaction?.reactionType?.reactionTag
             let emojiTargetWidth =  (blurViewWidth - ( blurViewXOffset * 2 )) / 5
  
             self.emojiTargetButtons.forEach() {
@@ -308,8 +313,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             if targetTag != nil {
                 self.emojiButton.alpha = 0
             }
-            if emojiButton.imageView?.image != UIImage(systemName: "smiley") {
-                self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")!)
+            if emojiButton.imageView?.image != UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
+                self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
             }
         }
         let zoomOutTransForm = CGAffineTransform(scaleX: 0.01, y: 0.01)
@@ -357,10 +362,15 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     }
     override func prepareForReuse() {
         super.prepareForReuse()
+        self.currentEmojiTag = nil
+        self.emojiButton.configuration?.image = UIImage(systemName: "smiley")!
+        
         Task(priority: .low) { [weak self] in
+            
             guard let self = self else {
                 return
             }
+            
             self.currentPost.media.forEach() {
                $0.player?.seek(to: CMTime.zero)
            }
@@ -377,7 +387,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         NSLayoutConstraint.activate([
             userImageView.widthAnchor.constraint(equalToConstant: width * 0.08),
             userImageView.heightAnchor.constraint(equalToConstant: width * 0.08),
-            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 8),
+            userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
             userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor)
         ])
     }

@@ -2,20 +2,14 @@ import UIKit
 import Alamofire
 struct Reaction : Equatable {
     var post_id : String!
-    var reactionInt : Int? { didSet {
-        self.reactionType = ReactionType(rawValue: reactionInt!)
-    }}
     var user_id : String!
     var liked : Bool?
     var updated_at : String?
     var isFriend : Bool?
-    var reactionType : ReactionType? { didSet {
-        self.reactionInt = reactionType?.rawValue
-    }}
+    var reactionType : ReactionType?
     
     init (post_id : String ,reaction : Int? = nil, user_id : String, liked : Bool = false, update_at : String? = nil, isFriend : Bool? = nil) {
         self.post_id = post_id
-        self.reactionInt = reaction
         self.user_id = user_id
         self.liked = liked
         self.isFriend = isFriend
@@ -28,7 +22,6 @@ struct Reaction : Equatable {
     
     init(json : ReactionJson) {
         self.post_id = json.post_id
-        self.reactionInt = json.reaction
         self.user_id = json.user_id
         self.liked = json.liked
         self.updated_at = json.updated_at

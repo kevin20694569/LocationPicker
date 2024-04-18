@@ -52,9 +52,7 @@ final class PostManager : NSObject {
             throw APIError.URLnotFound(urlString)
         }
         
-        guard let placeName = placemodel.name ,
-              let placeAddress = placemodel.Address,
-              let placeID = placemodel.ID,
+        guard let placeID = placemodel.ID,
               let socket_id = SocketIOManager.shared.socket_id else {
             throw PostError.uploadDetailError
         }
@@ -66,7 +64,7 @@ final class PostManager : NSObject {
             for media in medias {
                 post_itemtitles.append(media.title ?? "")
             }
-            let parameters: [String: any Encodable] = [
+            let parameters: [String: Any?] = [
                 "title" : post_title,
                 "content" : post_content,
                 "user_id" : user_id,
@@ -79,14 +77,15 @@ final class PostManager : NSObject {
             jsonEncoder.outputFormatting = .prettyPrinted
             for (key, value) in parameters {
                 if let string = value as? String {
-                    
                     if let data = string.data(using: .utf8) {
                         multipartFormData.append(data, withName: key, mimeType: "application/json")
                     }
                     continue
                 }
-                if let data = try? jsonEncoder.encode(value) {
-                    multipartFormData.append(data, withName: key, mimeType: "application/json")
+                if let value = value as? any Encodable {
+                    if let data = try? jsonEncoder.encode(value) {
+                        multipartFormData.append(data, withName: key, mimeType: "application/json")
+                    }
                 }
             }
             

@@ -131,7 +131,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             gradeStackView.isHidden = true
             self.gradeLabel.isHidden = true
         }
-        layoutSelfReaction(targetTag: post.selfReaction?.reactionInt)
+        layoutSelfReaction(targetTag: post.selfReaction?.reactionType?.reactionTag)
         
        
         currentMediaIndexPath = IndexPath(row: post.CurrentIndex, section: 0)
@@ -336,7 +336,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     @objc func emojiTargetTapped(_ button: UIButton) {
         
         let tag = button.tag
-        if self.currentPost.selfReaction?.reactionInt == tag {
+        if self.currentPost.selfReaction?.reactionType?.reactionTag == tag {
             currentEmojiTag = nil
         } else {
             currentEmojiTag = tag
@@ -356,7 +356,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func startReactionTargetAnimation(targetTag : Int?) {
         
-        if currentPost.selfReaction?.reactionInt == nil {
+        if currentPost.selfReaction?.reactionType?.reactionTag == nil {
             
             UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut , animations: {
                 self.emojiReactionsStackView!.arrangedSubviews.forEach { view in
@@ -366,14 +366,14 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             })
             
         } else {
-            let label = self.emojiReactionsStackView!.arrangedSubviews[(currentPost.selfReaction?.reactionInt)!]
+            let label = self.emojiReactionsStackView!.arrangedSubviews[(currentPost.selfReaction?.reactionType?.reactionTag)!]
             let zoomInTransform = CGAffineTransform(scaleX: 1.4, y: 1.4)
             let zoomOutTransform = CGAffineTransform(scaleX: 0.65, y: 0.65)
             UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut , animations: {
                 label.transform = zoomInTransform
                 label.alpha = 1
                 self.emojiReactionsStackView!.arrangedSubviews.forEach { view in
-                    if view.tag == self.currentPost.selfReaction?.reactionInt {
+                    if view.tag == self.currentPost.selfReaction?.reactionType?.reactionTag {
                         return
                     }
                     view.transform = zoomOutTransform
@@ -457,7 +457,7 @@ extension MainPostTableCell {
         setHeartTotal()
         setHeartImage()
         if canPostReaction {
-            self.initNewReaction(reactionTag: self.currentPost.selfReaction?.reactionInt, liked: currentPost.liked)
+            self.initNewReaction(reactionTag: self.currentPost.selfReaction?.reactionType?.reactionTag, liked: currentPost.liked)
         }
     }
     
@@ -466,7 +466,7 @@ extension MainPostTableCell {
         setHeartTotal()
         setHeartImage()
         if canPostReaction {
-            self.initNewReaction(reactionTag: self.currentPost.selfReaction?.reactionInt, liked: currentPost.liked)
+            self.initNewReaction(reactionTag: self.currentPost.selfReaction?.reactionType?.reactionTag, liked: currentPost.liked)
         }
     }
     
@@ -502,7 +502,7 @@ extension MainPostTableCell {
     func reloadCollectionCell(reloadIndexPath : IndexPath, scrollTo : IndexPath) {
         
         setHeartImage()
-        self.startReactionTargetAnimation(targetTag: self.currentPost.selfReaction?.reactionInt)
+        self.startReactionTargetAnimation(targetTag: self.currentPost.selfReaction?.reactionType?.reactionTag)
         self.currentMediaIndexPath = scrollTo
         reloadEnterAndBackCollectionCell(enterIndexPath: reloadIndexPath, backIndexPath: scrollTo)
         

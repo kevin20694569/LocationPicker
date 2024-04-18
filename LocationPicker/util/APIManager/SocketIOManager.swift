@@ -73,7 +73,6 @@ class SocketIOManager : NSObject {
         socket.on(clientEvent: .reconnect){ data, ack in
             let dict : Dictionary<String, any Hashable> = ["socket_id" : self.socket_id ,"user_id": Constant.user_id]
             self.socket.emit("connectParams", dict )
-            self.chatRoomViewController?.refreshChatRoomsPreview()
         }
         
         

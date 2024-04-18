@@ -3,9 +3,8 @@ let MainViewTopBottomAnchor : CGFloat = 8
 let MainViewHorAnchorConstant : CGFloat = 12
 
 class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
-    var mainViewCornerRadius : CGFloat! {
-        return 8
-    }
+    var mainViewCornerRadius : CGFloat! = 16
+
     
     var MainViewTopBottomAnchor : CGFloat {
         return 8
@@ -14,6 +13,8 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     var MainViewHorAnchorConstant : CGFloat {
         return 12
     }
+    
+
     
     var messageInstance : Message!
     
@@ -109,6 +110,8 @@ class LhsMessageTableViewCell : MessageTableViewCell {
     }
     
     func layoutImageView() {
+        userImageView.clipsToBounds = true
+        userImageView.backgroundColor = .secondaryBackgroundColor
         userImageView.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(userImageView)
         NSLayoutConstraint.activate([
@@ -118,6 +121,11 @@ class LhsMessageTableViewCell : MessageTableViewCell {
             userImageView.heightAnchor.constraint(equalTo: userImageView.widthAnchor, multiplier: 1),
             
         ])
+    }
+    
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        userImageView.layer.cornerRadius = self.userImageView.bounds.height / 2
     }
     
     func hiddenSenderUserImageView(_ bool : Bool) {
@@ -139,6 +147,8 @@ class LhsMessageTableViewCell : MessageTableViewCell {
 
 
 class RhsTextViewMessageTableViewCell : RhsMessageTableViewCell, MessageTextViewCell {
+    
+    
     
     var messageTextView : UITextView! = UITextView()
 

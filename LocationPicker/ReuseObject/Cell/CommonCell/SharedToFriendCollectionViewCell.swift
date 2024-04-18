@@ -1,5 +1,5 @@
 import UIKit
-class ShareUserCollectionViewCell : UICollectionViewCell {
+class SharedToFriendCollectionViewCell : UICollectionViewCell {
     
     var user : User!
     
@@ -13,6 +13,9 @@ class ShareUserCollectionViewCell : UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
+        imageViewSetup()
+        labelSetup()
+        beSelected(selected: false)
     }
     
     func configure(user : User) {
@@ -39,21 +42,12 @@ class ShareUserCollectionViewCell : UICollectionViewCell {
     
     
     func layout() {
-        
         self.contentView.addSubview(userImageView)
-        userImageView.translatesAutoresizingMaskIntoConstraints = false
-        userImageView.backgroundColor = .secondaryBackgroundColor
-        userImageView.clipsToBounds = true
-        userImageView.layer.cornerRadius = 16
-        userImageView.contentMode = .scaleAspectFit
         self.contentView.addSubview(nameLabel)
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.textColor = .label
-        nameLabel.textAlignment = .center
-        nameLabel.font = .weightSystemSizeFont(systemFontStyle: .caption1, weight: .medium )
-        
         self.contentView.addSubview(checkMarkImageView)
-        checkMarkImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.contentView.subviews.forEach() {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         let imageViewOffset : CGFloat = 12
         let labelVerOffset : CGFloat = 8
@@ -76,18 +70,33 @@ class ShareUserCollectionViewCell : UICollectionViewCell {
             checkMarkImageView.heightAnchor.constraint(equalTo: self.checkMarkImageView.widthAnchor),
             
         ])
+
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        beSelected(selected: false)
+    }
+    
+    func imageViewSetup() {
+        userImageView.translatesAutoresizingMaskIntoConstraints = false
+        userImageView.backgroundColor = .secondaryBackgroundColor
+        userImageView.clipsToBounds = true
+        userImageView.layer.cornerRadius = 16
+        userImageView.contentMode = .scaleAspectFill
         
         checkMarkImageView.tintColor = .white
         checkMarkImageView.backgroundColor = .tintOrange
         checkMarkImageView.contentMode = .scaleAspectFit
         checkMarkImageView.clipsToBounds = true
         checkMarkImageView.layer.cornerRadius = 6
-        self.beSelected(selected: false)
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        beSelected(selected: false)
+    func labelSetup() {
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.textColor = .label
+        nameLabel.textAlignment = .center
+        nameLabel.font = .weightSystemSizeFont(systemFontStyle: .caption1, weight: .medium )
     }
     
     

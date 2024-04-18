@@ -70,7 +70,7 @@ class Message: Equatable, Hashable {
         self.room_id = json.room_id
         self.sender_id = json.sender_id
         self.message = json.message
-        self.isRead = json.isRead
+        self.isRead = json.isread
         self.created_time = json.created_time
         self.agoTime = json.created_time?.timeAgoFromString()
         self.postJson = json.shared_post
@@ -125,7 +125,7 @@ struct MessageJson : Codable {
     var room_id: String?
     var sender_id: String?
     var message: String?
-    var isRead: Bool?
+    var isread: Bool?
     var created_time: String?
 
     var type : Int?
@@ -149,7 +149,7 @@ struct MessageJson : Codable {
         case room_id = "room_id"
         case sender_id = "sender_id"
         case message = "message"
-        case isRead = "isRead"
+        case isread = "isread"
         case created_time = "created_time"
         case shared_post_id = "shared_post_id"
         case shared_post = "shared_post"
@@ -167,7 +167,7 @@ struct MessageJson : Codable {
         self.room_id = try container.decodeIfPresent(String.self, forKey: .room_id)
         self.sender_id = try container.decodeIfPresent(String.self, forKey: .sender_id)
         self.message = try container.decodeIfPresent(String.self, forKey: .message)
-        self.isRead = try container.decodeIfPresent(Bool.self, forKey: .isRead)
+        self.isread = try container.decodeIfPresent(Bool.self, forKey: .isread)
         self.created_time = try container.decodeIfPresent(String.self, forKey: .created_time)
         self.type = try container.decodeIfPresent(Int.self, forKey: .type)
         

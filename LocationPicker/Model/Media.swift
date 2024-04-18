@@ -54,12 +54,7 @@ class Media : Hashable, Equatable {
         self.player = nil
     }
     
-    convenience init(json : mediaJSON?) {
-        guard let json = json else {
-            self.init()
-            return
-        }
-        
+    convenience init?(json : mediaJSON) {
         if let url = URL(string: json.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!) {
             switch url.pathExtension {
             case "jpg", "png":
@@ -77,8 +72,9 @@ class Media : Hashable, Equatable {
                 break
             }
         }
-        self.init()
+        return nil
     }
+
     
     
     static var randomMediasExamples : [Media] = [

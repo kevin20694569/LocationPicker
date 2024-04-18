@@ -27,7 +27,7 @@
                         <color key="currentPageIndicatorTintColor" red="0.85490196080000003" green="0.37647058820000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </pageControl>
                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3uk-ij-CeS">
-                        <rect key="frame" x="0.0" y="57" width="379" height="406"/>
+                        <rect key="frame" x="0.0" y="46" width="379" height="417"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hEa-Sf-KIy">
                             <size key="itemSize" width="137" height="143"/>
@@ -46,7 +46,7 @@
                                 <size key="customSize" width="137" height="143"/>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="StandardImageViewCollectionCell" id="WC8-e7-dMM" customClass="StandardImageViewCollectionCell" customModule="LocationPicker" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="263" width="137" height="143"/>
+                                <rect key="frame" x="0.0" y="274" width="137" height="143"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="LXl-Gr-xhe">
                                     <rect key="frame" x="0.0" y="0.0" width="137" height="143"/>
@@ -57,14 +57,13 @@
                         </cells>
                     </collectionView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RqY-7U-Mh6">
-                        <rect key="frame" x="20" y="6" width="45" height="45"/>
+                        <rect key="frame" x="16" y="6" width="34" height="34"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="RqY-7U-Mh6" secondAttribute="height" multiplier="1:1" id="mJS-lg-sHq"/>
-                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="45" id="pbQ-rS-zrV"/>
                         </constraints>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Bst-Ep-JjK">
-                        <rect key="frame" x="301.33333333333331" y="15.333333333333334" width="57.666666666666686" height="26.333333333333329"/>
+                        <rect key="frame" x="301.33333333333331" y="9.9999999999999982" width="57.666666666666686" height="26.333333333333329"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="dyC-Ho-alc">
                                 <rect key="frame" x="0.0" y="-0.66666666666666785" width="28.333333333333332" height="26.333333333333336"/>
@@ -106,13 +105,13 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYj-9L-573">
-                        <rect key="frame" x="73.000000000000014" y="18.333333333333336" width="220.33333333333337" height="20.333333333333336"/>
+                        <rect key="frame" x="58.000000000000014" y="12.999999999999998" width="235.33333333333337" height="20.333333333333329"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dXI-J2-Wl7" customClass="ZoomAnimatedButton" customModule="LocationPicker" customModuleProvider="target">
-                        <rect key="frame" x="17.666666666666668" y="463" width="49.666666666666657" height="42.333333333333314"/>
+                        <rect key="frame" x="8.3333333333333321" y="463" width="49.666666666666671" height="42.333333333333314"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="smiley" catalog="system"/>
                     </button>
@@ -148,7 +147,8 @@
                     <constraint firstItem="4PU-cf-mJf" firstAttribute="leading" secondItem="gNW-uj-84q" secondAttribute="leading" constant="20" symbolic="YES" id="kFi-YK-Nn2"/>
                     <constraint firstAttribute="trailing" secondItem="3uk-ij-CeS" secondAttribute="trailing" id="spp-ST-cmP"/>
                     <constraint firstItem="Bst-Ep-JjK" firstAttribute="centerY" secondItem="RqY-7U-Mh6" secondAttribute="centerY" id="tpc-BP-e4K"/>
-                    <constraint firstItem="RqY-7U-Mh6" firstAttribute="leading" secondItem="gNW-uj-84q" secondAttribute="leading" constant="20" symbolic="YES" id="unO-Xt-CRi"/>
+                    <constraint firstItem="RqY-7U-Mh6" firstAttribute="width" secondItem="gNW-uj-84q" secondAttribute="width" multiplier="0.09" id="ugh-JR-OGK"/>
+                    <constraint firstItem="RqY-7U-Mh6" firstAttribute="leading" secondItem="gNW-uj-84q" secondAttribute="leading" constant="16" id="unO-Xt-CRi"/>
                     <constraint firstAttribute="trailing" secondItem="Bst-Ep-JjK" secondAttribute="trailing" constant="20" symbolic="YES" id="wYg-le-a50"/>
                     <constraint firstItem="3uk-ij-CeS" firstAttribute="leading" secondItem="gNW-uj-84q" secondAttribute="leading" id="yaZ-Oq-Dst"/>
                     <constraint firstItem="SQg-Aa-V7a" firstAttribute="centerY" secondItem="dXI-J2-Wl7" secondAttribute="centerY" id="ywh-GR-18T"/>

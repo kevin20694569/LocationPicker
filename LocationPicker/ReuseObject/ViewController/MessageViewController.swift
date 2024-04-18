@@ -13,6 +13,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var lastTableViewContentYOffset : CGFloat! = 0
     
+    var insertingNewRow : Bool! = false
+    
+    var textViewCornerRadius : CGFloat = 16
+    
     init(room_users : [String]!, chatRoom : ChatRoom?, navBarTitle : String?) {
         super.init(nibName: nil, bundle: nil)
         if let chatRoom = chatRoom {
@@ -34,24 +38,28 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             if message.messageType == .PostShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RhsMessageSharedPostCell", for : indexPath) as! RhsMessageSharedPostCell
                 cell.messageTableCellDelegate = self
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 return cell
             }
             if message.messageType == .UserShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RhsMessageSharedUserCell", for : indexPath) as! RhsMessageSharedUserCell
                 cell.messageTableCellDelegate = self
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 return cell
             }
             if message.messageType == .RestaurantShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RhsShareRestaurantCell", for : indexPath) as! RhsShareRestaurantCell
                 cell.messageTableCellDelegate = self
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 return cell
             }
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "RhsTextLabelMessageTableViewCell", for : indexPath) as! RhsTextViewMessageTableViewCell
             cell.messageTableCellDelegate = self
+            cell.mainViewCornerRadius = self.textViewCornerRadius
             cell.configure(message: message)
             return cell
         default :
@@ -71,7 +79,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedPostCell", for : indexPath) as! LhsMessageSharedPostCell
                 
                 cell.messageTableCellDelegate = self
-                
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 cell.hiddenSenderUserImageView(hideSenderUserImageView)
                 return cell
@@ -79,7 +87,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             if message.messageType == .UserShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LhsMessageSharedUserCell", for : indexPath) as! LhsMessageSharedUserCell
                 cell.messageTableCellDelegate = self
-                
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 cell.hiddenSenderUserImageView(hideSenderUserImageView)
                 return cell
@@ -88,6 +96,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             if message.messageType == .RestaurantShare {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LhsShareRestaurantCell", for : indexPath) as! LhsShareRestaurantCell
                 cell.messageTableCellDelegate = self
+                cell.mainViewCornerRadius = self.textViewCornerRadius
                 cell.configure(message: message)
                 cell.hiddenSenderUserImageView(hideSenderUserImageView)
                 return cell
@@ -95,7 +104,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "LhsTextLabelMessageTableViewCell", for: indexPath) as! LhsTextViewMessageTableViewCell
             cell.messageTableCellDelegate = self
-            
+            cell.mainViewCornerRadius = self.textViewCornerRadius
             cell.configure(message: message)
             cell.hiddenSenderUserImageView(hideSenderUserImageView)
             return cell
@@ -152,11 +161,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var inputMainView : UIView! = UIView()
     
-    var messageInputTextView : UITextView! = UITextView() { didSet {
-        messageInputTextView.backgroundColor = .secondaryBackgroundColor
-        messageInputTextView.layer.cornerRadius = 10
-        messageInputTextView.layer.masksToBounds = true
-    }}
+    var messageInputTextView : UITextView! = UITextView()
     
     
     
@@ -164,13 +169,17 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
         self.navigationItem.backButtonTitle = ""
         setGesture()
         setReturnButton()
         layout()
         registerCells()
-        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage(_:)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
         viewStyleSet()
+        self.messageInputTextView.layoutIfNeeded()
+        tableView.verticalScrollIndicatorInsets.bottom = messageInputTextView.bounds.height + 8
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageInputTextView.bounds.height, right: 0)
+        self.tableView.isHidden = true
         Task {
             do {
                 var newMessages : [Message] = []
@@ -181,16 +190,25 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 }
                 
                 newMessages = try await loadMessagesByChatRoomID(date: "")
+                
+                
                 self.tableView.dataSource = self
                 self.tableView.delegate = self
+                DispatchQueue.main.async {
+
+                    self.tableView.layoutIfNeeded()
+                }
                 self.insertRows(newMessages: newMessages, animated: false)
-                if self.messages.count > 0 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else {
+                        return
+                    }
+                    if self.messages.count > 0 {
                         let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-                    })
+                    }
+                    self.tableView.isHidden = false
 
-                    
                 }
                 if let sender_id = self.messages.last?.sender_id {
                     if sender_id != Constant.user_id,
@@ -203,18 +221,11 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 print(error)
             }
         }
-        
     }
     
     
     @objc func dismissKeyBoard() {
         self.activeTextView?.resignFirstResponder()
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-     //   layoutNavBar(title: self.chatRoom)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -231,6 +242,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     var activeTextView : UITextView?
     
     var inputTextViewBottomAnchorConstraint : NSLayoutConstraint!
+    
+    var tableViewBottomAnchorConstraint : NSLayoutConstraint!
     
     var hasBeenShowedTheKeyBoard : Bool! = false
     
@@ -256,6 +269,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 if targetY > 0 {
                     UIView.animate(withDuration: 0.25, animations: { [self] in
                         inputTextViewBottomAnchorConstraint.constant += moveHeight!
+                        tableViewBottomAnchorConstraint.constant += moveHeight!
                         tableView.contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y -  moveHeight!)
                         self.view.layoutIfNeeded()
                     }) { bool in
@@ -294,6 +308,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             UIView.animate(withDuration: 0.25, animations: { [self] in
                 self.inputTextViewBottomAnchorConstraint.constant -= moveHeight
+                tableViewBottomAnchorConstraint.constant -= moveHeight
                 tableView.contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y +  moveHeight)
                 self.view.layoutIfNeeded()
             }) { bool in
@@ -329,7 +344,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         returnButton.translatesAutoresizingMaskIntoConstraints = false
         messageInputTextView.translatesAutoresizingMaskIntoConstraints = false
         
-        messageInputTextView.layer.cornerRadius = 16
+        messageInputTextView.layer.cornerRadius = textViewCornerRadius
         messageInputTextView.clipsToBounds = true
         
         messageInputTextView.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
@@ -355,15 +370,16 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         returnButton.configuration = config
         returnButton.clipsToBounds = true
-        returnButton.layer.cornerRadius = 12
+        returnButton.layer.cornerRadius = textViewCornerRadius
         inputTextViewBottomAnchorConstraint = messageInputTextView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+        tableViewBottomAnchorConstraint = tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         NSLayoutConstraint.activate([
             messageInputTextViewHeightAnchor,
             tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             
-            tableView.bottomAnchor.constraint(equalTo: messageInputTextView.topAnchor),
+            tableViewBottomAnchorConstraint,
             messageInputTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
             messageInputTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             inputTextViewBottomAnchorConstraint
@@ -494,21 +510,24 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             IndexPath(row: $0, section: 0)
         }
         self.messages.insert(contentsOf: newMessages, at: 0)
-
+        insertingNewRow = true
         if animated {
+          
             tableView.beginUpdates()
             self.tableView.insertRows(at: indexPaths, with: .bottom)
             tableView.endUpdates()
+            insertingNewRow = false
             self.shouldTriggerLoad = true
             self.allMessagesRead = false
         } else {
-            UIView.performWithoutAnimation {
+            //UIView.performWithoutAnimation {
                 tableView.beginUpdates()
                 self.tableView.insertRows(at: indexPaths, with: .none)
                 tableView.endUpdates()
+                insertingNewRow = false
                 self.shouldTriggerLoad = true
                 self.allMessagesRead = false
-            }
+           // }
         }
     }
     
@@ -542,13 +561,21 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         lastTableViewContentYOffset = scrollView.contentOffset.y
+        guard !insertingNewRow else {
+            return
+        }
         if let firstNotReadMessageIndexPath = notReadMessageIndexPaths.first,
            let lastNotReadMessageIndexPath = notReadMessageIndexPaths.last  {
             if let visibleIndexPaths = tableView.indexPathsForVisibleRows, visibleIndexPaths.contains(firstNotReadMessageIndexPath) || visibleIndexPaths.contains(lastNotReadMessageIndexPath) {
                 allMessagesRead = true
                 if let room_id = self.chatRoom?.room_id {
-                    SocketIOManager.shared.markAsRead(room_id: room_id , sender_id: Constant.user_id)
-                    self.notReadMessageIndexPaths.removeAll()
+                    if let cell = tableView.cellForRow(at: firstNotReadMessageIndexPath) as? MessageTableViewCell {
+                        if cell.messageInstance.sender_id != Constant.user_id {
+                            SocketIOManager.shared.markAsRead(room_id: room_id , sender_id: Constant.user_id)
+                            self.notReadMessageIndexPaths.removeAll()
+                        }
+                    }
+                    
                 }
             }
         }

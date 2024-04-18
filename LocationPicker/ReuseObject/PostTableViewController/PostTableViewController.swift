@@ -61,7 +61,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
-
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -126,10 +125,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .secondaryBackgroundColor
         tableView.separatorInset = Constant.standardTableViewInset
-    }
-    
-    func layoutTableViewContentInset(insets : UIEdgeInsets) {
-        self.tableView.contentInset = insets
     }
     
 
