@@ -67,17 +67,18 @@ class AddMediaImageView : UIImageView {
         super.init(frame: frame)
     }
     
-    func layoutImageView(frame: CGRect) {
+    func layoutImageView() {
+        let bounds = UIScreen.main.bounds
         uploadMediaGesture =  UITapGestureRecognizer(target: self, action: #selector(phpPickerPresent( _ : )) )
         self.layer.borderColor = UIColor.secondaryBackgroundColor.cgColor
         self.layer.borderWidth = 2
         self.clipsToBounds = true
         self.layer.cornerRadius = collectionViewCellcornerRadiusfloat
-        self.frame = frame
+
         self.contentMode = .center
 
         self.isUserInteractionEnabled = true
-        self.image = UIImage(systemName: "plus")?.withTintColor(.label, renderingMode: .alwaysOriginal).scale(newWidth: frame.width * 0.2 )
+        self.image = UIImage(systemName: "plus")?.withTintColor(.label, renderingMode: .alwaysOriginal).scale(newWidth: bounds.width * 0.2)
         self.addGestureRecognizer(uploadMediaGesture)
 
     }

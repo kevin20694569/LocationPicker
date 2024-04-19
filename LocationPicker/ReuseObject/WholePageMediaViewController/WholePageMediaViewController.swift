@@ -283,6 +283,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
+        PresentErrorMessageManager.shared.warningMoveIn()
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = false
         collectionView.backgroundColor = .clear
         self.view.backgroundColor = .clear
@@ -518,6 +519,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         layoutButtonItem()
         layoutSlider()
         layoutLabel()
+        gradeStackViewSetup()
         let bounds = self.view.bounds
         self.view.addSubview(collectionView)
         
@@ -544,18 +546,6 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         self.view.addSubview(gradeStackView)
         self.view.addSubview(soundImageBlurView)
         self.view.addSubview(soundImageView)
-        
-        
-        let starImage = UIImage(systemName : "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title3, weight: .regular)) )?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-        let starImageView = UIImageView(image: starImage)
-        
-        gradeStackView.addArrangedSubview(starImageView)
-        gradeStackView.addArrangedSubview(gradeLabel)
-        gradeStackView.axis = .vertical
-        gradeStackView.spacing = 2
-        gradeStackView.distribution = .fillProportionally
-        
-        
         self.view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -644,6 +634,18 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         self.view.layoutIfNeeded()
         soundImageBlurView.layer.cornerRadius = soundImageBlurView.bounds.height / 2
         
+    }
+    
+    func gradeStackViewSetup() {
+        let starImage = UIImage(systemName : "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title3, weight: .regular)) )?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+        let starImageView = UIImageView(image: starImage)
+        
+        gradeStackView.addArrangedSubview(starImageView)
+        gradeStackView.addArrangedSubview(gradeLabel)
+        gradeStackView.axis = .vertical
+        gradeStackView.spacing = 2
+        gradeStackView.alignment = .center
+        gradeStackView.distribution = .equalCentering
     }
     
     func layoutLabel() {

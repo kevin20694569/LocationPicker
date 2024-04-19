@@ -107,6 +107,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        configureNavBar(title: self.userProfile.user?.name)
         if !getUserProfileFinish {
             Task(priority : .background)  {
                 await configure(user_id: user_id)
@@ -154,6 +155,9 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         
         let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.userProfile.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
+        if let user_id = self.userProfile.user.id {
+            controller.userImageDict[user_id] = self.userProfile.user.image
+        }
         MainTabBarViewController.shared.tabBar.frame = tabBarframe
         let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
         MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe

@@ -426,14 +426,28 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
     
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
-        let font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
-        let attributes = [NSAttributedString.Key.font: font]
-        let textFieldText = textField.text ?? ""
-        let targetString = textFieldText + string
-        let width = ( targetString as NSString).size(withAttributes: attributes).width
-        let thresoldWidth = self.mediaCollectionCell.singleTextFieldWidth!
-        return width <= thresoldWidth
+        if let cell = self.tableView.cellForRow(at: mediaCollectionCellIndexPath) as? UploadMediaDetailTableCell {
+            for cell in cell.collectionView.visibleCells {
+                if let cell = cell as? UploadMediaTextFieldProtocol {
+                    if cell.textField == textField {
+                        let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+                        cell.updateTextFieldValidStatus(text: finalString)
+                        break
+                    }
+                }
+            }
+        }
+        return true
+    }
+    
+    
+    func isValidInput(_ input: String) -> Bool {
+        
+      
+        let halfCount = input.halfCount
+        let valid = halfCount <= 8
+     //   changeStatusImageView(isValid: valid)
+        return valid
     }
     
     

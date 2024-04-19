@@ -12,7 +12,7 @@ class EditUserTextFieldTableCell : UITableViewCell, UITextFieldDelegate {
     
 
     
-    var characterLimit : Int? {
+    var characterLimit : Int! {
         8
     }
     
@@ -108,27 +108,14 @@ class EditUserTextFieldTableCell : UITableViewCell, UITextFieldDelegate {
         let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         delegate?.saveButtonEnableToggle(newText.count <= characterLimit)
         return true
-       
+        
     }
     
     func isValidInput(_ input: String) -> Bool {
-
-        var characterCount = 0
-        for char in input {
-            if char.isChinese {
-                characterCount += 2
-            } else {
-                characterCount += 1
-            }
-
-            if characterCount > 32 {
-                changeStatusImageView(isValid: false)
-                return false
-            }
-        }
-        changeStatusImageView(isValid: true)
-
-        return true
+        let halfCount = input.halfCount
+        let valid = halfCount <= self.characterLimit
+        changeStatusImageView(isValid: valid)
+        return valid
     }
     
     func changeStatusImageView(isValid : Bool) {
@@ -146,16 +133,15 @@ class EditUserTextFieldTableCell : UITableViewCell, UITextFieldDelegate {
 
 class EditUserNameTextFieldTableCell : EditUserTextFieldTableCell {
     override var characterLimit : Int! {
-        16
+        20
     }
     
     override func changeStatusImageView(isValid: Bool) {
         super.changeStatusImageView(isValid: isValid)
-        alarmLabel.text = "限16個中文字符 (32個英文字符)"
+        alarmLabel.text = "限制\(characterLimit / 2)個中文字符 (\(String(describing: characterLimit))個英文字符)"
         self.statusImageBackgroundView.backgroundColor = isValid ? .systemGreen : .systemRed
         self.statusImageView.image = isValid ? UIImage(systemName: "checkmark") :  UIImage(systemName: "xmark")
         alarmLabel.isHidden = isValid
-
     }
 
     
@@ -181,10 +167,6 @@ class EditUserEmailTextFieldTableCell : EditUserTextFieldTableCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func fieldSetup() {
-        super.fieldSetup()
     }
     
     override func configure(profile: UserProfile, value: String?, themeLabelSize: CGSize) {

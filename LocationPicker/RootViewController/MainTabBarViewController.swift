@@ -59,8 +59,13 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         showViewController(at: 0)
         finishFirstReload = true
         self.view.addSubview(tabBar)
+        tabBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tabBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+            tabBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            tabBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+        ])
         tabBar.layoutIfNeeded()
-        
         
         self.view.addSubview(bottomBarView)
         standardTabBarFrameInView = tabBar.frame

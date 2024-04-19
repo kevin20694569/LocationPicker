@@ -79,11 +79,10 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
             addMediaImageView?.isHidden = false
         } else {
             addMediaImageView?.isHidden = true
-            addMediaImageView = nil
         }
     }}
     
-    var addMediaImageView : AddMediaImageView?
+    var addMediaImageView : AddMediaImageView!
     
     func changeMediaTitle(title : String) {
         MediaStorage[currentMediaIndexPath.row].title = title
@@ -143,22 +142,38 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
 extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollectionViewDelegate, PhotoPostViewControllerDelegate, UICollectionViewDataSource {
     
     func layoutAddMediaView() {
+        self.view.layoutIfNeeded()
+        self.collectionView.layoutIfNeeded()
         let height = collectionView.bounds.height
         let spacing = self.collectionView.bounds.width - height
         var origin = collectionView.frame.origin
+      //  print(origin)
+      //  let origin = CGPoint(x: spacing / 2, y: <#T##CGFloat#>)
         origin.x += spacing / 2
-        let frame = CGRect(origin: origin, size: CGSize(width: height  , height: height ))
-        addMediaImageView = AddMediaImageView(frame: frame )
-        addMediaImageView?.PhotpPostViewControllerDelegate = self
-        addMediaImageView?.layoutImageView(frame: frame)
-        self.view.addSubview(addMediaImageView!)
+
+
+     //   let frame = CGRect(origin: origin, size: CGSize(width: height  , height: height ))
+        addMediaImageView = AddMediaImageView(frame: .zero )
+        addMediaImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(addMediaImageView)
+        NSLayoutConstraint.activate([
+            addMediaImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: spacing / 2),
+            addMediaImageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -spacing / 2),
+            addMediaImageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: origin.y),
+            addMediaImageView.heightAnchor.constraint(equalToConstant: height),
+            addMediaImageView.widthAnchor.constraint(equalToConstant: height)
+        ])
+        
+        addMediaImageView.PhotpPostViewControllerDelegate = self
+        addMediaImageView.layoutImageView()
+
         let gesture = UITapGestureRecognizer(target: self, action: #selector(presentPHPPicker))
         gesture.cancelsTouchesInView = false
-        addMediaImageView?.addGestureRecognizer(gesture)
-        let button = ZoomAnimatedButton(frame: addMediaImageView!.bounds)
+        addMediaImageView.addGestureRecognizer(gesture)
+        let button = ZoomAnimatedButton(frame: addMediaImageView.bounds)
         button.scaleX = 0.90
         button.scaleY = 0.90
-        button.scaleTargets?.append(addMediaImageView!)
+        button.scaleTargets?.append(addMediaImageView)
         button.tappedDuration = 0.15
         button.recoverDutation = 0.15
         addMediaImageView?.addSubview(button)

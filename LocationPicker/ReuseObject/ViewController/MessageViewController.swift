@@ -223,15 +223,33 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        dismissKeyBoard()
+    }
+    
+
+    
     
     @objc func dismissKeyBoard() {
+        activeTextView = nil
+        self.moveHeight = nil
+        isShowingKeyboard = false
         self.activeTextView?.resignFirstResponder()
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         dismissKeyBoard()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+    
+
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -245,15 +263,15 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var tableViewBottomAnchorConstraint : NSLayoutConstraint!
     
-    var hasBeenShowedTheKeyBoard : Bool! = false
+    var isShowingKeyboard : Bool! = false
     
     @objc func keyboardShown(notification: Notification) {
         if let activeTextView = activeTextView {
             
-            guard !hasBeenShowedTheKeyBoard  else {
+            guard !isShowingKeyboard  else {
                 return
             }
-            hasBeenShowedTheKeyBoard = true
+            isShowingKeyboard = true
             let info: NSDictionary = notification.userInfo! as NSDictionary
             
             let keyboardSize = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
@@ -280,6 +298,22 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
+    @objc func keyboardHidden(notification: Notification?) {
+        if let moveHeight = moveHeight {
+            guard isShowingKeyboard else {
+                return
+            }
+            UIView.animate(withDuration: 0.25, animations: { [self] in
+                self.inputTextViewBottomAnchorConstraint.constant -= moveHeight
+                tableViewBottomAnchorConstraint.constant -= moveHeight
+                tableView.contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y +  moveHeight)
+                self.view.layoutIfNeeded()
+            }) { bool in
+                self.isShowingKeyboard = false
+            }
+        }
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
@@ -301,21 +335,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var moveHeight : CGFloat?
     
-    @objc func keyboardHidden(notification: Notification?) {
-        if let moveHeight = moveHeight {
-            guard hasBeenShowedTheKeyBoard else {
-                return
-            }
-            UIView.animate(withDuration: 0.25, animations: { [self] in
-                self.inputTextViewBottomAnchorConstraint.constant -= moveHeight
-                tableViewBottomAnchorConstraint.constant -= moveHeight
-                tableView.contentOffset = CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y +  moveHeight)
-                self.view.layoutIfNeeded()
-            }) { bool in
-                self.hasBeenShowedTheKeyBoard = false
-            }
-        }
-    }
+
     
     func registerCells() {
         tableView.register(RhsTextViewMessageTableViewCell.self, forCellReuseIdentifier: "RhsTextLabelMessageTableViewCell")

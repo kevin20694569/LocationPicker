@@ -2,11 +2,16 @@
 import UIKit
 
 class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, UploadMediaTextFieldProtocol {
+    
+
+    
     var textField : RoundedTextField!
     
     override var cornerRadiusfloat: CGFloat! {
         return 16
     }
+    
+    var characterLimit : Int = 16
     
     var textFieldDelegate : UITextFieldDelegate!
     
@@ -14,6 +19,61 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
     
     var mediaHeightScale : Double!
     
+    var validStackView : UIStackView! = UIStackView()
+    
+    var validMessageLabel : UILabel! = UILabel()
+    
+    var validImageView : UIImageView! = UIImageView()
+    
+    var validBackgroundView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemChromeMaterialDark)
+    
+    var messageStackViewBottomConstant : CGFloat = 6
+    
+     
+    
+
+    
+    func validMessageViewSetup() {
+        validImageView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        validImageView.tintColor = .systemRed
+        validBackgroundView.clipsToBounds = true
+        validBackgroundView.layer.cornerRadius = 10
+        validMessageLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+        validMessageLabel.textColor = .white
+        validMessageLabel.text = "超過8個字元"
+        validImageView.contentMode = .scaleAspectFit
+        self.contentView.addSubview(validBackgroundView)
+        self.contentView.addSubview(validStackView)
+        validBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        validStackView.axis = .horizontal
+        validStackView.spacing = 2
+        validStackView.distribution = .equalSpacing
+        validStackView.addArrangedSubview(validImageView)
+        validStackView.addArrangedSubview(validMessageLabel)
+        validStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            validStackView.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            validStackView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -messageStackViewBottomConstant),
+            validStackView.widthAnchor.constraint(equalTo: self.imageView.heightAnchor, multiplier: 0.7),
+            validStackView.heightAnchor.constraint(equalTo: self.imageView.heightAnchor , multiplier: 0.2),
+            validBackgroundView.widthAnchor.constraint(equalTo: validStackView.widthAnchor, multiplier: 1.1),
+            validBackgroundView.heightAnchor.constraint(equalTo: validStackView.heightAnchor, multiplier: 1.1),
+            validBackgroundView.centerXAnchor.constraint(equalTo: validStackView.centerXAnchor),
+            validBackgroundView.centerYAnchor.constraint(equalTo: validStackView.centerYAnchor),
+        ])
+        validStackView.isHidden = true
+        validBackgroundView.isHidden = true
+    }
+    
+    
+    
+    func updateTextFieldValidStatus(text: String?) -> Bool {
+        let valid = ( text?.halfCount ?? 0 ) <= characterLimit
+        self.validStackView.isHidden = valid
+        validBackgroundView.isHidden = valid
+        return valid
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,6 +85,7 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
         textField.backgroundColor = .secondaryBackgroundColor
         textField.layer.cornerRadius = 8
         self.contentView.addSubview(textField)
+        validMessageViewSetup()
     }
     
     required init?(coder: NSCoder) {
@@ -46,6 +107,7 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
         self.textField.text = media.title
         textField.delegate = self.textFieldDelegate
         self.layoutTextField()
+        updateTextFieldValidStatus(text: textField.text)
     }
     
     

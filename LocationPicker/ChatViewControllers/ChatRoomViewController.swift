@@ -252,13 +252,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return chatRoomPreviews.count
-    }
-    
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-
-        return indexPath
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -267,7 +261,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         let chatRoomPreview = chatRoomPreviews[indexPath.row]
-        let controller = MessageViewController(room_users: [], chatRoom: chatRoomPreview.chatRoom, navBarTitle: chatRoomPreview.user?.name)
+        let controller = MessageViewController(room_users: chatRoomPreview.chatRoom.user_ids, chatRoom: chatRoomPreview.chatRoom, navBarTitle: chatRoomPreview.user?.name)
        
         let userImage = chatRoomPreview.user?.image
         if let user_id = chatRoomPreview.user?.id {

@@ -18,7 +18,7 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
             media.player?.pause()
         }
     }
-
+    
     func registerCells() {
         self.collectionView.register(UploadMediaDetailPlayerLayerCollectionCell.self, forCellWithReuseIdentifier: "UploadMediaDetailPlayerLayerCollectionCell")
         self.collectionView.register(UploadMediaDetailImageViewCollectionCell.self, forCellWithReuseIdentifier: "UploadMediaDetailImageViewCollectionCell")

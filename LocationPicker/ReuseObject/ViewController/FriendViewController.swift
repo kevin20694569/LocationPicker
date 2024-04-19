@@ -5,6 +5,9 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         
         let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: view)
+        if let user_id = user.id {
+            controller.userImageDict[user_id] = user.image
+        }
         MainTabBarViewController.shared.tabBar.frame = tabBarframe
         let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
         MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
@@ -32,6 +35,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     }
 
     var friends : [Friend]! = []
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendTableCell", for: indexPath) as! FriendTableCell
         let friend = friends[indexPath.row]
@@ -39,10 +43,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         cell.delegate = self
         return cell
     }
-    
-    
-    
-    
+
     var tableView : UITableView! = UITableView(frame: .zero)
     
     override func viewDidLoad() {
@@ -119,6 +120,8 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     
     func configureNavBar() {
         self.navigationItem.title = user.name + "的朋友們"
+        self.navigationController?.navigationBar.standardAppearance.configureWithDefaultBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithDefaultBackground()
     }
     
     

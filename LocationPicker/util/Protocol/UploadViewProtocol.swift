@@ -8,6 +8,7 @@ protocol UploadDelegate : AnyObject {
 }
 
 protocol UploadMediaTextFieldProtocol {
+    func updateTextFieldValidStatus(text : String?) -> Bool
     var textField : RoundedTextField! { get set }
 }
 

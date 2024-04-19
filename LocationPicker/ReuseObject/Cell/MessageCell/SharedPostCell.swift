@@ -114,8 +114,6 @@ class LhsMessageSharedPostCell : LhsMessageTableViewCell, MessageSharedPostCell 
     
     override func configure(message: Message) {
         super.configure(message: message)
-        
-     //   dump(message)
         self.post = message.postJson
         self.restaurantNameLabel.text = message.sharedPostRestaurant?.name
         self.postImageView.image = nil

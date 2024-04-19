@@ -36,6 +36,7 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         LocationManager.shared.startUpdatingLocation()
         BasicViewController.shared = self
+
         
         navMapViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavMapViewController") as? NavMapViewController
         mainTabBarViewController = self.storyboard?.instantiateViewController(withIdentifier: "CustomTabBarController")  as? MainTabBarViewController

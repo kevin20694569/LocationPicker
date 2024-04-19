@@ -51,7 +51,17 @@ class FriendTableCell : UITableViewCell {
             self.mainButton.isHidden = true
             self.leftPairButton.isHidden = false
             self.rightPairButton.isHidden = false
-        } else {
+        } else if status == .hasBeenSentRequest {
+            self.mainButton.isHidden = false
+            self.leftPairButton.isHidden = true
+            self.rightPairButton.isHidden = true
+            self.mainButton.configuration?.baseBackgroundColor = status?.backgroundColor
+            self.mainButton.configuration?.baseForegroundColor = status?.mainColor
+            self.mainButton.configuration?.image = status?.mainImage
+            if let title = status?.mainButtonTitle {
+                mainButton.configuration?.attributedTitle = AttributedString(title, attributes: mainButtonAttributes)
+            }
+        } else if status == .isSelf {
             self.mainButton.isHidden = false
             self.leftPairButton.isHidden = true
             self.rightPairButton.isHidden = true
@@ -76,6 +86,9 @@ class FriendTableCell : UITableViewCell {
             }
         case .requestNeedRespond :
             return
+        case .isSelf :
+            break
+          //  showUserProfileController(nil)
         case .none:
             return
         case .some(_):
@@ -121,7 +134,7 @@ class FriendTableCell : UITableViewCell {
         }
     }
     
-    @objc func showUserProfileController( _ gesture : UITapGestureRecognizer) {
+    @objc func showUserProfileController( _ gesture : UITapGestureRecognizer?) {
         let controller = MainUserProfileViewController(presentForTabBarLessView: delegate?.presentForTabBarLessView ?? false, user: friend.user, user_id: friend.user.id)
         delegate?.show(controller, sender: nil)
     }
@@ -138,6 +151,9 @@ class FriendTableCell : UITableViewCell {
     }
     
     @objc func showMessageViewController() {
+        guard friend.user.id != Constant.user_id else {
+            return
+        }
         delegate?.showMessageViewController(user_ids:  [friend.user.id, Constant.user_id])
     }
     

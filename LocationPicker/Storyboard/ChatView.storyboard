@@ -33,7 +33,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="h5a-m2-9L0">
-                                                    <rect key="frame" x="94.999999999999986" y="19.666666666666668" width="220.66666666666663" height="50.666666666666657"/>
+                                                    <rect key="frame" x="90.999999999999986" y="19.666666666666668" width="224.66666666666663" height="50.666666666666657"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6HY-rl-pwl">
                                                             <rect key="frame" x="0.0" y="0.0" width="56.666666666666664" height="26.333333333333332"/>
@@ -56,14 +56,14 @@
                                                     <size key="shadowOffset" width="0.0" height="0.0"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gzl-Qt-Bff">
-                                                    <rect key="frame" x="16" y="13.666666666666668" width="63" height="62.666666666666657"/>
+                                                    <rect key="frame" x="12" y="13.666666666666668" width="63" height="62.666666666666657"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="gzl-Qt-Bff" secondAttribute="height" multiplier="1:1" id="jOZ-yh-lMG"/>
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="gzl-Qt-Bff" firstAttribute="leading" secondItem="hUN-Lg-d3g" secondAttribute="leading" constant="16" id="E72-St-Xb5"/>
+                                                <constraint firstItem="gzl-Qt-Bff" firstAttribute="leading" secondItem="hUN-Lg-d3g" secondAttribute="leading" constant="12" id="E72-St-Xb5"/>
                                                 <constraint firstItem="Zro-nP-Gvv" firstAttribute="centerY" secondItem="hUN-Lg-d3g" secondAttribute="centerY" id="Fb2-lU-UGd"/>
                                                 <constraint firstItem="gzl-Qt-Bff" firstAttribute="centerY" secondItem="hUN-Lg-d3g" secondAttribute="centerY" id="TXh-2U-SKf"/>
                                                 <constraint firstItem="h5a-m2-9L0" firstAttribute="leading" secondItem="gzl-Qt-Bff" secondAttribute="trailing" constant="16" id="TuI-J4-duU"/>

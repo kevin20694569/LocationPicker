@@ -288,6 +288,18 @@ extension String {
         
     }
     
+    var halfCount : Int {
+        var characterCount = 0
+        for char in self {
+            if char.isChinese {
+                characterCount += 2
+            } else {
+                characterCount += 1
+            }
+        }
+        return characterCount
+    }
+    
     func isValidEmail() -> Bool {
         // 定义电子邮件地址的正则表达式
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"

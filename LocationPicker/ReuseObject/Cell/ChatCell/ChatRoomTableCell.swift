@@ -62,8 +62,6 @@ class ChatRoomTableCell: UITableViewCell {
     func layout() {
         nameLabel.textColor = .label
         nameLabel.font = .weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-
-      //  lastMessageLabel.font = .weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
         lastMessageTimeLabel.font = .weightSystemSizeFont(systemFontStyle: .footnote, weight: .regular)
         lastMessageTimeLabel.textColor = .secondaryLabelColor
     }

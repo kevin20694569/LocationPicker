@@ -180,6 +180,7 @@
 		23F21A8C2BCC1D81000E1F98 /* EditUserTextFieldTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A8B2BCC1D81000E1F98 /* EditUserTextFieldTableCell.swift */; };
 		23F21A8E2BCC1D98000E1F98 /* EditUserImageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A8D2BCC1D98000E1F98 /* EditUserImageTableCell.swift */; };
 		23F21A902BCD24B2000E1F98 /* EditEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A8F2BCD24B2000E1F98 /* EditEmailViewController.swift */; };
+		23F21A922BD22176000E1F98 /* PresentErrorMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F21A912BD22176000E1F98 /* PresentErrorMessageManager.swift */; };
 		23FDBD052B37E64200285263 /* PreviewPostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -361,6 +362,7 @@
 		23F21A8B2BCC1D81000E1F98 /* EditUserTextFieldTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserTextFieldTableCell.swift; sourceTree = "<group>"; };
 		23F21A8D2BCC1D98000E1F98 /* EditUserImageTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserImageTableCell.swift; sourceTree = "<group>"; };
 		23F21A8F2BCD24B2000E1F98 /* EditEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEmailViewController.swift; sourceTree = "<group>"; };
+		23F21A912BD22176000E1F98 /* PresentErrorMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentErrorMessageManager.swift; sourceTree = "<group>"; };
 		23FDBD042B37E64200285263 /* PreviewPostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPostTableViewController.swift; sourceTree = "<group>"; };
 		B99DA1252FBB81990376BDC2 /* Pods-LocationPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.release.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.release.xcconfig"; sourceTree = "<group>"; };
 		E982666EE4E0DA419F62495A /* Pods-LocationPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LocationPicker.debug.xcconfig"; path = "Target Support Files/Pods-LocationPicker/Pods-LocationPicker.debug.xcconfig"; sourceTree = "<group>"; };
@@ -980,6 +982,7 @@
 				230793912B73645400266227 /* Env */,
 				23DD482F2AE9886300C63821 /* Delegate */,
 				23DD48012AE9886300C63821 /* Animator */,
+				23F21A912BD22176000E1F98 /* PresentErrorMessageManager.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -1345,6 +1348,7 @@
 				23749C2F2B0F7CA7007241A8 /* ChatRoom.swift in Sources */,
 				23DD486A2AE9886300C63821 /* NavMainTableViewController.swift in Sources */,
 				23DCB7142B95BE3500D97BF2 /* CollectionViewButtonCell.swift in Sources */,
+				23F21A922BD22176000E1F98 /* PresentErrorMessageManager.swift in Sources */,
 				23005C142B9C6B3D00425BEA /* BlurCollectionCell.swift in Sources */,
 				230D07F42BB2A30A00FE2C5A /* AnimateProtocol.swift in Sources */,
 				23DD483F2AE9886300C63821 /* Restaurant.swift in Sources */,

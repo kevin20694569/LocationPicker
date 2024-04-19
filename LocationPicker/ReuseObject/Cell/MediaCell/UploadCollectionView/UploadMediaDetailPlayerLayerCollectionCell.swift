@@ -2,6 +2,11 @@
 import UIKit
 
 class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, UploadMediaTextFieldProtocol {
+
+    
+    
+    var characterLimit : Int = 16
+    
     var textField : RoundedTextField!
     var contentModeToggleTapGesture : UITapGestureRecognizer!
     var BehindPlayerLayerView : UIView!
@@ -10,19 +15,77 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
         
     var mediaHeightScale : Double!
     
+    
+    var validStackView : UIStackView! = UIStackView()
+    
+    var validMessageLabel : UILabel! = UILabel()
+    
+    var validImageView : UIImageView! = UIImageView()
+    
+    var validBackgroundView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemChromeMaterialDark)
+    
+    var messageStackViewBottomConstant : CGFloat = 6
+    
+     
+    
     override var cornerRadiusfloat: CGFloat! {
         return 16
     }
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         BehindPlayerLayerView = UIView()
+        
         self.contentView.addSubview(BehindPlayerLayerView)
 
         textField = RoundedTextField()
         self.contentView.addSubview(textField)
         setGesture()
+        validMessageViewSetup()
     }
+    
+    func validMessageViewSetup() {
+        validImageView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        validImageView.tintColor = .systemRed
+        validBackgroundView.clipsToBounds = true
+        validBackgroundView.layer.cornerRadius = 10
+        validMessageLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+        validMessageLabel.textColor = .white
+        validMessageLabel.text = "超過8個字元"
+        validImageView.contentMode = .scaleAspectFit
+        self.BehindPlayerLayerView.addSubview(validBackgroundView)
+        self.BehindPlayerLayerView.addSubview(validStackView)
+        validBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        validStackView.axis = .horizontal
+        validStackView.spacing = 2
+        validStackView.distribution = .fill
+        validStackView.addArrangedSubview(validImageView)
+        validStackView.addArrangedSubview(validMessageLabel)
+        validStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            validStackView.centerXAnchor.constraint(equalTo: self.BehindPlayerLayerView.centerXAnchor),
+            validStackView.bottomAnchor.constraint(equalTo: BehindPlayerLayerView.bottomAnchor, constant: -messageStackViewBottomConstant),
+            validStackView.widthAnchor.constraint(equalTo: BehindPlayerLayerView.heightAnchor, multiplier: 0.7),
+            validStackView.heightAnchor.constraint(equalTo: BehindPlayerLayerView.heightAnchor , multiplier: 0.2),
+            validBackgroundView.widthAnchor.constraint(equalTo: validStackView.widthAnchor, multiplier: 1.1),
+            validBackgroundView.heightAnchor.constraint(equalTo: validStackView.heightAnchor, multiplier: 1.1),
+            validBackgroundView.centerXAnchor.constraint(equalTo: validStackView.centerXAnchor),
+            validBackgroundView.centerYAnchor.constraint(equalTo: validStackView.centerYAnchor),
+        ])
+        validStackView.isHidden = true
+        validBackgroundView.isHidden = true
+    }
+    
+    func updateTextFieldValidStatus(text : String?) -> Bool {
+       
+        let valid = text?.halfCount ?? 0 <= characterLimit
+        self.validStackView.isHidden = valid
+        validBackgroundView.isHidden = valid
+        return valid
+    }
+    
     
     func setGesture() {
         contentModeToggleTapGesture = UITapGestureRecognizer(target: self, action: #selector(contentModeToggle))
@@ -53,12 +116,6 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
         }
         
     }
-    
-    override func layoutIfNeeded() {
-        super.layoutIfNeeded()
-
-
-    }
 
     
     override func layoutPlayerlayer(media: Media) {
@@ -77,11 +134,12 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
             
             self.BehindPlayerLayerView.frame = frame
             self.playerLayer.frame = frame
-            self.BehindPlayerLayerView.layer.addSublayer(self.playerLayer)
+            self.BehindPlayerLayerView.layer.insertSublayer(self.playerLayer, at: 0)
             self.playerLayer.isHidden = false
             CATransaction.commit()
             self.layoutTextField()
         }
+        updateTextFieldValidStatus(text: textField.text )
     }
     
     func layoutTextField() {
