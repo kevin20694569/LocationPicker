@@ -3,7 +3,7 @@ import UIKit
 class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowMessageControllerProtocol {
     func showMessageViewController(user_ids: [String]) {
         
-        let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.user.name)
+        let controller = MessageViewController(room_users: user_ids, chatRoomPreview: nil, messages: nil, navBarTitle: self.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: view)
         if let user_id = user.id {
             controller.userImageDict[user_id] = user.image

@@ -2,6 +2,8 @@ import AVFoundation
 import UIKit
 
 class Media : Hashable, Equatable {
+    
+    static let mediaTitleCountLimit : Int = 16
     static func == (lhs: Media, rhs: Media) -> Bool {
         lhs.DonwloadURL == rhs.DonwloadURL
     }
@@ -11,11 +13,15 @@ class Media : Hashable, Equatable {
     }
     
     var title : String?
-    var uuid : Int!
     var DonwloadURL : URL!
     var image : UIImage?
     var player : AVPlayer?
     var isImage : Bool! = true
+    
+    var titleCountValid : Bool {
+        let valid = ( self.title?.halfCount ?? 0 ) <= Self.mediaTitleCountLimit
+        return valid
+    }
     
     var playerRestartObserverToken : Any?
     
@@ -191,18 +197,26 @@ extension Media {
         [
         Media(title: title, DownloadURL: URL(string: "ChIJe2XGItM1BhQRtMUBxFrKia4_1")! , image: Media.getImage(fileName: "ChIJe2XGItM1BhQRtMUBxFrKia4_1")!)
         ]
-        
-        
-    
-        
-        
-        
-        
-        
-    
-    
-    
-    
     ]
     
+}
+
+struct mediaJSON : Codable {
+    var url : String!
+    var resource_id : String!
+    var title : String?
+
+    
+    enum CodingKeys: String, CodingKey {
+        case url = "url"
+        case resource_id = "resource_id"
+        case title = "title"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.url = try container.decodeIfPresent(String.self, forKey: .url)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        self.resource_id = try container.decodeIfPresent(String.self, forKey: .resource_id)
+    }
 }

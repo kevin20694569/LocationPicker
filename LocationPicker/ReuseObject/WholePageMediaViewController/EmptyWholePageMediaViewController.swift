@@ -55,6 +55,12 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
         }
     }
     
+    override func recoverInteraction() {
+        dismissTapGesture.isEnabled = false
+        panWholeViewGesture.isEnabled = false
+        self.navigationController?.navigationBar.isUserInteractionEnabled = true
+    }
+    
     
 
 }

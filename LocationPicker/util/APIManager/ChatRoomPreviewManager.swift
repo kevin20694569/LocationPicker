@@ -3,7 +3,7 @@ class ChatRoomPreviewManager {
     let ip = APIKey.IP
     let user_id : String = Constant.user_id
     static let shared = ChatRoomPreviewManager()
-    lazy var API =  ip + "/chatrooms/previews"
+    lazy var API = ip + "/chatrooms/previews"
     
     func getChatroomPreviewsByLastMessageOrderFromUserID(user_id : String, date : String) async throws -> [ChatRoomPreview]   {
         do{
@@ -25,11 +25,17 @@ class ChatRoomPreviewManager {
             req.httpBody = jsonData
             let decoder = JSONDecoder()
             let (data, _) = try await URLSession.shared.data(for: req)
-            let chatroomsJson = try decoder.decode([ChatRoomPreviewJson].self, from: data)
-            let chatrooms = chatroomsJson.map { json in
-                return ChatRoomPreview(lastMessage: json.message, user: json.user, chatroomJson: json.chatroom)
+            let chatRoomPreviewResultJson = try decoder.decode(ChatRoomPreviewResultJson.self, from: data)
+            if let previews = chatRoomPreviewResultJson.previews {
+                var chatrooms = previews.map { json in
+                    let preview = ChatRoomPreview(messagesJson: json.messages, user: json.user, chatroomJson: json.chatroom)
+                    preview.messages?.reverse()
+                    return preview
+                }
+                return chatrooms
             }
-            return chatrooms
+            return []
+
             
         } catch  {
             throw error
@@ -38,7 +44,6 @@ class ChatRoomPreviewManager {
     
     func getSingleChatroomPreviewFromRoom_ID(room_id : String) async throws -> ChatRoomPreview  {
         do {
-
             let urlstring = API + "/\(room_id)?request_user_id=\(self.user_id)"
             
             guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
@@ -51,7 +56,9 @@ class ChatRoomPreviewManager {
             let decoder = JSONDecoder()
             let (data, _) = try await URLSession.shared.data(for: req)
             let chatroomsJson = try decoder.decode(ChatRoomPreviewJson.self, from: data)
-            return  ChatRoomPreview(lastMessage: chatroomsJson.message, user: chatroomsJson.user, chatroomJson: chatroomsJson.chatroom )
+            let preview = ChatRoomPreview(messagesJson: chatroomsJson.messages, user: chatroomsJson.user, chatroomJson: chatroomsJson.chatroom)
+            preview.messages?.reverse()
+            return preview
         } catch  {
             throw error
         }
@@ -77,7 +84,9 @@ class ChatRoomPreviewManager {
             let decoder = JSONDecoder()
             let (data, _) = try await URLSession.shared.data(for: req)
             let chatroomsJson = try decoder.decode(ChatRoomPreviewJson.self, from: data)
-            return  ChatRoomPreview(lastMessage: chatroomsJson.message, user: chatroomsJson.user, chatroomJson: chatroomsJson.chatroom)
+            let preview = ChatRoomPreview(messagesJson: chatroomsJson.messages, user: chatroomsJson.user, chatroomJson: chatroomsJson.chatroom)
+            preview.messages?.reverse()
+            return preview
             
         } catch {
             throw error
@@ -121,5 +130,23 @@ class ChatRoomManager : NSObject {
         } catch {
             throw error
         }
+    }
+}
+
+
+struct ChatRoomPreviewResultJson : Codable {
+    var responded_room_ids : [String]?
+    
+    var previews : [ChatRoomPreviewJson]?
+    
+    enum CodingKeys : String,  CodingKey  {
+        case responded_room_ids = "responded_room_ids"
+        case previews = "previews"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.responded_room_ids = try container.decodeIfPresent([String].self, forKey: .responded_room_ids)
+        self.previews = try container.decodeIfPresent([ChatRoomPreviewJson].self, forKey: .previews)
     }
 }

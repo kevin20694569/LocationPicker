@@ -152,7 +152,7 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         origin.x += spacing / 2
 
 
-     //   let frame = CGRect(origin: origin, size: CGSize(width: height  , height: height ))
+        let frame = CGRect(origin: origin, size: CGSize(width: height  , height: height ))
         addMediaImageView = AddMediaImageView(frame: .zero )
         addMediaImageView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(addMediaImageView)
@@ -163,10 +163,10 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
             addMediaImageView.heightAnchor.constraint(equalToConstant: height),
             addMediaImageView.widthAnchor.constraint(equalToConstant: height)
         ])
-        
+      
         addMediaImageView.PhotpPostViewControllerDelegate = self
         addMediaImageView.layoutImageView()
-
+       
         let gesture = UITapGestureRecognizer(target: self, action: #selector(presentPHPPicker))
         gesture.cancelsTouchesInView = false
         addMediaImageView.addGestureRecognizer(gesture)
@@ -177,6 +177,9 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         button.tappedDuration = 0.15
         button.recoverDutation = 0.15
         addMediaImageView?.addSubview(button)
+        
+      //  addMediaImageView.frame = frame
+      //  addMediaImageView.translatesAutoresizingMaskIntoConstraints = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -199,9 +202,9 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
     }
     
     func defaultNavStyleSet() {
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+
+        self.navigationController?.navigationBar.standardAppearance.configureWithDefaultBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithDefaultBackground()
 
         self.navigationItem.backButtonTitle = ""
     }

@@ -107,18 +107,17 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
                 ChatRoomPreview.hasRecievedRoom_IDs.removeAll()
                 chatRoomPreviews.removeAll()
                 let newChatRoomPreviews = try await ChatRoomPreviewManager.shared.getChatroomPreviewsByLastMessageOrderFromUserID(user_id: Constant.user_id, date: "")
-                
                 if newChatRoomPreviews.count > 0 {
                     self.chatRoomPreviews.insert(contentsOf: newChatRoomPreviews, at: self.chatRoomPreviews.count)
                     newChatRoomPreviews.forEach() {
                         ChatRoomPreview.hasRecievedRoom_IDs[$0.chatRoom.room_id] = $0.chatRoom.room_id
                     }
-                    
                 }
-                tableView.reloadSections([0], with: .fade)
+                tableView.reloadSections([0], with: .automatic)
                 chatRoomsHadBeenCompletedGet = false
                 
             }   catch {
+                tableView.reloadSections([0], with: .automatic)
                 print(error)
             }
             
@@ -191,7 +190,8 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         }
         for (index, chatroom) in self.chatRoomPreviews.enumerated() {
             if chatroom.room_id == room_id {
-                chatroom.lastMessage.isRead = true
+                chatroom.messages?.first?.isRead = true
+                
                 let indexPath = IndexPath(row: index, section: 0)
                 if let cell = tableView.cellForRow(at: indexPath) as? ChatRoomTableCell {
                     cell.configure(chatroom: chatroom)
@@ -212,7 +212,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             
             for (index, chatroom) in self.chatRoomPreviews.enumerated() {
                 if chatroom.room_id == message.room_id {
-                    chatroom.lastMessage = message
+                    chatroom.messages?.append(message)
                     let indexPath = IndexPath(row: index, section: 0)
                     if let cell = tableView.cellForRow(at: indexPath) as? ChatRoomTableCell {
                         cell.configure(chatroom: chatroom)
@@ -233,6 +233,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
         Task {
             let newChatRoomPreview = try await ChatRoomPreviewManager.shared.getSingleChatroomPreviewFromRoom_ID(room_id: message.room_id)
             ChatRoomPreview.hasRecievedRoom_IDs[newChatRoomPreview.chatRoom.room_id] = newChatRoomPreview.chatRoom?.room_id
+
             chatRoomPreviews.insert(newChatRoomPreview, at: 0)
             tableView.beginUpdates()
             self.tableView.insertRows(at: [destinationIndexPath], with: .top)
@@ -261,19 +262,16 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         let chatRoomPreview = chatRoomPreviews[indexPath.row]
-        let controller = MessageViewController(room_users: chatRoomPreview.chatRoom.user_ids, chatRoom: chatRoomPreview.chatRoom, navBarTitle: chatRoomPreview.user?.name)
+        let controller = MessageViewController(room_users: chatRoomPreview.chatRoom.user_ids, chatRoomPreview: chatRoomPreview, messages: chatRoomPreview.messages, navBarTitle: chatRoomPreview.user?.name)
        
         let userImage = chatRoomPreview.user?.image
         if let user_id = chatRoomPreview.user?.id {
             controller.userImageDict[user_id] = userImage
         }
-        self.show(controller, sender: nil)
+        self.navigationController?.pushViewController(controller, animated: true)
         BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
         
     }
-    
-    
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Chatcell", for: indexPath) as! ChatRoomTableCell
         let chatmodel = chatRoomPreviews[indexPath.row]
@@ -286,7 +284,7 @@ class ChatRoomViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
         let lastChatrooms = self.chatRoomPreviews.last
-        guard let timeStamp = lastChatrooms?.lastMessage.created_time else {
+        guard let timeStamp = lastChatrooms?.messages?.first?.created_time else {
             return
         }
         Task {

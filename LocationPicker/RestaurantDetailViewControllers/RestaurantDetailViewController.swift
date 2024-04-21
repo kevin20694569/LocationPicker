@@ -134,13 +134,13 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         viewDataStyleSet()
         registerCollectionCells()
         setGesture()
-        Task(priority : .background) {  [weak self] in
+        Task(priority : .medium) {  [weak self] in
             guard let self = self else {
                 return
             }
             await getRestaurantSummary(restaurant_id: self.restaurant.ID)
         }
-        Task(priority : .background) { [weak self] in
+        Task(priority : .high) { [weak self] in
             guard let self = self else {
                 return
             }

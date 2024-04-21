@@ -206,7 +206,7 @@ class FriendTableCell : UITableViewCell {
     
     func setupLabel() {
         
-        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .bold)
+        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .bold)
         userNameLabel.adjustsFontSizeToFitWidth = true
     }
     

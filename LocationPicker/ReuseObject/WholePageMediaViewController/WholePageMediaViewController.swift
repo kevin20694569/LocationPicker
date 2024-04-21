@@ -12,6 +12,8 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         true
     }
     
+    var postTitleTextWiderThanAllItemTitle : Bool = true
+    
     weak var mediaAnimatorDelegate : MediaCollectionViewAnimatorDelegate?
     
     weak var wholePageMediaDelegate : WholePageMediaViewControllerDelegate?
@@ -28,6 +30,14 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         self.cacelTimer()
         
     }
+    
+    func recoverInteraction() {
+        dismissTapGesture.isEnabled = false
+        panWholeViewGesture.isEnabled = true
+        self.navigationController?.navigationBar.isUserInteractionEnabled = true
+    }
+    
+    var isChangingButtons : Bool = false
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -57,6 +67,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     var postTitleButton : RoundedButton! = RoundedButton(frame: .zero, Title: "", backgroundColor: .clear, tintColor: .clear, font: .weightSystemSizeFont(systemFontStyle: .body, weight: .medium), contentInsets: NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20), cornerRadius: 16)
     
+
     var itemTitleButton : RoundedButton! = RoundedButton(frame: .zero, Title: "", backgroundColor: .clear, tintColor: .clear, font: .weightSystemSizeFont(systemFontStyle: .body, weight: .medium), contentInsets: NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20), cornerRadius: 16)
     
     var pageControll : UIPageControl! = UIPageControl()
@@ -283,7 +294,6 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
-        PresentErrorMessageManager.shared.warningMoveIn()
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = false
         collectionView.backgroundColor = .clear
         self.view.backgroundColor = .clear
@@ -342,40 +352,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             
         }
         var hiddenItemTitleButton : Bool = true
-        for media in currentPost.media {
-            if media.title != nil && media.title != ""  {
-                hiddenItemTitleButton = false
-                break
-            }
-        }
-        self.itemTitleButton.isHidden = hiddenItemTitleButton
-        
-        if self.postTitleButton.isHidden && self.itemTitleButton.isHidden {
-            self.buttonHiddenStatus = .bothHidden
-        } else if self.postTitleButton.isHidden && !self.itemTitleButton.isHidden {
-            self.buttonHiddenStatus = .onlyPresentItemTitleButton
-        } else if !self.postTitleButton.isHidden && self.itemTitleButton.isHidden {
-            
-            self.buttonHiddenStatus = .onlyPresentTitleButton
-        } else {
-            self.buttonHiddenStatus = .bothActive
-        }
-        
-        if currentPost.postContent == nil {
-            self.postTitleButton.isUserInteractionEnabled = false
-            self.postTitleButton.animatedEnable = false
-            self.itemTitleButton.animatedEnable = false
-        } else {
-            self.postTitleButton.isUserInteractionEnabled = true
-        }
-        
-        
-        
         if let grade = currentPost.grade {
             gradeLabel.text = String(grade)
         } else {
             gradeStackView?.removeFromSuperview()
-            
             gradeStackView = nil
             
             NSLayoutConstraint.activate([
@@ -398,10 +378,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             titleConfig.attributedTitle = title
             postTitleButton.configuration  = titleConfig
         }
-        
+        let mediaTitleAttr = AttributeContainer([.font: UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold) ])
         if var itemTitleConfig = itemTitleButton.configuration {
-            var itemtitle = AttributedString(currentPost.media[currentPost.CurrentIndex].title ?? "")
-            itemtitle.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+            let itemtitle = AttributedString(currentPost.media[currentPost.CurrentIndex].title ?? "", attributes: mediaTitleAttr)
+            itemTitleConfig.titleAlignment = .center
             itemTitleConfig.baseForegroundColor = .black
             itemTitleConfig.attributedTitle = itemtitle
             itemTitleButton.configuration  = itemTitleConfig
@@ -417,6 +397,102 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         var titleArray =  currentPost.media.compactMap { media in
             return media.title
         }
+        let postTitleLabelSize = self.postTitleButton.titleLabel!.sizeThatFits(CGSize(width: postTitleButton.titleLabel!.bounds.height, height: CGFloat.greatestFiniteMagnitude))
+        var biggerMediaTitleString : (AttributedString, CGSize)?
+        let tempAttributedTitle = itemTitleButton.configuration?.attributedTitle
+        for media in currentPost.media {
+            if media.title != nil && media.title != "", let title = media.title  {
+                
+                
+                
+                let currentAttrTitle = AttributedString(title, attributes: mediaTitleAttr)
+                
+                itemTitleButton.configuration?.attributedTitle = currentAttrTitle
+                itemTitleButton.layoutIfNeeded()
+                let itemTitleLabelSize = self.itemTitleButton.titleLabel!.sizeThatFits(CGSize(width: itemTitleButton.titleLabel!.bounds.height, height:                          CGFloat.greatestFiniteMagnitude ))
+                if let biggerHeight = biggerMediaTitleString?.1.height {
+                    if itemTitleLabelSize.height >  biggerHeight {
+                        biggerMediaTitleString = (currentAttrTitle , itemTitleLabelSize)
+                    }
+
+                }
+                if (itemTitleLabelSize.height > postTitleLabelSize.height) {
+                    postTitleTextWiderThanAllItemTitle = false
+                }
+
+                hiddenItemTitleButton = false
+
+                break
+            }
+        }
+        
+
+        
+        
+        self.itemTitleButton.isHidden = hiddenItemTitleButton
+        
+        if self.postTitleButton.isHidden && self.itemTitleButton.isHidden {
+            self.buttonHiddenStatus = .bothHidden
+        } else if self.postTitleButton.isHidden && !self.itemTitleButton.isHidden {
+            self.buttonHiddenStatus = .onlyPresentItemTitleButton
+        } else if !self.postTitleButton.isHidden && self.itemTitleButton.isHidden {
+            
+            self.buttonHiddenStatus = .onlyPresentTitleButton
+        } else {
+            self.buttonHiddenStatus = .bothActive
+        }
+        
+        if currentPost.postContent == nil {
+            self.postTitleButton.isUserInteractionEnabled = false
+            self.postTitleButton.animatedEnable = false
+            self.itemTitleButton.animatedEnable = false
+        } else {
+            self.postTitleButton.isUserInteractionEnabled = true
+        }
+        
+        if !postTitleButton.isHidden {
+            activeButton = postTitleButton
+        } else {
+            activeButton = itemTitleButton
+        }
+        
+        
+        
+        
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleButtonPanGesture (_ :)))
+        
+        postTitleButton.addGestureRecognizer(panGesture)
+        
+        let itemPaneGesture = UIPanGestureRecognizer(target: self, action: #selector(handleButtonPanGesture (_ :)))
+        
+        itemTitleButton.addGestureRecognizer(itemPaneGesture)
+        self.itemTitleButton.isUserInteractionEnabled = false
+        self.postTitleButton.isUserInteractionEnabled = false
+        
+        activeButton?.isUserInteractionEnabled = true
+        
+        
+        if postTitleTextWiderThanAllItemTitle {
+            NSLayoutConstraint.activate([
+                postTitleButton.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -12),
+                itemTitleButton.centerYAnchor.constraint(equalTo: postTitleButton.centerYAnchor),
+                
+                pageControll.bottomAnchor.constraint(equalTo: postTitleButton.topAnchor, constant: -8),
+            ])
+        } else {
+            
+            NSLayoutConstraint.activate([
+                itemTitleButton.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -12),
+                itemTitleButton.heightAnchor.constraint(equalToConstant: itemTitleButton.bounds.height),
+                itemTitleButton.widthAnchor.constraint(equalToConstant: itemTitleButton.bounds.width),
+                postTitleButton.centerYAnchor.constraint(equalTo: itemTitleButton.centerYAnchor),
+                pageControll.bottomAnchor.constraint(equalTo: itemTitleButton.topAnchor, constant: -8),
+                
+            ])
+        }
+        
+        
         if !titleArray.isEmpty {
             let attributes = [NSAttributedString.Key.font: UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)]
             titleArray = titleArray.sorted() { lhs, rhs in
@@ -435,25 +511,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             itemTitleButtonBlurView.isUserInteractionEnabled = false
             itemTitleButton.insertSubview(itemTitleButtonBlurView, belowSubview: itemTitleButton.titleLabel!)
         }
-        if !postTitleButton.isHidden {
-            activeButton = postTitleButton
-        } else {
-            activeButton = itemTitleButton
-        }
-        
-        
-        
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleButtonPanGesture (_ :)))
-        
-        postTitleButton.addGestureRecognizer(panGesture)
-        
-        let itemPaneGesture = UIPanGestureRecognizer(target: self, action: #selector(handleButtonPanGesture (_ :)))
-        
-        itemTitleButton.addGestureRecognizer(itemPaneGesture)
-        self.itemTitleButton.isUserInteractionEnabled = false
-        self.postTitleButton.isUserInteractionEnabled = false
-        
-        activeButton?.isUserInteractionEnabled = true
+        self.itemTitleButton.configuration?.attributedTitle = tempAttributedTitle
         
         
     }
@@ -564,20 +622,24 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             progressSlider.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             progressSlider.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             progressSlider.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            postTitleButton.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -12),
+
             postTitleButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             postTitleButton.widthAnchor.constraint(greaterThanOrEqualToConstant: bounds.width * 0.2),
             postTitleButton.widthAnchor.constraint(lessThanOrEqualToConstant: bounds.width * 0.6),
             postTitleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: bounds.height * 0.05),
             itemTitleButton.widthAnchor.constraint(greaterThanOrEqualToConstant: bounds.width * 0.2),
+            
+            
             itemTitleButton.widthAnchor.constraint(lessThanOrEqualToConstant: bounds.width * 0.6),
+            
             itemTitleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: bounds.height * 0.05),
             itemTitleButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            itemTitleButton.centerYAnchor.constraint(equalTo: postTitleButton.centerYAnchor),
+            
+            
             
             pageControll.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             pageControll.widthAnchor.constraint(equalToConstant: bounds.width * 0.4),
-            pageControll.bottomAnchor.constraint(equalTo: postTitleButton.topAnchor, constant: -8),
+
         ])
         
         NSLayoutConstraint.activate([
@@ -629,6 +691,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             soundImageBlurView.heightAnchor.constraint(equalTo: soundImageView.heightAnchor, multiplier: 1.7),
             soundImageBlurView.widthAnchor.constraint(equalTo: soundImageView.heightAnchor, multiplier: 1.7)
         ])
+
+        
+        
+        
         
         
         self.view.layoutIfNeeded()
@@ -1105,7 +1171,8 @@ extension WholePageMediaViewController {
             if isMovingButton, self.buttonHiddenStatus == .bothActive {
                 if activeButton == postTitleButton {
                     let postTitleButtonCenterX = postTitleButton.center.x + deltaX
-                    postTitleButton.center.x = postTitleButtonCenterX
+                    
+                  postTitleButton.center.x = postTitleButtonCenterX
                 }
                 
                 if activeButton == itemTitleButton {
@@ -1148,11 +1215,12 @@ extension WholePageMediaViewController {
     }
     
     func updateButtonAlpha(fadeIn : UIButton?) {
-        guard let fadeIn = fadeIn else {
+        
+        guard let fadeIn = fadeIn,
+        !isChangingButtons else {
             return
         }
-        
-        itemTitleButton.layoutIfNeeded()
+        isChangingButtons = true
         
         UIView.animate(withDuration: 0.25, animations : {
             fadeIn.subviews.forEach({ view in
@@ -1162,9 +1230,9 @@ extension WholePageMediaViewController {
             guard let self = self else {
                 return
             }
-            self.activeButton?.translatesAutoresizingMaskIntoConstraints = false
-            self.activeButton?.layoutIfNeeded()
-            if fadeIn == postTitleButton {
+            self.activeButton?.transform = .identity
+            self.activeButton?.center.x = self.view.bounds.width / 2
+            if fadeIn == self.postTitleButton {
                 self.itemTitleButton?.subviews.forEach({ view in
                     view.alpha = 0
                 })
@@ -1176,6 +1244,13 @@ extension WholePageMediaViewController {
             self.startX = nil
             self.activeButton = fadeIn
             fadeIn.isUserInteractionEnabled = true
+            self.isChangingButtons = false
+            
+            
+            
+            
+            
+            
         }
     }
     
@@ -1183,8 +1258,10 @@ extension WholePageMediaViewController {
         activeButton?.translatesAutoresizingMaskIntoConstraints = true
         activeButton?.isUserInteractionEnabled = false
         let direction : CGFloat = deltaX > 0 ? 1 : -1
+        let translation = CGAffineTransformMakeTranslation(direction * self.view.bounds.width,0 )
         let animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut) {
-            self.activeButton?.center.x += direction * self.view.bounds.width
+          //  self.activeButton?.center.x += direction * self.view.bounds.width
+            self.activeButton?.transform = translation
         }
         
         
@@ -1217,10 +1294,13 @@ extension WholePageMediaViewController {
             let title = currentPost.media[indexPath.row].title  ??  "無"
             var itemtitle = AttributedString(title)
             itemtitle.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+ 
             itemTitleConfig.baseForegroundColor = title == "無" || title == "" ? .secondaryLabelColor : .black
             itemTitleConfig.attributedTitle = itemtitle
+            itemTitleConfig.titleAlignment = .center
             itemTitleButton.configuration  = itemTitleConfig
         }
+
         if currentPost.media[indexPath.row].isImage  {
             self.mutedAllgesture.isEnabled = false
             self.progressSlider.isHidden = true
@@ -1271,11 +1351,7 @@ extension WholePageMediaViewController {
         }
     }
     
-    func recoverInteraction() {
-        dismissTapGesture.isEnabled = false
-        panWholeViewGesture.isEnabled = true
-        self.navigationController?.navigationBar.isUserInteractionEnabled = true
-    }
+
     
 }
 

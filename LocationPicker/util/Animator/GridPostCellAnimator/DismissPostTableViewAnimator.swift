@@ -225,7 +225,6 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
             animation.timingFunction = Constant.presentPostTableViewCAMediaTimingFunction
             animation.isRemovedOnCompletion = false
             animation.fillMode = .both
-            
         }
         maskboundsAnimation.fromValue = NSValue(cgRect: navFrom.view.frame)
         

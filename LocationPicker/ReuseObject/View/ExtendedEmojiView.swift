@@ -17,7 +17,7 @@ class ExtendedEmojiView: UIView {
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
         
-        // 创建模糊视图
+
         let blurView = UIVisualEffectView(frame: bounds)
         blurView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurView.effect = UIBlurEffect(style: .systemChromeMaterialDark)

@@ -41,7 +41,7 @@ struct PostJson : Codable {
         case user = "user"
         case restaurant = "restaurant"
         case selfReaction = "selfReaction"
-        case publicReactoinsJson = "publicReactoinsJson"
+        case publicReactoinsJson = "publicReactions"
     }
     
     init(from decoder: Decoder) throws {
@@ -115,22 +115,4 @@ struct PostDetailJson : Codable {
     }
 }
 
-struct mediaJSON : Codable {
-    var url : String!
-    var resource_id : String!
-    var title : String?
 
-    
-    enum CodingKeys: String, CodingKey {
-        case url = "url"
-        case resource_id = "resource_id"
-        case title = "title"
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.url = try container.decodeIfPresent(String.self, forKey: .url)
-        self.title = try container.decodeIfPresent(String.self, forKey: .title)
-        self.resource_id = try container.decodeIfPresent(String.self, forKey: .resource_id)
-    }
-}

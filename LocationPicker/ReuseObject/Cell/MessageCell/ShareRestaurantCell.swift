@@ -155,8 +155,10 @@ class LhsShareRestaurantCell : LhsMessageTableViewCell, MessageShareRestaurantCe
                 guard let self = self else {
                     return
                 }
+                print(message.snapshotImageURL)
                 if let image = try? await message.snapshotImageURL?.getImageFromURL() {
                     message.snapshotImage = image
+                    print(image)
                     if let urlstring = self.sharedRestaurant.imageURL  {
                         if message.snapshotImageURL == urlstring {
                             self.sharedRestaurantImageView.image = image

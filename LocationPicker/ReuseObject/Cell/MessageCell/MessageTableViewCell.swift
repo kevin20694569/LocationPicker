@@ -23,6 +23,7 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     weak var messageTableCellDelegate :  MessageTableCellDelegate?
     
     func configure(message : Message) {
+        
         self.messageInstance = message
     }
     

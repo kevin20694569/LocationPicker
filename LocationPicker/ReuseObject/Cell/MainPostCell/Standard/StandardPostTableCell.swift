@@ -138,7 +138,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             self.updateEmojiButtonImage(image: image)
         } else {
            
-            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")!)
+            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
         }
         
         setHeartImage()
@@ -363,7 +363,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     override func prepareForReuse() {
         super.prepareForReuse()
         self.currentEmojiTag = nil
-        self.emojiButton.configuration?.image = UIImage(systemName: "smiley")!
+        self.emojiButton.configuration?.image = UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal)
         
         Task(priority: .low) { [weak self] in
             

@@ -27,6 +27,7 @@ final class PostManager : NSObject {
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
             }
+
             var req = URLRequest(url: url)
             req.httpMethod = "GET"
             req.timeoutInterval = 2.0
@@ -41,7 +42,10 @@ final class PostManager : NSObject {
                 newPosts.append(Post(postJson: $0))
             }
             return newPosts
-        } catch {
+        } catch  {
+            print(error)
+            PresentErrorMessageManager.shared.presentErrorMessage(error: error)
+            
             throw error
         }
     }

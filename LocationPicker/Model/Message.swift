@@ -115,7 +115,7 @@ class Message: Equatable, Hashable {
 
     }
     
-    static let examples = Array(repeating: Message( messageType : .General, room_id: "1_2", sender_id: ["1","2"].randomElement()!, message: "你好", isRead: false, created_time: "0"), count: 80)
+    static let examples = Array(repeating: Message( messageType : .General, room_id: "661f99aefd2f5b0eba052b67", sender_id: "Y8hqarQJ_hnpIJYoc72L0", message: "你好", isRead: true, created_time: "2024-04-20T15:49:59.880Z"), count: 20)
     
 }
 

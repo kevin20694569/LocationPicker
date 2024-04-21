@@ -58,9 +58,9 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         super.viewDidLoad()
         setGesture()
         self.view.layoutIfNeeded()
-        self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
+        self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -120,6 +120,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         if self.presentForTabBarLessView {
             self.tableView.contentInset = .init(top: 0, left: 0, bottom: 0 , right: 0)
         } else {
+        
             self.tableView.contentInset = .init(top: 0, left: 0, bottom: Constant.bottomBarViewHeight - Constant.safeAreaInsets.bottom , right: 0)
         }
         tableView.separatorStyle = .singleLine
@@ -136,6 +137,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        gestureStatusToggle(isTopViewController: true)
         gestureStatusToggle(isTopViewController: true)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled  = false
         self.navigationController?.delegate = self

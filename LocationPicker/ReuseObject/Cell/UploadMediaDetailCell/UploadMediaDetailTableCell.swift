@@ -26,6 +26,8 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
     
     @IBOutlet weak var collectionView : UICollectionView!
     
+    var validUploadStatus : Bool = true
+    
     var medias : [Media]! = []
     
     let mediaHeightScale = 0.75
@@ -54,6 +56,18 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.activeTextField?.resignFirstResponder()
+    }
+    
+    func updateValidStatus() {
+        for media in medias {
+            if !media.titleCountValid {
+                self.validUploadStatus = false
+                return
+            }
+
+        }
+        self.validUploadStatus = true
+
     }
     
 

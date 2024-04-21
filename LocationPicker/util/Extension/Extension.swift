@@ -363,12 +363,13 @@ extension UIFont {
 extension UIVisualEffectView  {
     
     convenience init(frame : CGRect, style : UIBlurEffect.Style ) {
-        self.init(frame: frame)
-        self.backgroundColor = .clear
-        let blurEffect = UIBlurEffect(style: style)
-        self.effect = blurEffect
-        self.frame = frame
-    }
+            self.init(frame: frame)
+            self.backgroundColor = .clear
+            let blurEffect = UIBlurEffect(style: style)
+            self.effect = blurEffect
+            self.frame = frame
+        }
+
     
 }
 

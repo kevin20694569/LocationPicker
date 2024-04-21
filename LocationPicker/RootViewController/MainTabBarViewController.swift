@@ -84,6 +84,7 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         wholeTabBarView.forEach() {
             self.view.addSubview($0)
         }
+        
 
     }
     

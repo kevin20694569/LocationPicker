@@ -9,19 +9,20 @@ class ChatRoomPreview : Hashable , Equatable {
     }
     
     var room_id : String!
-    var lastTimeStamp : String?
     var name : String!
-    var lastMessage : Message!
+    
+    var messages : [Message]? = []
     var user : User?
     
     var chatRoom : ChatRoom!
     
-    init (lastMessage : MessageJson?, user : UserJson, chatroomJson : ChatRoomJson){
-        
-        if let messageJson = lastMessage {
-            self.lastMessage = Message(json: messageJson)
-            self.room_id = messageJson.room_id
-            self.lastTimeStamp = messageJson.created_time
+    init (messagesJson : [MessageJson]?, user : UserJson, chatroomJson : ChatRoomJson){
+        self.room_id = chatroomJson.room_id
+        if let messagesJson = messagesJson {
+            messagesJson.forEach { json in
+                self.messages?.append(Message(json: json))
+            }
+            self.room_id = messagesJson.first?.room_id
         }
         self.chatRoom = ChatRoom(json: chatroomJson)
         self.name = user.name
@@ -46,7 +47,7 @@ struct ChatRoom {
 
 struct ChatRoomPreviewJson : Codable {
     
-    var message : MessageJson?
+    var messages : [MessageJson]?
     
     var chatroom : ChatRoomJson!
     
@@ -55,13 +56,13 @@ struct ChatRoomPreviewJson : Codable {
     
     enum CodingKeys : String, CodingKey {
         case user = "user"
-        case message = "message"
+        case messages = "messages"
         case chatroom = "chatroom"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.message = try container.decodeIfPresent(MessageJson.self, forKey: .message)
+        self.messages = try container.decodeIfPresent([MessageJson].self, forKey: .messages)
         self.user = try container.decodeIfPresent(UserJson.self, forKey: .user)
         self.chatroom = try container.decodeIfPresent(ChatRoomJson.self, forKey: .chatroom)
     }

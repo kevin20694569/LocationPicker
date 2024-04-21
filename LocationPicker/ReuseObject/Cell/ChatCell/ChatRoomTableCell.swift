@@ -16,14 +16,23 @@ class ChatRoomTableCell: UITableViewCell {
     func configure(chatroom : ChatRoomPreview) {
         self.chatroomInstance = chatroom
         self.nameLabel.text = chatroom.name
-        self.lastMessageLabel.text = chatroom.lastMessage.message
-        self.lastMessageTimeLabel.text = chatroom.lastMessage.agoTime
-        if chatroom.lastMessage.sender_id == Constant.user_id {
+        switch chatroom.messages?.last?.messageType {
+        case .PostShare :
+            self.lastMessageLabel.text = "分享了一則貼文"
+        case .RestaurantShare :
+            self.lastMessageLabel.text = "分享了一間餐廳"
+        case .UserShare :
+            self.lastMessageLabel.text = "分享了一個帳號"
+        default :
+            self.lastMessageLabel.text = chatroom.messages?.last?.message
+        }
+        self.lastMessageTimeLabel.text = chatroom.messages?.last?.agoTime
+        if chatroom.messages?.first?.sender_id == Constant.user_id {
             lastMessageLabel.textColor = .secondaryLabelColor
             lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: .thin )
         } else {
-            lastMessageLabel.textColor = chatroom.lastMessage.isRead ?? false ? .secondaryLabelColor : .label
-            lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: chatroom.lastMessage.isRead ?? false ? .thin : .bold )
+            lastMessageLabel.textColor = chatroom.messages?.first?.isRead ?? false ? .secondaryLabelColor : .label
+            lastMessageLabel.font =  .weightSystemSizeFont(systemFontStyle: .callout , weight: chatroom.messages?.first?.isRead ?? false ? .thin : .bold )
         }
 
         Task {

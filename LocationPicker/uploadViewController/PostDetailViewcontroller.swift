@@ -124,12 +124,16 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
     @IBOutlet weak var cancelUploadButton : RoundedButton!
     
     @IBAction func releaseButtonTapped() {
-        guard let titleCell = self.tableView.cellForRow(at: titleCellIndexPath) as? UploadPostDetailTitleCell,
+        guard let mediaCollectionCell = mediaCollectionCell,
+              mediaCollectionCell.validUploadStatus,
+              let titleCell = self.tableView.cellForRow(at: titleCellIndexPath) as? UploadPostDetailTitleCell,
               let contentCell = self.tableView.cellForRow(at: contentCellIndexPath) as? UploadPostDetailContentCell,
               let gradeCell = self.tableView.cellForRow(at: gradeCellIndexPath) as? UploadPostDetailGradeCell,
               let location = self.placeModel else {
             return
         }
+        
+
         startUploadViewSwipeToLeftAnimate()
         self.pauseCurrentMedia()
         var title : String?
@@ -426,28 +430,22 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
     
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let cell = self.tableView.cellForRow(at: mediaCollectionCellIndexPath) as? UploadMediaDetailTableCell {
-            for cell in cell.collectionView.visibleCells {
+        if let tableCell = self.tableView.cellForRow(at: mediaCollectionCellIndexPath) as? UploadMediaDetailTableCell {
+            for cell in tableCell.collectionView.visibleCells {
                 if let cell = cell as? UploadMediaTextFieldProtocol {
                     if cell.textField == textField {
                         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-                        cell.updateTextFieldValidStatus(text: finalString)
+                        let valid = cell.updateTextFieldValidStatus(text: finalString)
+                        let media = self.MediaStorage[textField.tag]
+                        media.title = finalString
+                        tableCell.updateValidStatus()
                         break
                     }
                 }
             }
         }
+
         return true
-    }
-    
-    
-    func isValidInput(_ input: String) -> Bool {
-        
-      
-        let halfCount = input.halfCount
-        let valid = halfCount <= 8
-     //   changeStatusImageView(isValid: valid)
-        return valid
     }
     
     
@@ -551,11 +549,6 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeTextField = textField
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        let media = self.MediaStorage[textField.tag]
-        media.title = textField.text
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {

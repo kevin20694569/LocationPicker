@@ -76,15 +76,20 @@ struct UserJson : Codable {
     var email : String?
     var friends_count : Int?
     var imageurl : String?
+    var created_at : String?
     
     
     enum CodingKeys : String, CodingKey {
         case id = "id"
         case name = "name"
-        case imageurl = "user_imageurl"
+        
+
+        case email = "email"
         case posts_count = "posts_count"
         case friends_count = "friends_count"
-        case email = "email"
+
+        case created_at = "created_at"
+        case imageurl = "user_imageurl"
     }
     
     init(from decoder: Decoder) throws {
@@ -95,5 +100,6 @@ struct UserJson : Codable {
         self.email = try container.decodeIfPresent(String.self, forKey: .email)
         self.posts_count = try container.decodeIfPresent(Int.self, forKey: .posts_count)
         self.friends_count = try container.decodeIfPresent(Int.self, forKey: .friends_count)
+        self.created_at =  try container.decodeIfPresent(String.self, forKey: .created_at)
     }
 }

@@ -271,13 +271,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                     }
                 }
                 tableView.reloadSections([0], with: .fade)
-               
-               
-
             } catch {
                 tableView.reloadSections([0], with: .fade)
                 throw error
-                
             }
         }
     }
@@ -300,9 +296,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         guard !isLoadingPost, posts.count - indexPath.row == 2 else {
             return
         }
-        
-        Task(priority : .background) {
-            isLoadingPost = true
+        isLoadingPost = true
+        Task(priority : .high) {
+
             let lastPost = self.posts.last
     
             guard let distance = lastPost?.distance,

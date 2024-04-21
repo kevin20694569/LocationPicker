@@ -9,6 +9,8 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     var getServerData : Bool = Constant.getServerData
     
     var completeNoPosts : Bool! = false
+    
+    var chatRoomPreview : ChatRoomPreview?
         
     
     
@@ -69,16 +71,43 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     var enterCollectionIndexPath : IndexPath! = IndexPath(row: 0, section: 1)
     
+    var waitForInsertMessages: [Message]! = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        definesPresentationContext = true
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveChatRoomIsRead( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil)
         initLayout()
         registerCells()
         layoutCollectionCellflow()
         viewDataStyleSet()
         configureNavBar(title: self.userProfile.user?.name)
-
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func receiveMessage( _ notification : Notification) {
+        guard let message = notification.userInfo?["message"] as? Message  else {
+            return
+        }
+        guard message.room_id == self.chatRoomPreview?.chatRoom.room_id else {
+            return
+        }
+        if message.room_id == self.chatRoomPreview?.room_id {
+            self.waitForInsertMessages.append(message)
+        }
+    }
+    @objc func receiveChatRoomIsRead( _ notification : Notification) {
+        if let messages = self.chatRoomPreview?.messages {
+            for message in messages {
+                message.isRead = true
+            }
+        }
+        for message in waitForInsertMessages {
+            message.isRead = true
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -129,40 +158,55 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         self.navigationItem.backButtonTitle = ""
     }
 
-
+    
+    func getUserProfile() async -> UserProfile? {
+        let userProfile = try? await UserProfileManager.shared.getProfileByID(user_ID: user_id)
+        return userProfile
+    }
+    
+    func getChatRoomPreview() async -> ChatRoomPreview? {
+        let chatRoomPreview = try? await ChatRoomPreviewManager.shared.getSingleChatRoomPreviewFromEachID(user_ids: [Constant.user_id, user_id])
+        return chatRoomPreview
+    }
+    
     func configure(user_id: String)  async {
-        do {
-            Task(priority : .background) {
-                await getUserPosts(user_id : user_id, date : "")
-
-            }
-
-            guard let userProfile = try await UserProfileManager.shared.getProfileByID(user_ID: user_id) else {
-                return
-            }
-            
-            self.userProfile = userProfile
-            
-            configureNavBar(title: self.userProfile.user?.name)
-            self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
-            getUserProfileFinish = true
-        } catch {
-            print("getProfile問題")
+        Task(priority : .high) {
+            await getUserPosts(user_id : user_id, date : "")
         }
+        async let userProfile = getUserProfile()
+        async let chatRoomPreview = getChatRoomPreview()
+        
+        self.userProfile = await userProfile
+        self.chatRoomPreview = await chatRoomPreview
+        await configureNavBar(title: userProfile?.user?.name)
+        self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
+        getUserProfileFinish = true
+        
     }
     
     func showMessageViewController(user_ids: [String]) {
-        
-        let controller = MessageViewController(room_users: user_ids, chatRoom: nil, navBarTitle: self.userProfile.user.name)
-        let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
+        var targetMessages : [Message]? = chatRoomPreview?.messages
+        if var messages = chatRoomPreview?.messages {
+
+            messages.insert(contentsOf: self.waitForInsertMessages, at:  messages.count)
+            self.waitForInsertMessages.removeAll()
+            targetMessages = messages
+        }
+
+        let controller = MessageViewController(room_users: user_ids, chatRoomPreview: self.chatRoomPreview, messages: targetMessages, navBarTitle: self.userProfile.user.name)
+        let tabBarframe =  MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
         if let user_id = self.userProfile.user.id {
             controller.userImageDict[user_id] = self.userProfile.user.image
         }
+        MainTabBarViewController.shared.bottomBarView.translatesAutoresizingMaskIntoConstraints = true
+        MainTabBarViewController.shared.tabBar.translatesAutoresizingMaskIntoConstraints = true
         MainTabBarViewController.shared.tabBar.frame = tabBarframe
         let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
         MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
+        
         view.addSubview(MainTabBarViewController.shared.bottomBarView)
         view.addSubview(MainTabBarViewController.shared.tabBar)
+
         self.show(controller, sender: nil)
     }
     
