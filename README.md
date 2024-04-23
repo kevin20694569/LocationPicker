@@ -9,4 +9,6 @@
 
 如遇到Compile問題，可以檢查看看LocationPicker -> Target -> Build Setting -> User Script Sandboxing 要設成No
 
+使用Demo影片 : https://www.youtube.com/watch?v=1-5QZEP4Pcg
+
 如有更多問題可以mail : kevin20694569@gmail.com
