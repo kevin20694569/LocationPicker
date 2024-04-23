@@ -48,9 +48,6 @@ class ZoomAnimatedButton : UIButton {
         guard animatedEnable else {
             return
         }
-        self.scaleTargets?.forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = true
-        }
         UIView.animate(withDuration: tappedDuration) {
             self.scaleTargets?.forEach({ view in
                 

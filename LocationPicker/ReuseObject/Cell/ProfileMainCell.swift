@@ -269,6 +269,8 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         leftLeftPairButton.translatesAutoresizingMaskIntoConstraints = false
         leftRightPairButton.translatesAutoresizingMaskIntoConstraints = false
+        profileDetailButton.translatesAutoresizingMaskIntoConstraints = false
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
          NSLayoutConstraint.activate([
              mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
              mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
@@ -277,20 +279,23 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
              userImageView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 12),
              userImageView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 30),
              userImageView.trailingAnchor.constraint(equalTo: detailStackView.leadingAnchor, constant: -24),
-             userImageView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.48),
+             userImageView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.54),
              userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, multiplier: 1),
              detailStackView.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
              detailStackView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -24),
              
              
-             leftButton.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 16 ),
+             leftButton.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 10 ),
              leftButton.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 16),
              
              leftButton.trailingAnchor.constraint(equalTo: mainView.centerXAnchor, constant: -8),
-             leftButton.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -12),
+             leftButton.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -10),
+             
+             profileDetailButton.heightAnchor.constraint(equalTo: leftButton.heightAnchor),
+             shareButton.heightAnchor.constraint(equalTo: leftButton.heightAnchor),
              
              buttonStackView.centerYAnchor.constraint(equalTo: leftButton.centerYAnchor),
-             
+            
              buttonStackView.leadingAnchor.constraint(equalTo: mainView.centerXAnchor, constant: 8),
              buttonStackView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -16),
              

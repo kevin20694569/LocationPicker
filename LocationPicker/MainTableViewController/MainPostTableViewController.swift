@@ -103,7 +103,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                     results = try await PostManager.shared.getFriendsPostsByCreatedTime(user_id: user_id, date: date)
                 }
             } catch {
-                print("error", error.localizedDescription)
                 throw error
             }
             return results

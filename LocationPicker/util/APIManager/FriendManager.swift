@@ -53,7 +53,6 @@ class FriendManager {
            let requests = requestsJson.map { json in
                 return UserFriendRequest(json: json)
             }
-            print(requests)
             return requests
         } catch  {
             throw error

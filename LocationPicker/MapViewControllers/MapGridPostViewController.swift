@@ -5,7 +5,7 @@ import MapKit
 
 class MapGridPostViewController: UIViewController, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate , UICollectionViewDataSource, GridPostCollectionViewAnimatorDelegate, PostsTableForGridPostCellViewDelegate {
     
-    var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [:]
+    var tempModifiedPostsWithMediaCurrentIndex: [String : (Post, Int)]! = [:]
     
     var enterCollectionCell: UICollectionViewCell? {
         self.collectionView.cellForItem(at: self.enterCollectionIndexPath)

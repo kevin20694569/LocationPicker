@@ -14,7 +14,6 @@ class  EditUserProfileViewController : UIViewController, EditUserProfileCellDele
     
     
     var textFieldSectonDict : [ Int : (theme : String, placeholder : String) ] = [ 0: ( "Name",  "輸入名字"),
-                
                                                                                    1: ( "Email",  "")]
     
     var dismissKeyBoardTapGesture : UITapGestureRecognizer! = UITapGestureRecognizer()
@@ -24,6 +23,16 @@ class  EditUserProfileViewController : UIViewController, EditUserProfileCellDele
     var saveItemButton : UIBarButtonItem! = UIBarButtonItem()
     
     var userProfile : UserProfile! = UserProfile.example
+    
+    var userImageCell : EditUserImageTableCell {
+        self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! EditUserImageTableCell
+    }
+    
+    var nameCell : EditUserNameTextFieldTableCell {
+        self.tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! EditUserNameTextFieldTableCell
+    }
+    
+    weak var delegate : EditUserProfileViewControllerDelegate?
     
     init(profile : UserProfile) {
         super.init(nibName: nil, bundle: nil)
@@ -41,6 +50,12 @@ class  EditUserProfileViewController : UIViewController, EditUserProfileCellDele
         tableViewSetup()
         barButtonItemSetup()
         gestureSetup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
     }
     
     func layoutSetup() {
@@ -67,8 +82,36 @@ class  EditUserProfileViewController : UIViewController, EditUserProfileCellDele
         saveItemButton.tintColor = .tintOrange
     }
     
-    @objc func saveUserProfile() {
-        self.navigationController?.popViewController(animated: true)
+    @objc func saveUserProfile(_ button : UIButton) {
+
+        Task(priority : .high) {
+            var targetName : String?
+            var tatgetImage : UIImage?
+            if self.userProfile.user.name != nameCell.textField.text {
+                targetName =  nameCell.textField.text
+            }
+            if let image = userImageCell.userImageView.image {
+                tatgetImage = image
+            }
+            guard targetName != nil || tatgetImage != nil else {
+                return
+            }
+            do {
+                let user = try await UserAccountManager.shared.updateUserAccount(user_id: Constant.user_id,  name:  targetName, email: nil , password: nil,  userImage:  tatgetImage)
+                self.userProfile.user = user
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    let notification = Notification(name: Notification.Name(rawValue: "refreshUserProfile"), object: nil, userInfo: nil)
+                    NotificationCenter.default.post(notification)
+                }
+            } catch {
+                print(error)
+            }
+        }
+
+       // self.navigationController?.popViewController(animated: true)
+        
     }
     
     func tableViewSetup() {
@@ -166,6 +209,7 @@ extension EditUserProfileViewController : UITableViewDataSource, UITableViewDele
                 break
             }
             let textSize = (self.textFieldSectonDict[0]!.theme as NSString).size(withAttributes: [.font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular)])
+            print(value)
             cell.configure(profile: self.userProfile, value: value, themeLabelSize: textSize)
             cell.delegate = self
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)

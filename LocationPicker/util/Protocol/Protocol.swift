@@ -38,3 +38,8 @@ protocol EditUserProfileCellDelegate : ShowViewControllerDelegate {
     func saveButtonEnableToggle(_ enable : Bool)
 }
 
+protocol EditUserProfileViewControllerDelegate : MainUserProfileViewController {
+    
+}
+
+

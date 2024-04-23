@@ -28,11 +28,12 @@ enum FriendStatus : String {
             
         case .notFriend:
             return UIImage(systemName: "person.fill.badge.plus")!
-        case .default:
-            return nil
+
         case .hasBeenSentRequest:
-            return nil
+            return UIImage(systemName: "xmark")!
         case .requestNeedRespond:
+            return nil
+        case .default:
             return nil
         }
     }

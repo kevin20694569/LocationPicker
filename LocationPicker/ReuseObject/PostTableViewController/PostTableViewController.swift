@@ -33,7 +33,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
     @objc func dismissSelf() {
         self.dismiss(animated: true) {
-        
+
             BasicViewController.shared.swipeDatasourceToggle(navViewController: self.postsTableDelegate?.navigationController ?? self.navigationController)
         }
     }
@@ -159,21 +159,16 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     }
     
     deinit {
-        
         let deinitPost = posts[currentTableViewIndexPath.row]
-        if deinitPost.CurrentIndex == 0 {
-            return
-        }
-        if let targetPost = postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.id]  {
-            targetPost.CurrentIndex = deinitPost.CurrentIndex
-        } else {
-            postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.id] = deinitPost
-        }
+        postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[deinitPost.id] = (deinitPost, deinitPost.CurrentIndex)
+        
         posts.forEach() { post in
-            if postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[post.id] != nil {
-                return
+            if let currentIndex = postsTableDelegate?.tempModifiedPostsWithMediaCurrentIndex[post.id]?.1 {
+                post.CurrentIndex = currentIndex
+                
+            } else {
+                post.CurrentIndex = 0
             }
-            post.CurrentIndex = 0
         }
         
     }
@@ -382,7 +377,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
 
 extension PostTableViewController  {
     @objc func handlePanGestureToDismiss(_ recognizer: UIPanGestureRecognizer) {
-        // 獲取手勢的位置
         guard let navView = self.navigationController?.view else {
             return
         }
@@ -423,6 +417,7 @@ extension PostTableViewController  {
             }
             recognizer.setTranslation(.zero, in: navView)
         case .ended :
+
             let frame = navView.frame
             let xOffset : CGFloat = 30
             let yOffset : CGFloat = 60

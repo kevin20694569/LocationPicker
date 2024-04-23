@@ -72,11 +72,11 @@ class RhsMessageSharedUserCell : RhsMessageTableViewCell, MessageSharedUserCell 
     func layoutSharedUserSubviews() {
         let bounds = UIScreen.main.bounds
         userNameLabel.textColor = .label
-        userNameLabel.font = .weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        userNameLabel.font = .weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         self.contentView.addSubview(userNameLabel)
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
         userNameLabel.numberOfLines = 0
-        sharedUserImageView.contentMode = .scaleAspectFit
+        sharedUserImageView.contentMode = .scaleAspectFill
         sharedUserImageView.layer.cornerRadius = 8
         sharedUserImageView.clipsToBounds = true
         sharedUserImageView.backgroundColor = .secondaryLabelColor
@@ -176,11 +176,11 @@ class LhsMessageSharedUserCell : LhsMessageTableViewCell, MessageSharedUserCell 
     func layoutSharedUserSubviews() {
         let bounds = UIScreen.main.bounds
         userNameLabel.textColor = .label
-        userNameLabel.font = .weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        userNameLabel.font = .weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         self.contentView.addSubview(userNameLabel)
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
         userNameLabel.numberOfLines = 0
-        sharedUserImageView.contentMode = .scaleAspectFit
+        sharedUserImageView.contentMode = .scaleAspectFill
         sharedUserImageView.layer.cornerRadius = 8
         sharedUserImageView.clipsToBounds = true
         sharedUserImageView.backgroundColor = .secondaryLabelColor

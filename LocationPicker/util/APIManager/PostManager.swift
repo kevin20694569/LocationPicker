@@ -43,9 +43,11 @@ final class PostManager : NSObject {
             }
             return newPosts
         } catch  {
-            print(error)
-            PresentErrorMessageManager.shared.presentErrorMessage(error: error)
-            
+            if error is PostError {
+               
+            } else {
+                PresentErrorMessageManager.shared.presentErrorMessage(error: error)
+            }
             throw error
         }
     }

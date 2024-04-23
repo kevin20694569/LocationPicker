@@ -85,7 +85,7 @@ class RhsShareRestaurantCell : RhsMessageTableViewCell, MessageShareRestaurantCe
         
         self.contentView.addSubview(restaurantAdddressLabel)
         
-        sharedRestaurantImageView.contentMode = .scaleAspectFit
+        sharedRestaurantImageView.contentMode = .scaleAspectFill
         sharedRestaurantImageView.layer.cornerRadius = 8
         sharedRestaurantImageView.clipsToBounds = true
         sharedRestaurantImageView.backgroundColor = .secondaryLabelColor
@@ -155,10 +155,8 @@ class LhsShareRestaurantCell : LhsMessageTableViewCell, MessageShareRestaurantCe
                 guard let self = self else {
                     return
                 }
-                print(message.snapshotImageURL)
                 if let image = try? await message.snapshotImageURL?.getImageFromURL() {
                     message.snapshotImage = image
-                    print(image)
                     if let urlstring = self.sharedRestaurant.imageURL  {
                         if message.snapshotImageURL == urlstring {
                             self.sharedRestaurantImageView.image = image
@@ -214,7 +212,7 @@ class LhsShareRestaurantCell : LhsMessageTableViewCell, MessageShareRestaurantCe
         
         self.contentView.addSubview(restaurantAdddressLabel)
         
-        sharedRestaurantImageView.contentMode = .scaleAspectFit
+        sharedRestaurantImageView.contentMode = .scaleAspectFill
         sharedRestaurantImageView.layer.cornerRadius = 8
         sharedRestaurantImageView.clipsToBounds = true
         sharedRestaurantImageView.backgroundColor = .secondaryLabelColor

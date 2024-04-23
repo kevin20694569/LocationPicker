@@ -147,8 +147,6 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         let height = collectionView.bounds.height
         let spacing = self.collectionView.bounds.width - height
         var origin = collectionView.frame.origin
-      //  print(origin)
-      //  let origin = CGPoint(x: spacing / 2, y: <#T##CGFloat#>)
         origin.x += spacing / 2
 
 

@@ -8,7 +8,7 @@ protocol PostTableCell : UITableViewCell {
 }
 
 protocol PostsTableForGridPostCellViewDelegate : GridPostCollectionViewAnimatorDelegate {
-    var tempModifiedPostsWithMediaCurrentIndex : [String: Post]! { get set }
+    var tempModifiedPostsWithMediaCurrentIndex : [String: (Post, Int)]! { get set }
 }
 
 protocol StandardPostTableCellProtocol : PostTableCell {

@@ -1,14 +1,6 @@
 import Alamofire
 import UIKit
 
-final class UserManager {
-    let ip = APIKey.IP
-    static let shared : UserManager = UserManager()
-    private init() { }
-    lazy var API = self.ip + "/users"
-    
-}
-
 final class UserProfileManager {
     let ip = APIKey.IP
     static let shared : UserProfileManager = UserProfileManager()
@@ -35,6 +27,8 @@ final class UserProfileManager {
             throw error
         }
     }
+    
+
 }
 
 

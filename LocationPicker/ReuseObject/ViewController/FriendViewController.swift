@@ -1,8 +1,7 @@
 import UIKit
 
-class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowMessageControllerProtocol {
-    func showMessageViewController(user_ids: [String]) {
-        
+class FriendViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, ShowViewControllerDelegate {
+   /* func showMessageViewController(user_ids: [String]) {
         let controller = MessageViewController(room_users: user_ids, chatRoomPreview: nil, messages: nil, navBarTitle: self.user.name)
         let tabBarframe = MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: view)
         if let user_id = user.id {
@@ -14,7 +13,7 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
         view.addSubview(MainTabBarViewController.shared.bottomBarView)
         view.addSubview(MainTabBarViewController.shared.tabBar)
         self.show(controller, sender: nil)
-    }
+    }*/
     
     
     var user : User!
@@ -39,8 +38,9 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendTableCell", for: indexPath) as! FriendTableCell
         let friend = friends[indexPath.row]
-        cell.configure(friend: friend)
         cell.delegate = self
+        cell.configure(friend: friend)
+       
         return cell
     }
 
@@ -120,8 +120,8 @@ class FriendViewController : UIViewController, UITableViewDelegate, UITableViewD
     
     func configureNavBar() {
         self.navigationItem.title = user.name + "的朋友們"
-        self.navigationController?.navigationBar.standardAppearance.configureWithDefaultBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithDefaultBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
     }
     
     

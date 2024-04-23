@@ -35,6 +35,13 @@ extension UIImage {
             return .scaleAspectFill
         }
     }
+    
+    func compressImage() throws -> Data {
+        if let imageData = self.jpegData(compressionQuality: 0.7) {
+            return imageData
+        }
+        throw CompressError.compressImageFail
+    }
 }
 
 
@@ -437,7 +444,7 @@ extension Media {
             //    let config = LightCompressor.Video.Configuration(quality: .very_high)
             for (index, media) in inputMedias.enumerated() {
                 if let image = media.image {
-                    results[index] = (media, try media.compressImage(image: image))
+                    results[index] = (media, try Media.compressImage(image: image))
                     mediaMap[media.DonwloadURL.absoluteString] = index
                 } else {
                     results[index] = (media, nil)
@@ -637,7 +644,7 @@ extension Media {
     }
     
     
-    func compressImage(image : UIImage) throws -> Data {
+    static func compressImage(image : UIImage) throws -> Data {
         if let imageData = image.jpegData(compressionQuality: 0.7) {
             return imageData
         }

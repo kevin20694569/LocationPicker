@@ -5,7 +5,7 @@ import UIKit
 class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate, ShowMessageControllerProtocol {
 
     
-    var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [ : ]
+    var tempModifiedPostsWithMediaCurrentIndex: [String : (Post, Int)]! = [ : ]
     var getServerData : Bool = Constant.getServerData
     
     var completeNoPosts : Bool! = false
@@ -35,7 +35,6 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
             collectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
-        
     }
     
     func hiddenWillBackCollectionCell(hiddenIndexPath : IndexPath) {
@@ -77,12 +76,21 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessage( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(receiveChatRoomIsRead( _ :)), name: NSNotification.Name(rawValue: "ReceivedMessageIsReadNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshUserProfile( _ :)), name: NSNotification.Name(rawValue: "refreshUserProfile"), object: nil)
         initLayout()
         registerCells()
         layoutCollectionCellflow()
         viewDataStyleSet()
         configureNavBar(title: self.userProfile.user?.name)
     }
+    
+    @objc func refreshUserProfile(_ notification: Notification) {
+        Task {
+ 
+            await configure(user_id: user_id)
+        }
+    }
+        
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -140,7 +148,6 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         if !getUserProfileFinish {
             Task(priority : .background)  {
                 await configure(user_id: user_id)
-
             }
         }
         
@@ -170,8 +177,11 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
     
     func configure(user_id: String)  async {
+        self.posts.removeAll()
         Task(priority : .high) {
-            await getUserPosts(user_id : user_id, date : "")
+            let newPosts = try await getUserPosts(user_id : user_id, date : "")
+            self.posts.insert(contentsOf: newPosts, at: 0)
+            self.collectionView.reloadSections([1])
         }
         async let userProfile = getUserProfile()
         async let chatRoomPreview = getChatRoomPreview()
@@ -180,6 +190,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         self.chatRoomPreview = await chatRoomPreview
         await configureNavBar(title: userProfile?.user?.name)
         self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
+        
         getUserProfileFinish = true
         
     }
@@ -224,7 +235,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         collectionView.register(LoadingCollectionCell.self, forCellWithReuseIdentifier: "LoadingCollectionCell")
     }
 
-    func getUserPosts(user_id : String, date : String) async {
+    func getUserPosts(user_id : String, date : String) async throws -> [Post] {
         do {
             var newPosts : [Post]! = []
             if getServerData {
@@ -232,27 +243,31 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
             } else {
                 newPosts = Post.localPostsExamples
             }
-
-
             
-            if newPosts.count > 0 {
-                collectionView.performBatchUpdates {
-                    if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
-                        self.collectionView.deleteItems(at: [IndexPath(row: 0, section: 1)])
-                    }
-                    let insertionIndexPaths = (self.posts.count..<self.posts.count + newPosts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
-                    self.posts.insert(contentsOf: newPosts, at: self.posts.count)
-                    self.collectionView.insertItems(at: insertionIndexPaths)
-                }
-                
-            } else {
-                if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
-                    completeNoPosts = true
-                    self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 1)])
-                }
-            }
+            return newPosts
         } catch {
-            print("沒拿到posts")
+            throw error
+        }
+    }
+    
+    func insertPosts(posts : [Post]) {
+        if posts.count > 0 {
+            collectionView.performBatchUpdates {
+                if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
+                    self.collectionView.deleteItems(at: [IndexPath(row: 0, section: 1)])
+                }
+                let insertionIndexPaths = (self.posts.count..<self.posts.count + posts.count).map { IndexPath(row: $0, section: self.enterCollectionIndexPath.section) }
+
+                
+                self.posts.insert(contentsOf: posts, at: self.posts.count)
+                self.collectionView.insertItems(at: insertionIndexPaths)
+            }
+            
+        } else {
+            if self.posts.isEmpty && self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) is LoadingCollectionCell {
+                completeNoPosts = true
+                self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 1)])
+            }
         }
     }
     func layoutCollectionCellflow() {
@@ -305,11 +320,12 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
 extension MainUserProfileViewController {
     
     func changeMediaCollectionCellImage(needChangedCollectionIndexPath : IndexPath, currentMediaIndexPath : IndexPath?) {
-        
+        let post = self.posts[needChangedCollectionIndexPath.row]
         self.posts[needChangedCollectionIndexPath.row].CurrentIndex = currentMediaIndexPath?.row
-        
-        if let needChangeIndexPathCell = self.collectionView.cellForItem(at: needChangedCollectionIndexPath) as? GridPostCell {
-            needChangeIndexPathCell.changeImage(changeToIndex:currentMediaIndexPath?.row ?? 0)
+        if self.tempModifiedPostsWithMediaCurrentIndex[post.id] != nil {
+            if let needChangeIndexPathCell = self.collectionView.cellForItem(at: needChangedCollectionIndexPath) as? GridPostCell {
+                needChangeIndexPathCell.changeImage(changeToIndex:currentMediaIndexPath?.row ?? 0)
+            }
         }
         //出去的index
     }
@@ -317,10 +333,10 @@ extension MainUserProfileViewController {
     func reloadCollectionCell(backCollectionIndexPath : IndexPath) {
         
         if let needReloadCell = self.collectionView.cellForItem(at: self.enterCollectionIndexPath) as? GridPostCell {
-            needReloadCell.reloadCollectionCell()
+            //needReloadCell.reloadCollectionCell()
         }
         if let backReloadCell = self.collectionView.cellForItem(at: backCollectionIndexPath ) as? GridPostCell {
-            backReloadCell.reloadCollectionCell()
+              backReloadCell.reloadCollectionCell()
         }
     }
     
@@ -336,7 +352,8 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
                 return
             }
             Task {
-                await self.getUserPosts(user_id: Constant.user_id ,date: date)
+                let newPosts = try await self.getUserPosts(user_id: Constant.user_id ,date: date)
+                self.insertPosts(posts: newPosts)
             }
         }
     }
@@ -371,7 +388,7 @@ extension MainUserProfileViewController : UICollectionViewDelegateFlowLayout {
         let bounds = UIScreen.main.bounds
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                return CGSize(width: bounds.width , height: bounds.height * 0.2)
+                return CGSize(width: bounds.width , height: bounds.height * 0.20)
             } else {
                 return CGSize(width: bounds.width , height: bounds.height * 0.15)
             }

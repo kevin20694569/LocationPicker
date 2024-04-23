@@ -21,7 +21,7 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         return view
     }
     
-    var tempModifiedPostsWithMediaCurrentIndex: [String : Post]! = [ : ]
+    var tempModifiedPostsWithMediaCurrentIndex: [String : (Post, Int)]! = [ : ]
     
     weak var enterCollectionCell: UICollectionViewCell? {
         return self.collectionView.cellForItem(at: enterCollectionIndexPath)

@@ -220,10 +220,10 @@ extension MapViewController: MKMapViewDelegate {
         
         MapCardViewController.distanceLabel.text = ""
         startToStandardAnimation()
-        Task {
+        Task(priority : .medium) {
             await MapCardViewController.search(restaurantname: restaurantName , restautrantaddress:address ,restaurantID: restaurantID)
         }
-        Task {
+        Task(priority : .high) {
             do {
 
                 let placemarks = try await geoCoder.geocodeAddressString(address)
@@ -246,7 +246,7 @@ extension MapViewController: MKMapViewDelegate {
                 showCoordinateOnMap(coordinate: annotation.coordinate,visibleOffsetY: bounds.height - standardMinY)
                 
             } catch {
-                print(error)
+                PresentErrorMessageManager.shared.presentErrorMessage(error: error)
                 throw error
             }
         }

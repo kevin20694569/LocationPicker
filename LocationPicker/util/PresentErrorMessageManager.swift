@@ -194,9 +194,10 @@ class PresentErrorMessageManager : NSObject {
             if nsError.code == NSURLErrorCannotConnectToHost {
                 errorMessage = "網路連線錯誤"
             }
+            if let error = error as? LocalizedError {
+                errorMessage = error.localizedDescription
+            }
             self.warningMoveIn(errorMessage: errorMessage)
-
-            
         }
         
     }

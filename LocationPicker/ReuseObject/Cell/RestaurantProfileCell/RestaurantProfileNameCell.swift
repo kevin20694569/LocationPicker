@@ -123,7 +123,7 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
         }
         let starImageView = self.starStackView.arrangedSubviews[integerPart] as! UIImageView
         if decimalPart == 0 {
-            starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+            starImageView.image = UIImage(systemName: "star", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
         } else {
             starImageView.image = UIImage(systemName: "star.leadinghalf.filled", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
         }

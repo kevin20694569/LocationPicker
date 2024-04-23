@@ -9,13 +9,13 @@ class FriendTableCell : UITableViewCell {
     
     var userNameLabel : UILabel! = UILabel()
     
-    let mainButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .callout , weight: .medium)])
+    let mainButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .body , weight: .medium)])
     
-    let pairButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .callout , weight: .medium)])
+    let pairButtonAttributes = AttributeContainer([.font:  UIFont.weightSystemSizeFont(systemFontStyle: .body , weight: .medium)])
 
     var mainButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
     
-    weak var delegate : ShowMessageControllerProtocol?
+    weak var delegate : ShowViewControllerDelegate?
     
     var leftPairButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
     var rightPairButton : ZoomAnimatedButton! = ZoomAnimatedButton(frame: .zero)
@@ -47,11 +47,14 @@ class FriendTableCell : UITableViewCell {
             }
         }
         self.userNameLabel.text = friend.user.name
-        if status == .requestNeedRespond {
+        switch status {
+
+
+        case .requestNeedRespond :
             self.mainButton.isHidden = true
             self.leftPairButton.isHidden = false
             self.rightPairButton.isHidden = false
-        } else if status == .hasBeenSentRequest {
+        case .hasBeenSentRequest :
             self.mainButton.isHidden = false
             self.leftPairButton.isHidden = true
             self.rightPairButton.isHidden = true
@@ -61,7 +64,7 @@ class FriendTableCell : UITableViewCell {
             if let title = status?.mainButtonTitle {
                 mainButton.configuration?.attributedTitle = AttributedString(title, attributes: mainButtonAttributes)
             }
-        } else if status == .isSelf {
+        default :
             self.mainButton.isHidden = false
             self.leftPairButton.isHidden = true
             self.rightPairButton.isHidden = true
@@ -77,7 +80,7 @@ class FriendTableCell : UITableViewCell {
     @objc func mainButtonTarget( _ button : UIButton)  {
         switch self.friend.friendStatus {
         case .isFriend :
-            showMessageViewController()
+            deleteFriendShip()
         case .notFriend :
             sendFriendRequest()
         case .hasBeenSentRequest :
@@ -87,8 +90,7 @@ class FriendTableCell : UITableViewCell {
         case .requestNeedRespond :
             return
         case .isSelf :
-            break
-          //  showUserProfileController(nil)
+            showUserProfileController(nil)
         case .none:
             return
         case .some(_):
@@ -150,11 +152,12 @@ class FriendTableCell : UITableViewCell {
         }
     }
     
-    @objc func showMessageViewController() {
-        guard friend.user.id != Constant.user_id else {
+    @objc func deleteFriendShip() {
+        guard friend.user.id != Constant.user_id,
+        self.friend.friendStatus == .isFriend else {
             return
         }
-        delegate?.showMessageViewController(user_ids:  [friend.user.id, Constant.user_id])
+        
     }
     
     func setupLayout() {
@@ -225,9 +228,10 @@ class FriendTableCell : UITableViewCell {
         let attrString = AttributedString("", attributes:  mainButtonAttributes  )
 
         config.attributedTitle = attrString
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         config.imagePadding = 8
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption1, weight: .regular))
+        config.titleAlignment = .center
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .caption1, weight: .medium))
         config.baseBackgroundColor = .secondaryBackgroundColor
         config.baseForegroundColor = .white
         mainButton.configuration = config

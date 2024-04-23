@@ -96,7 +96,7 @@ extension FriendRequestViewController {
                 tableView.endUpdates()
             }
         } catch {
-            print("error error", error)
+            print("error", error)
         }
     }
     

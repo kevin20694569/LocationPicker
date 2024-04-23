@@ -25,7 +25,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         if let chatRoomPreview = chatRoomPreview {
             self.chatRoom = chatRoomPreview.chatRoom
-
         }
         if let messages = messages {
             shouldTriggerLoad = true
