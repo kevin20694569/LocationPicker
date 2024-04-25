@@ -43,6 +43,7 @@ final class PostManager : NSObject {
             }
             return newPosts
         } catch  {
+            print(error)
             if error is PostError {
                
             } else {

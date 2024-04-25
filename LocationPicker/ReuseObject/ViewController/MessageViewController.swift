@@ -204,6 +204,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.shouldTriggerLoad = true
                 self.tableView.isHidden = false
             }
+        } else {
+            self.tableView.isHidden = false
         }
         
         if let sender_id = self.messages.last?.sender_id {
@@ -483,8 +485,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 tableView.beginUpdates()
                 self.tableView.insertRows(at: [indexPath], with: .none)
                 tableView.endUpdates()
-                self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-         //       print(self.tableView.cells)
+                if bool && tableView.contentSize.height > tableView.bounds.height {
+                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                }
+                    
                 
             }
         }

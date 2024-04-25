@@ -177,28 +177,28 @@ struct RestaurantJson: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.imageurl = try container.decodeIfPresent(String.self, forKey: .imageurl)
-        self.id = try container.decodeIfPresent(String.self, forKey: .id )
-        self.name = try container.decodeIfPresent(String.self, forKey: .name)
-        self.address = try container.decodeIfPresent(String.self, forKey: .address)
-        self.latitude = try container.decodeIfPresent(Double.self, forKey: .latitude)
-        self.longitude = try container.decodeIfPresent(Double.self, forKey: .longitude)
-        self.opening_days = try container.decodeIfPresent(OpeningDays.self, forKey: .opening_days)
+        self.imageurl = try? container.decodeIfPresent(String.self, forKey: .imageurl)
+        self.id = try? container.decodeIfPresent(String.self, forKey: .id )
+        self.name = try? container.decodeIfPresent(String.self, forKey: .name)
+        self.address = try? container.decodeIfPresent(String.self, forKey: .address)
+        self.latitude = try? container.decodeIfPresent(Double.self, forKey: .latitude)
+        self.longitude = try? container.decodeIfPresent(Double.self, forKey: .longitude)
+        self.opening_days = try? container.decodeIfPresent(OpeningDays.self, forKey: .opening_days)
         self.posts_count = try container.decodeIfPresent(Int.self, forKey: .posts_count)
-        self.average_grade = try container.decodeIfPresent(Double.self, forKey: .average_grade)
+        self.average_grade = try? container.decodeIfPresent(Double.self, forKey: .average_grade)
         
         if let intValue = try? container.decode(Int.self, forKey: .takeout) {
             self.takeout = intValue != 0
-        } else {
-            self.takeout = try container.decode(Bool.self, forKey: .takeout)
+        } else if let bool = try? container.decode(Bool.self, forKey: .takeout)  {
+            self.takeout = bool
         }
         
-        self.reservable = try container.decodeIfPresent(Bool.self, forKey: .reservable)
-        self.price_level = try container.decodeIfPresent(Int.self, forKey: .price_level)
+        self.reservable = try? container.decodeIfPresent(Bool.self, forKey: .reservable)
+        self.price_level = try? container.decodeIfPresent(Int.self, forKey: .price_level)
         
-        self.website = try container.decodeIfPresent(String.self, forKey: .website)
+        self.website = try? container.decodeIfPresent(String.self, forKey: .website)
         
-        self.formatted_phone_number = try container.decodeIfPresent(String.self, forKey: .formatted_phone_number)
+        self.formatted_phone_number = try? container.decodeIfPresent(String.self, forKey: .formatted_phone_number)
     }
 }
 

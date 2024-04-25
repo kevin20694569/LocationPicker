@@ -76,8 +76,8 @@
 		233EB5642BBD20A000E415D6 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5632BBD20A000E415D6 /* MessageManager.swift */; };
 		233EB5662BBDB53000E415D6 /* FriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5652BBDB53000E415D6 /* FriendViewController.swift */; };
 		233EB5682BBDB6BF00E415D6 /* FriendTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */; };
-		234BF4C22BD685C90012CF6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 234BF4C12BD685C90012CF6A /* GoogleService-Info.plist */; };
 		234BF4C42BD6B8320012CF6A /* UserAccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF4C32BD6B8320012CF6A /* UserAccountManager.swift */; };
+		234BF4C62BD823D20012CF6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 234BF4C52BD823D20012CF6A /* GoogleService-Info.plist */; };
 		235A13CE2A53533A004156D3 /* LocationPicker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */; };
 		235A13D02A53533A004156D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 235A13CF2A53533A004156D3 /* Assets.xcassets */; };
 		235A13D32A53533A004156D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 235A13D12A53533A004156D3 /* LaunchScreen.storyboard */; };
@@ -256,8 +256,8 @@
 		233EB5632BBD20A000E415D6 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		233EB5652BBDB53000E415D6 /* FriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendViewController.swift; sourceTree = "<group>"; };
 		233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableCell.swift; sourceTree = "<group>"; };
-		234BF4C12BD685C90012CF6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		234BF4C32BD6B8320012CF6A /* UserAccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountManager.swift; sourceTree = "<group>"; };
+		234BF4C52BD823D20012CF6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		235A13C02A535339004156D3 /* LocationPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocationPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235A13CD2A53533A004156D3 /* LocationPicker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationPicker.xcdatamodel; sourceTree = "<group>"; };
 		235A13CF2A53533A004156D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -667,7 +667,7 @@
 				2379D9B42AEA405F008FC491 /* video */,
 				2379D9B82AEA405F008FC491 /* image */,
 				235A13D42A53533A004156D3 /* Info.plist */,
-				234BF4C12BD685C90012CF6A /* GoogleService-Info.plist */,
+				234BF4C52BD823D20012CF6A /* GoogleService-Info.plist */,
 				235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */,
 				235A13CF2A53533A004156D3 /* Assets.xcassets */,
 				23DD47BE2AE9874D00C63821 /* LocationPicker-Bridging-Header.h */,
@@ -1207,7 +1207,7 @@
 				23DCB7112B95BD8400D97BF2 /* RestaurantDetailCollectionViewButtonsCell.xib in Resources */,
 				230D08372BB2E13000FE2C5A /* ChIJiyGm7cupQjQRvh4ipZERQcw_2.jpg in Resources */,
 				23DD48822AE98DC300C63821 /* ChatView.storyboard in Resources */,
-				234BF4C22BD685C90012CF6A /* GoogleService-Info.plist in Resources */,
+				234BF4C62BD823D20012CF6A /* GoogleService-Info.plist in Resources */,
 				231B3FD72B5CE28300DB4132 /* LoginViewController.storyboard in Resources */,
 				233D30102B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib in Resources */,
 				230D08012BB2CBEA00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_3.jpg in Resources */,

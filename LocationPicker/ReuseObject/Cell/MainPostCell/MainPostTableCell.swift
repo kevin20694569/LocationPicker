@@ -286,7 +286,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         }()
         longTapGesture = {
             let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(segueToDetail (_ :)))
-            longTapGesture.minimumPressDuration = 0.5
+            longTapGesture.minimumPressDuration = 0.2
             return longTapGesture
         }()
         muteTapGesture = UITapGestureRecognizer(target: self, action: #selector(MutedToggle( _ : )))
