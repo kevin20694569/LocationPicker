@@ -11,7 +11,7 @@ class Post : Hashable, Equatable {
     }
     
     var id : String!
-    var timestamp : String!
+    var timestamp : String?
     var distance : Double?
     var media : [Media]! = []
     var postTitle : String?

@@ -2,58 +2,54 @@ import UIKit
 
 
 class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
-    var cornerRadiusfloat : CGFloat! {
+    var mediaCornerRadius : CGFloat! {
         return Constant.standardCornerRadius
     }
-    var imageView : UIImageView!
-    var maincellDelegate : MediaTableViewCellDelegate!
-    
+    var imageView : UIImageView! = UIImageView()
 
-    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-
-        self.imageView = UIImageView(image: nil)
-        self.imageView.contentMode = .scaleAspectFill
-
-        imageView.backgroundColor = .clear
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = cornerRadiusfloat
-        contentView.layer.cornerRadius = cornerRadiusfloat
-        
-        contentView.addSubview(self.imageView)
-
-        
     }
     
     func reload(media : Media?) {
-        imageView.layer.cornerRadius = Constant.standardCornerRadius
+        imageView.layer.cornerRadius = mediaCornerRadius
         if let media = media {
-            layoutImageView(media: media)
+            configure(media: media)
         }
         contentView.addSubview(imageView)
         imageView.isHidden = false
         self.isHidden = false
         self.contentView.isHidden = false
-        
-        
+        self.layoutIfNeeded()
     }
     
 
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.imageView = UIImageView(image: nil)
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = cornerRadiusfloat
-        contentView.layer.cornerRadius = cornerRadiusfloat
-        contentView.addSubview(self.imageView!)
-        self.imageView.contentMode = .scaleAspectFill
-        imageView.isUserInteractionEnabled = true
-
+        imageViewSetup()
+        contentViewSetup()
+        DispatchQueue.main.async {
+            self.layoutIfNeeded()
+        }
     }
     
-    func layoutImageView(media: Media) {
+    func imageViewSetup() {
+        contentView.addSubview(self.imageView)
+        self.imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        imageView.backgroundColor = .darkGray
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = mediaCornerRadius
+    }
+    
+    func contentViewSetup() {
+        contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = mediaCornerRadius
+    }
+    
+    
+    func configure(media: Media) {
 
         if let image = media.image {
             self.imageView.image = image
@@ -64,17 +60,13 @@ class ImageViewCollectionCell: UICollectionViewCell, MediaCollectionCell {
                 self.imageView.image = image
            }
         }
-        DispatchQueue.main.async {
-            self.layoutIfNeeded()
-        }
+
     }
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
         UIView.performWithoutAnimation {
             self.imageView.frame = self.bounds
         }
-        
-        
     }
     
     override func prepareForReuse() {

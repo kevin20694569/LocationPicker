@@ -90,25 +90,17 @@ class PresentGridCellAnimator : NSObject, UIViewControllerAnimatedTransitioning 
             view.alpha = 0
         }
         NavtoViewController.view.alpha = 0
-        containerView.addSubview(NavtoViewController.view)
-
         self.fadeInSubviews = self.toViewController.getFadeInSubviews()
-        var collectionViewHeight : CGFloat?
-        let cell = toViewController.tableView.visibleCells.first
-        if cell is StandardPostTableCell {
-            collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
-        } else if cell is StandardPostTitleTableCell {
-            collectionViewHeight = Constant.standardMediumTableCellCollectionViewHeight
-        } else if cell is StandardPostContentTableCell {
-            collectionViewHeight = Constant.standardLargeTableCellCollectionViewHeight
-        }
         
         DispatchQueue.main.async {
+            containerView.addSubview(NavtoViewController.view)
+            containerView.layoutIfNeeded()
             if let toImageTableCell = self.toViewController.collectionView.visibleCells.first as? StandardImageViewCollectionCell {
                 let frame = toImageTableCell.contentView.convert(toImageTableCell.imageView.frame, to: containerView )
                 
-                self.targetFrame = CGRect(x: 0, y: frame.minY, width: self.toViewController.view.frame.width, height: collectionViewHeight ?? frame.height)
-                self.targetCellRadius = toImageTableCell.imageView.layer.cornerRadius
+                self.targetFrame = frame
+   
+                self.targetCellRadius = toImageTableCell.mediaCornerRadius
                 self.fadeInSubviews.forEach { view in
                     view?.alpha = 0
                 }
@@ -116,8 +108,8 @@ class PresentGridCellAnimator : NSObject, UIViewControllerAnimatedTransitioning 
                 
             } else if let toPlayerLayerCell = self.toViewController.collectionView.visibleCells.first as? StandardPlayerLayerCollectionCell {
                 let frame = toPlayerLayerCell.contentView.convert(toPlayerLayerCell.playerLayer.frame, to: containerView )
-                self.targetFrame = CGRect(x: 0, y: frame.minY, width: self.toViewController.view.frame.width, height: collectionViewHeight ?? frame.height)
-                self.targetCellRadius = toPlayerLayerCell.playerLayer.cornerRadius
+                self.targetFrame = frame
+                self.targetCellRadius = toPlayerLayerCell.mediaCornerRadius
                 self.fadeInSubviews.forEach { view in
                     view?.alpha = 0
                 }
@@ -206,7 +198,6 @@ class PresentGridCellAnimator : NSObject, UIViewControllerAnimatedTransitioning 
             self.transitionImageView.frame = targetFrame
             self.transitionImageView.layer.cornerRadius = self.targetCellRadius
         }) { bool in
-                //  self.toViewController.tableView.endUpdates()
             self.transitionContext.completeTransition(true)
             
         }

@@ -383,8 +383,6 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if mapGridPostDelegate.cardViewStatus != .safeAreaFullScreen {
-        }
         guard self.posts.count > 18 else {
             return
         }

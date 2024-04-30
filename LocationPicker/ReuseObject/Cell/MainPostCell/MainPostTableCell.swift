@@ -38,11 +38,11 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         let media = self.currentPost.media[indexPath.row]
         if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageViewCollectionCell", for: indexPath) as! ImageViewCollectionCell
-            cell.layoutImageView(media: media)
+            cell.configure(media: media)
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayerLayerCollectionCell", for: indexPath) as! PlayerLayerCollectionCell
-            cell.layoutPlayerlayer(media: media)
+            cell.configure(media: media)
             return cell
         }
     }
@@ -119,9 +119,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         currentPost = post
         collectionView.dataSource = self
         collectionView.delegate = self
-        
-        self.layoutIfNeeded()
-        
         if let grade = post.grade {
             self.gradeLabel.isHidden = false
             gradeStackView.isHidden = false
@@ -140,7 +137,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         pageControll?.numberOfPages = currentPost.media.count
         setHeartImage()
         if let userImage = currentPost.user?.image {
-            
             userImageView.image = userImage
         } else {
             Task(priority: .low) {
@@ -151,10 +147,15 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         }
         timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
         timeStampLabel.textColor = .secondaryLabelColor
-        self.timeStampLabel.text = post.timestamp.timeAgeFromStringOrDateString()
+        
+        self.timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
         self.updateVisibleCellsMuteStatus()
-        self.collectionView.scrollToItem(at: IndexPath(row: self.currentPost.CurrentIndex, section: self.currentMediaIndexPath.section), at: .centeredHorizontally, animated: false)
         updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0) )
+        self.layoutIfNeeded()
+        UIView.performWithoutAnimation {
+            self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
+        }
+
         
     }
     
@@ -285,7 +286,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             return DoubletapGesture
         }()
         longTapGesture = {
-            let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(segueToDetail (_ :)))
+            let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(presentWholePageViewController (_ :)))
             longTapGesture.minimumPressDuration = 0.2
             return longTapGesture
         }()
@@ -426,8 +427,6 @@ extension MainPostTableCell {
         self.currentMediaIndexPath.row = currentCollectionIndexPath.row
         self.pageControll?.currentPage = currentCollectionIndexPath.row
         
-        self.pageControll?.layoutSubviews()
-        
         self.currentPost.CurrentIndex = currentCollectionIndexPath.row
         
         if currentPost.media[currentCollectionIndexPath.row].isImage {
@@ -446,7 +445,7 @@ extension MainPostTableCell {
         }
     }
     
-    @objc func segueToDetail(_ gesture : UILongPressGestureRecognizer) {
+    @objc func presentWholePageViewController(_ gesture : UILongPressGestureRecognizer) {
         if gesture.state == .began {
             mediaTableCellDelegate?.presentWholePageMediaViewController(post : currentPost)
         }

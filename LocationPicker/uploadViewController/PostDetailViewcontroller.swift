@@ -115,7 +115,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
 
         let post = Post(restaurant: restaurant, Media: MediaStorage, user: User.example, postTitle: titleString, postContent: contentString, grade: grade)
         controller.posts.append(post)
-        self.show(controller, sender: nil)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     
@@ -314,9 +314,6 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
     }
     
     func layoutNavBar() {
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         if placeModel == nil {
             let frame = CGRect(x: 0, y: 0, width: 0, height: 0)
             previewButton = RoundedButton(frame: frame, Title: "預覽", backgroundColor: .secondaryBackgroundColor, tintColor: .secondaryLabelColor, font: UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium), contentInsets: .init(top: 8, leading: 14, bottom: 8, trailing: 14), cornerRadius: 12  )

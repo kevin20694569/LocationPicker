@@ -58,9 +58,11 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         super.viewDidLoad()
         setGesture()
         self.view.layoutIfNeeded()
+
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
         self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
+       
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -112,8 +114,8 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
             self.isScrollAction = false
         }
     }
-    override func viewStyleSet() {
-        super.viewStyleSet()
+    override func viewStyleSetup() {
+        super.viewStyleSetup()
         tableView.delaysContentTouches = false
         self.view.backgroundColor = .backgroundPrimary
         self.tableView.backgroundColor = UIColor.backgroundPrimary
@@ -151,6 +153,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         dismissButton.target = self
         dismissButton.action = #selector(dismissSelf)
         configureNavBar(title: nil)
+        self.view.layoutIfNeeded()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -254,10 +257,11 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
             let cellIdentifier = "StandardPostTableCell"
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostTableCell
         }
-        cell.collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
-        cell.configureData(post: post)
         cell.standardPostCellDelegate = self
         cell.mediaTableCellDelegate = self
+        cell.collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
+        cell.configureData(post: post)
+
         return cell
             
     }

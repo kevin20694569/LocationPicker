@@ -41,7 +41,7 @@ class PresentWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
     
     func animationEnded(_ transitionCompleted: Bool) {
         if !transitionCompleted {
-            print("tran problem")
+            print("transitionCompleted problem")
             return
         }
 

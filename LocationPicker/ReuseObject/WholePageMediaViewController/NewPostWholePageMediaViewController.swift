@@ -14,6 +14,19 @@ class NewPostWholePageMediaViewController: WholePageMediaViewController {
         self.locationimageView.isHidden = true
     }
 
+    override func layout() {
+        super.layout()
+        for con in self.view.constraints {
+            if con.identifier ==  "soundImageBottomAnchor" {
+                self.view.removeConstraint(con)
+                break
+            }
+        }
+        NSLayoutConstraint.activate([
+            soundImageView.centerYAnchor.constraint(equalTo: resizeToggleButton.centerYAnchor   )
+        ])
+        
+    }
     
 
 }

@@ -646,8 +646,8 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             resizeToggleButton.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -8),
             resizeToggleButton.widthAnchor.constraint(equalTo: resizeToggleButton.heightAnchor, multiplier: 1),
             collectButton.bottomAnchor.constraint(equalTo: resizeToggleButton.topAnchor, constant: -16),
-            shareButton.bottomAnchor.constraint(equalTo: collectButton.topAnchor, constant: -20),
-            emojiButton.bottomAnchor.constraint(equalTo: shareButton.topAnchor, constant: -20),
+            shareButton.bottomAnchor.constraint(equalTo: collectButton.topAnchor, constant: -16),
+            emojiButton.bottomAnchor.constraint(equalTo: shareButton.topAnchor, constant: -16),
             
             heartButton.bottomAnchor.constraint(equalTo: emojiButton.topAnchor, constant: -16),
             heartButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 4),
@@ -685,12 +685,14 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             soundImageView.widthAnchor.constraint(equalTo: locationimageView.widthAnchor, multiplier: 1.8),
             soundImageView.heightAnchor.constraint(equalToConstant: self.view.bounds.width * 0.06),
             soundImageView.centerXAnchor.constraint(equalTo: self.locationimageView.centerXAnchor),
-            soundImageView.bottomAnchor.constraint(equalTo: locationimageView.topAnchor, constant: -20),
             soundImageBlurView.centerXAnchor.constraint(equalTo: soundImageView.centerXAnchor),
             soundImageBlurView.centerYAnchor.constraint(equalTo: soundImageView.centerYAnchor),
             soundImageBlurView.heightAnchor.constraint(equalTo: soundImageView.heightAnchor, multiplier: 1.7),
             soundImageBlurView.widthAnchor.constraint(equalTo: soundImageView.heightAnchor, multiplier: 1.7)
         ])
+        let soundImageViewBottomAnchor =  soundImageView.bottomAnchor.constraint(equalTo: locationimageView.topAnchor, constant: -20)
+        soundImageViewBottomAnchor.identifier = "soundImageBottomAnchor"
+        soundImageViewBottomAnchor.isActive = true
 
         
         
@@ -887,11 +889,11 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         let media = self.currentPost.media[indexPath.row]
         if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WholeImageViewCollectionCell", for: indexPath) as! WholeImageViewCollectionCell
-            cell.layoutImageView(media: media)
+            cell.configure(media: media)
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WholePlayerLayerCollectionCell", for: indexPath) as! WholePlayerLayerCollectionCell
-            cell.layoutPlayerlayer(media: media)
+            cell.configure(media: media)
             return cell
         }
     }

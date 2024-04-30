@@ -8,16 +8,10 @@ class PreviewPostTableViewController : MainPostTableViewController {
         self.dismiss(animated: true)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = true
     }
-    
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "MainPostTableCell"
@@ -26,16 +20,14 @@ class PreviewPostTableViewController : MainPostTableViewController {
         cell.currentPost = self.posts[0]
         cell.mediaTableCellDelegate = self
         cell.configureData(post: post)
+        cell.gradeStackView.isUserInteractionEnabled = false
+        cell.collectImageView.isUserInteractionEnabled = false
+        cell.shareImageView.isUserInteractionEnabled = false
+        cell.tapHeartGesture.isEnabled = false
+        cell.heartImageView.isUserInteractionEnabled = false
         return cell
     }
-    
-    override  func showUserProfile(user : User) {
-    }
-    override func configureBarButton() {
-        return
-    }
-    
-    
+
     override func presentWholePageMediaViewController(post: Post?) {
         guard let post = post else {
             return
@@ -45,7 +37,7 @@ class PreviewPostTableViewController : MainPostTableViewController {
         if let currentPostIndex = self.posts.firstIndex(of: post) {
             self.currentTableViewIndexPath = IndexPath(row: currentPostIndex, section: self.currentTableViewIndexPath.section)
         }
-
+        
         controller.mediaAnimatorDelegate = self
         controller.wholePageMediaDelegate = self
         navController.modalPresentationStyle = .overFullScreen
@@ -54,10 +46,16 @@ class PreviewPostTableViewController : MainPostTableViewController {
         self.present(navController, animated: true)
     }
     
-    override func viewStyleSet() {
-        super.viewStyleSet()
+    override func viewStyleSetup() {
+        super.viewStyleSetup()
         tableView.isScrollEnabled = false
         self.navigationItem.title = "貼文預覽"
+    }
+    
+    override func navigationSetup() {
+        super.navigationSetup()
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
     }
     
     
@@ -72,18 +70,11 @@ class PreviewPostTableViewController : MainPostTableViewController {
     override func refreshPosts() {
         
     }
-}
-
-class PreviewWholePageMediaViewController : WholePageMediaViewController {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.userImageView.isUserInteractionEnabled = false
-        self.locationimageView.isUserInteractionEnabled = false
+    override func showUserProfile(user : User) {
+        
     }
-    
-
-    
-    
-    
+    override func configureBarButton() {
+        
+    }
 }

@@ -74,15 +74,9 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     }
     
     
-    var MediaStorage : [Media]! = [] { didSet {
-        if MediaStorage.isEmpty {
-            addMediaImageView?.isHidden = false
-        } else {
-            addMediaImageView?.isHidden = true
-        }
-    }}
+    var MediaStorage : [Media]! = []
     
-    var addMediaImageView : AddMediaImageView!
+    var addMediaImageView : AddMediaImageView! = AddMediaImageView(frame: .zero )
     
     func changeMediaTitle(title : String) {
         MediaStorage[currentMediaIndexPath.row].title = title
@@ -119,13 +113,11 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     func layoutButton() {
         nextTapButton.updateTitle(Title: "下一步", backgroundColor: .secondaryBackgroundColor, tintColor: .black, font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
         nextTapButton.isEnabled = false
-     //   nextTapButton.scaleTargets = nextTapButton
         let image = UIImage(systemName:"plus.circle", withConfiguration: UIImage.SymbolConfiguration.init(font: UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)) )
         addMediaButton.imageView?.image = image
         addMediaButton.addTarget(self, action: #selector(presentPHPPicker), for: .touchUpInside)
         addMediaButton.alpha = 0
         addMediaButton.isEnabled = false
-      //  addMediaButton.scaleTargets = addMediaButton
     }
 
     func viewStyleSet() {
@@ -151,7 +143,6 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
 
 
         let frame = CGRect(origin: origin, size: CGSize(width: height  , height: height ))
-        addMediaImageView = AddMediaImageView(frame: .zero )
         addMediaImageView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(addMediaImageView)
         NSLayoutConstraint.activate([
@@ -175,9 +166,6 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         button.tappedDuration = 0.15
         button.recoverDutation = 0.15
         addMediaImageView?.addSubview(button)
-        
-      //  addMediaImageView.frame = frame
-      //  addMediaImageView.translatesAutoresizingMaskIntoConstraints = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -201,8 +189,8 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
     
     func defaultNavStyleSet() {
 
-        self.navigationController?.navigationBar.standardAppearance.configureWithDefaultBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithDefaultBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
 
         self.navigationItem.backButtonTitle = ""
     }
@@ -286,9 +274,12 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
                 }) { bool in
                     self.addMediaButton.isEnabled = true
                 }
+
             }
             self.temporaryPost = Post(restaurant: nil, Media: MediaStorage, user: User.example)
+
             reloadCollectionView()
+            
         }
     }
     
@@ -297,11 +288,10 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         let indexPath =  IndexPath(row: 0, section: 0)
         self.PageControll.currentPage = 0
         self.PageControll.numberOfPages = MediaStorage.count
+        addMediaImageView?.isHidden = true
         self.collectionView.reloadSections([0])
-
-
-            self.updateCellPageControll(currentCollectionIndexPath: indexPath)
-            self.playCurrentMedia(indexPath: self.currentMediaIndexPath)
+        self.updateCellPageControll(currentCollectionIndexPath: indexPath)
+        self.playCurrentMedia(indexPath: self.currentMediaIndexPath)
         
     }
     
@@ -339,12 +329,12 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
         if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StaticImageViewCollectionCell", for: indexPath) as! StaticImageViewCollectionCell
             cell.mediaCellDelegate = self
-            cell.layoutImageView(media: media)
+            cell.configure(media: media)
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StaticPlayerLayerCollectionCell", for: indexPath) as! StaticPlayerLayerCollectionCell
             cell.mediaCellDelegate = self
-            cell.layoutPlayerlayer(media: media)
+            cell.configure(media: media)
             return cell
         }
     }
@@ -444,20 +434,6 @@ extension UploadMediaViewcontroller {
             playCurrentMedia(indexPath: currentMediaIndexPath)
         }
     }
-
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
-       /* let index = Int(round(targetContentOffset.pointee.x / scrollView.bounds.width))
-        if currentMediaIndexPath.row != index {
-            pauseMedia(indexPath: currentMediaIndexPath)
-            currentMediaIndexPath.row = index
-            self.temporaryPost.CurrentIndex = index
-            updateCellPageControll(currentCollectionIndexPath: IndexPath(row: index, section: 0 ))
-            updateVisibleCellsMuteStatus()
-        }*/
-        
-    }
-    
     
     
     @objc func MutedToggle(_ gesture: UITapGestureRecognizer? = nil) {

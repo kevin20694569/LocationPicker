@@ -3,21 +3,24 @@ import UIKit
 
 class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, UploadMediaTextFieldProtocol {
     
+    var textFieldCornerRadius : CGFloat! {
+        return 8
+    }
 
     
-    var textField : RoundedTextField!
+    var textField : RoundedTextField! = RoundedTextField()
     
-    override var cornerRadiusfloat: CGFloat! {
+    override var mediaCornerRadius: CGFloat! {
         return 16
     }
     
     var characterLimit : Int = 16
     
-    var textFieldDelegate : UITextFieldDelegate!
+    weak var textFieldDelegate : UITextFieldDelegate?
     
     var contentModeToggleTapGesture : UITapGestureRecognizer!
     
-    var mediaHeightScale : Double!
+    var mediaHeightScale : Double! = 0.1
     
     var validStackView : UIStackView! = UIStackView()
     
@@ -76,53 +79,28 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
     }
     
     override init(frame: CGRect) {
+
         super.init(frame: frame)
-        imageView.backgroundColor = .secondaryBackgroundColor
+        textFieldSetup()
+        gestureSetup()
+        validMessageViewSetup()
+        
+    }
+    func gestureSetup() {
         contentModeToggleTapGesture = UITapGestureRecognizer(target: self, action: #selector(contentModeToggle))
         self.imageView.addGestureRecognizer(contentModeToggleTapGesture)
         self.imageView.isUserInteractionEnabled = true
-        textField = RoundedTextField()
+    }
+    
+    func textFieldSetup() {
         textField.backgroundColor = .secondaryBackgroundColor
-        textField.layer.cornerRadius = 8
+        textField.layer.cornerRadius = textFieldCornerRadius
+
+        
         self.contentView.addSubview(textField)
-        validMessageViewSetup()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutIfNeeded() {
-        super.layoutIfNeeded()
-        DispatchQueue.main.async {
-
-            let bounds = self.contentView.bounds
-            self.imageView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width , height: bounds.height * self.mediaHeightScale)
-
-        }
-    }
-    
-    override func layoutImageView(media: Media) {
-        super.layoutImageView(media: media)
-        self.textField.text = media.title
-        textField.delegate = self.textFieldDelegate
-        self.layoutTextField()
-        updateTextFieldValidStatus(text: textField.text)
-    }
-    
-    
-    
-    
-    @objc func contentModeToggle() {
-        if self.imageView.contentMode == .scaleAspectFill {
-            self.imageView.contentMode = .scaleAspectFit
-        } else {
-            self.imageView.contentMode = .scaleAspectFill
-        }
-    }
-
-    
-    func layoutTextField() {
+    func textFieldLayout() {
         let heightScale = 0.15
         let offsetYScale = (1 - mediaHeightScale - heightScale) / 2 + mediaHeightScale
         let widthScale = 0.9
@@ -130,5 +108,37 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
         let bounds = contentView.bounds
         let frame = CGRect(x: bounds.width * offsetXScale, y: bounds.height * offsetYScale, width: bounds.width * widthScale, height: bounds.height * heightScale )
         textField.frame = frame
+    }
+    
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        
+        let bounds = self.contentView.bounds
+
+        self.imageView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width , height: bounds.height * self.mediaHeightScale)
+
+        
+    }
+    
+    override func configure(media: Media) {
+        super.configure(media: media)
+        self.textField.text = media.title
+        textField.delegate = textFieldDelegate
+        updateTextFieldValidStatus(text: textField.text)
+        textFieldLayout()
+        self.layoutIfNeeded()
+    }
+    
+    
+    
+    
+    @objc func contentModeToggle() {
+        imageView.contentMode = imageView.contentMode == .scaleAspectFill ? .scaleAspectFit : .scaleAspectFill
     }
 }

@@ -3,14 +3,14 @@ import AVFoundation
 
 class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
-    
-    
-    var cornerRadiusfloat : CGFloat!  {
+    var mediaCornerRadius : CGFloat!  {
         return Constant.standardCornerRadius
     }
     weak var currentMedia : Media!
-
-    var playerLayer : AVPlayerLayer!
+    
+    var playerLayer : AVPlayerLayer! = AVPlayerLayer()
+    
+    var soundImageview : UIImageView! = UIImageView()
     
     
     @objc func playerRestart() {
@@ -25,87 +25,78 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
         soundImageview.image = image?.withTintColor(.white).withRenderingMode(.alwaysOriginal).withConfiguration(config)
     }
     
-    var soundImageBackgroundBlurView : UIVisualEffectView!
-    
+    var soundImageBackgroundBlurView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemUltraThinMaterialDark)
     var soundViewIncludeBlur : [UIView] {
         [soundImageview, soundImageBackgroundBlurView]
     }
     
+
     
-    var soundImageview : UIImageView!
+    
+
     
     func reload(media : Media?) {
-        self.contentView.alpha = 1
-        playerLayer.cornerRadius = Constant.standardCornerRadius
+        contentView.layer.insertSublayer(playerLayer, at: 0)
+        playerLayer.cornerRadius = mediaCornerRadius
         if let media = media {
-
-            layoutPlayerlayer(media: media)
-            
+            configure(media: media)
         }
-        UIView.performWithoutAnimation {
-            self.contentView.isHidden = false
-            self.isHidden = false
-            
-            self.soundImageview.isHidden = false
-        }
-
+        self.contentView.isHidden = false
+        self.soundImageview.isHidden = false
+        self.layoutIfNeeded()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.playerLayer = AVPlayerLayer()
-        playerLayer.masksToBounds = true
-        playerLayer.cornerRadius = self.cornerRadiusfloat
-        contentView.layer.insertSublayer(playerLayer, at: 0)
-        layoutSoundImageView()
+        playerLayerSetup()
+        soundImageViewSetup()
+        contentViewSetup()
+        DispatchQueue.main.async {
+            self.layoutIfNeeded()
+        }
     }
+    
+    
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    
-    
-    func layoutPlayerlayer(media : Media) {
-        self.currentMedia = media
-        self.isUserInteractionEnabled = true
-        self.contentView.isUserInteractionEnabled = true
-        playerLayer.player = media.player
+    func playerLayerSetup() {
+        playerLayer.masksToBounds = true
+        playerLayer.cornerRadius = self.mediaCornerRadius
         self.playerLayer.videoGravity = .resizeAspectFill
-
-        self.updateMuteStatus()
-        DispatchQueue.main.async {
-            
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(0)
-            self.contentView.layer.insertSublayer(self.playerLayer, at: 0)
-            self.playerLayer.isHidden = false
-            self.playerLayer.frame = self.bounds
-        
-            CATransaction.commit()
-        }
+        contentView.layer.insertSublayer(playerLayer, at: 0)
 
     }
     
-    func layoutSoundImageView() {
+    func contentViewSetup() {
+        self.isUserInteractionEnabled = true
+        self.contentView.isUserInteractionEnabled = true
+    }
+    
+    
+    
+    func configure(media : Media) {
+        self.currentMedia = media
+        playerLayer.player = media.player
+        self.updateMuteStatus()
+    }
+    
+    func soundImageViewSetup() {
         let image = UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.2.fill")
         let config = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout  , weight: .regular))
-        soundImageview = UIImageView(image: image?.withTintColor(.white).withRenderingMode(.alwaysOriginal).withConfiguration(config))
-        soundImageBackgroundBlurView = UIVisualEffectView(frame: soundImageview.frame, style: .systemUltraThinMaterialDark)
-        
-        soundImageBackgroundBlurView.clipsToBounds = true
-
+        soundImageview.image = image?.withTintColor(.white).withRenderingMode(.alwaysOriginal).withConfiguration(config)
         soundImageview.contentMode = .center
         soundImageview.translatesAutoresizingMaskIntoConstraints = false
+        soundImageBackgroundBlurView.clipsToBounds = true
         soundImageBackgroundBlurView.translatesAutoresizingMaskIntoConstraints = false
-
-        
-        let frame = self.playerLayer.superlayer!.convert(self.playerLayer.frame, to: self.contentView.layer)
-        
-        DispatchQueue.main.async { [self] in
-
-            self.contentView.addSubview(soundImageBackgroundBlurView)
-            self.contentView.addSubview(soundImageview)
+        self.contentView.addSubview(soundImageBackgroundBlurView)
+        self.contentView.addSubview(soundImageview)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             NSLayoutConstraint.activate([
                 
                 soundImageview.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -bounds.height * 0.06),
@@ -115,12 +106,7 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
                 soundImageBackgroundBlurView.heightAnchor.constraint(equalTo: soundImageview.heightAnchor, multiplier: 1.7),
                 soundImageBackgroundBlurView.widthAnchor.constraint(equalTo: soundImageview.heightAnchor, multiplier: 1.7)
             ])
-            soundImageBackgroundBlurView.layoutIfNeeded()
-            if soundImageBackgroundBlurView != nil {
-                soundImageBackgroundBlurView.layer.cornerRadius = soundImageBackgroundBlurView.bounds.height / 2
-            }
         }
-
     }
     
     
@@ -128,16 +114,17 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         playerLayer.player?.seek(to: CMTime.zero)
+        self.playerLayer.player = nil
     }
-    
-    
-    
-    
-    
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
-
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0)
         
+        self.playerLayer.isHidden = false
+        self.playerLayer.frame = self.bounds
+        CATransaction.commit()
+        soundImageBackgroundBlurView.layer.cornerRadius = soundImageBackgroundBlurView.bounds.height / 2
     }
 
     func play() {

@@ -3,6 +3,50 @@ import AVFoundation
 
 class MainPostTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MediaTableCellDelegate, CollectionViewInTableViewMediaAnimatorDelegate, MediaTableViewCellDelegate, WholePageMediaViewControllerDelegate {
     
+    enum MainTablePostsStatus {
+        case PublicNear
+        case FriendsNear
+        case FriendsCreatedTime
+        func getPosts(user_id : String , distance : Double, date : String) async throws -> [Post] {
+            var results : [Post] = []
+            do {
+                switch self {
+                case .PublicNear :
+                    results =  try await PostManager.shared.getPublicNearLocationPosts(distance: distance)
+                case .FriendsNear :
+                    results = try await PostManager.shared.getFriendsNearLocationPosts(user_id: user_id, distance: distance)
+                case .FriendsCreatedTime :
+                    results = try await PostManager.shared.getFriendsPostsByCreatedTime(user_id: user_id, date: date)
+                }
+            } catch {
+                throw error
+            }
+            return results
+        }
+        
+        var titleString : String! {
+            switch self {
+            case .PublicNear :
+                return "Public"
+            case .FriendsNear :
+                return "Friend"
+            case .FriendsCreatedTime :
+                return "Friend"
+            }
+        }
+        
+        var subTitleString : String! {
+            switch self {
+            case .PublicNear :
+                return "By Near"
+            case .FriendsNear :
+                return "By Near"
+            case .FriendsCreatedTime :
+                return "By Time"
+            }
+        }
+    }
+    
     @IBOutlet var tableView: UITableView! = UITableView()
     
     var bottomBarViewHeight: CGFloat! = Constant.bottomBarViewHeight
@@ -87,49 +131,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     
-    enum MainTablePostsStatus {
-        case PublicNear
-        case FriendsNear
-        case FriendsCreatedTime
-        func getPosts(user_id : String , distance : Double, date : String) async throws -> [Post] {
-            var results : [Post] = []
-            do {
-                switch self {
-                case .PublicNear :
-                    results =  try await PostManager.shared.getPublicNearLocationPosts(distance: distance)
-                case .FriendsNear :
-                    results = try await PostManager.shared.getFriendsNearLocationPosts(user_id: user_id, distance: distance)
-                case .FriendsCreatedTime :
-                    results = try await PostManager.shared.getFriendsPostsByCreatedTime(user_id: user_id, date: date)
-                }
-            } catch {
-                throw error
-            }
-            return results
-        }
-        
-        var titleString : String! {
-            switch self {
-            case .PublicNear :
-                return "Public"
-            case .FriendsNear :
-                return "Friend"
-            case .FriendsCreatedTime :
-                return "Friend"
-            }
-        }
-        
-        var subTitleString : String! {
-            switch self {
-            case .PublicNear :
-                return "By Near"
-            case .FriendsNear :
-                return "By Near"
-            case .FriendsCreatedTime :
-                return "By Time"
-            }
-        }
-    }
+
     
     func changeCurrentEmoji(emojiTag : Int?) {
         self.tableViewCurrentCell?.changeCurrentEmoji(emojiTag: emojiTag)
@@ -162,7 +164,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         setupAudioSession()
         layoutTitleButton()
         initRefreshControl()
-        viewStyleSet()
+        viewStyleSetup()
         configureBarButton()
         refreshPosts()
         
@@ -193,7 +195,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         Constant.navBarHeight = (self.navigationController?.navigationBar.frame.height)!
         tableViewRowHeightSet()
-        layoutNavgationStyle()
+        navigationSetup()
         self.updateVisibleCellsMuteStatus()
         
     }
@@ -227,14 +229,14 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     
     
-    func layoutNavgationStyle() {
+    func navigationSetup() {
         navigationController?.hidesBarsOnTap = false
         
         self.navigationController?.delegate = self
         self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.view.backgroundColor = .backgroundPrimary
+      
     }
     
     @objc func refreshPosts()  {
@@ -426,8 +428,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             if let toViewController = nav.viewControllers.first as? WholePageMediaViewController {
                 let animator = PresentWholePageMediaViewControllerAnimator(transitionToIndexPath: indexPath, toViewController:  toViewController , fromViewController: self)
                 return animator
-            } else {
-                pauseCurrentMedia()
             }
         }
         pauseCurrentMedia()
@@ -444,12 +444,13 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     
     func showUserProfile(user : User) {
+        self.pauseCurrentMedia()
         let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user,  user_id: user.id)
         controller.navigationItem.title = user.name
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
-    func viewStyleSet() {
+    func viewStyleSetup() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.showsHorizontalScrollIndicator = false

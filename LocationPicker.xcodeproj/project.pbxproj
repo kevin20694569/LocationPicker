@@ -78,6 +78,7 @@
 		233EB5682BBDB6BF00E415D6 /* FriendTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */; };
 		234BF4C42BD6B8320012CF6A /* UserAccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF4C32BD6B8320012CF6A /* UserAccountManager.swift */; };
 		234BF4C62BD823D20012CF6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 234BF4C52BD823D20012CF6A /* GoogleService-Info.plist */; };
+		234BF55E2BE15C340012CF6A /* PreviewWholePageMediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF55D2BE15C340012CF6A /* PreviewWholePageMediaViewController.swift */; };
 		235A13CE2A53533A004156D3 /* LocationPicker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */; };
 		235A13D02A53533A004156D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 235A13CF2A53533A004156D3 /* Assets.xcassets */; };
 		235A13D32A53533A004156D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 235A13D12A53533A004156D3 /* LaunchScreen.storyboard */; };
@@ -258,6 +259,7 @@
 		233EB5672BBDB6BF00E415D6 /* FriendTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableCell.swift; sourceTree = "<group>"; };
 		234BF4C32BD6B8320012CF6A /* UserAccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountManager.swift; sourceTree = "<group>"; };
 		234BF4C52BD823D20012CF6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		234BF55D2BE15C340012CF6A /* PreviewWholePageMediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewWholePageMediaViewController.swift; sourceTree = "<group>"; };
 		235A13C02A535339004156D3 /* LocationPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocationPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		235A13CD2A53533A004156D3 /* LocationPicker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationPicker.xcdatamodel; sourceTree = "<group>"; };
 		235A13CF2A53533A004156D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 				23DD48122AE9886300C63821 /* NewPostWholePageMediaViewController.swift */,
 				23DD48212AE9886300C63821 /* WholePageMediaViewController.swift */,
 				23D367882BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift */,
+				234BF55D2BE15C340012CF6A /* PreviewWholePageMediaViewController.swift */,
 			);
 			path = WholePageMediaViewController;
 			sourceTree = "<group>";
@@ -1397,6 +1400,7 @@
 				2307938D2B7363E000266227 /* SwipeEnableNavViewController.swift in Sources */,
 				230793872B7344E800266227 /* Button.swift in Sources */,
 				239A00642B2C4FBF00803B96 /* PostTableViewController.swift in Sources */,
+				234BF55E2BE15C340012CF6A /* PreviewWholePageMediaViewController.swift in Sources */,
 				23DCB7162B95CD0500D97BF2 /* RestaurantProfileMapCell.swift in Sources */,
 				23DD48412AE9886300C63821 /* PostDetailJson.swift in Sources */,
 				23DD48752AE9886300C63821 /* SceneDelegate.swift in Sources */,

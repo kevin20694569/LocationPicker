@@ -38,7 +38,7 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
     }()
     
     
-    var textFieldDelegate : UITextFieldDelegate!
+    weak var textFieldDelegate : UITextFieldDelegate?
     
     var activeTextField : UITextField?
     
@@ -82,18 +82,18 @@ class UploadMediaDetailTableCell : UITableViewCell, UICollectionViewDelegate, UI
         let media = self.medias[indexPath.row]
         if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UploadMediaDetailImageViewCollectionCell", for: indexPath) as! UploadMediaDetailImageViewCollectionCell
-            cell.textFieldDelegate = self.textFieldDelegate
+            cell.textFieldDelegate = textFieldDelegate
             cell.mediaHeightScale = mediaHeightScale
             cell.textField.tag = indexPath.row
-            cell.layoutImageView(media: media)
+            cell.configure(media: media)
 
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UploadMediaDetailPlayerLayerCollectionCell", for: indexPath) as! UploadMediaDetailPlayerLayerCollectionCell
-            cell.textFieldDelegate = self.textFieldDelegate
+            cell.textFieldDelegate = textFieldDelegate
             cell.mediaHeightScale = mediaHeightScale
             cell.textField.tag = indexPath.row
-            cell.layoutPlayerlayer(media: media)
+            cell.configure(media: media)
 
             return cell
         }

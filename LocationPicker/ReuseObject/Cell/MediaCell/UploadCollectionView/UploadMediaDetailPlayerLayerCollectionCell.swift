@@ -28,7 +28,7 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
     
      
     
-    override var cornerRadiusfloat: CGFloat! {
+    override var mediaCornerRadius: CGFloat! {
         return 16
     }
     
@@ -109,8 +109,8 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
     
     
     
-    override func layoutSoundImageView() {
-        super.layoutSoundImageView()
+    override func soundImageViewSetup() {
+        super.soundImageViewSetup()
         self.soundViewIncludeBlur.forEach() {
             $0.isHidden = true
         }
@@ -118,8 +118,8 @@ class UploadMediaDetailPlayerLayerCollectionCell : PlayerLayerCollectionCell, Up
     }
 
     
-    override func layoutPlayerlayer(media: Media) {
-        super.layoutPlayerlayer(media: media)
+    override func configure(media: Media) {
+        super.configure(media: media)
         playerLayer.backgroundColor = UIColor.secondaryBackgroundColor.cgColor
         self.playerLayer.player?.isMuted = true
         self.textField.text = media.title

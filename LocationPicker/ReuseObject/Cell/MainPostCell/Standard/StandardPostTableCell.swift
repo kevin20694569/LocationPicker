@@ -81,11 +81,11 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         let media = self.currentPost.media[indexPath.row]
         if media.isImage {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StandardImageViewCollectionCell", for: indexPath) as! StandardImageViewCollectionCell
-            cell.layoutImageView(media: media)
+            cell.configure(media: media)
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StandardPlayerLayerCollectionCell", for: indexPath) as! StandardPlayerLayerCollectionCell
-            cell.layoutPlayerlayer(media: media)
+            cell.configure(media: media)
             return cell
         }
     }
@@ -155,7 +155,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         pageControll?.numberOfPages = post.media.count
         timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
         timeStampLabel.textColor = .secondaryLabelColor
-        timeStampLabel.text = post.timestamp.timeAgeFromStringOrDateString()
+        timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
         userNameLabel.text = post.user?.name
         userNameLabel.textColor = .label
 
@@ -166,10 +166,12 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
         updateCellPageControll(currentCollectionIndexPath: IndexPath(row: post.CurrentIndex, section: self.currentMediaIndexPath.section))
         self.layoutIfNeeded()
-        
-        DispatchQueue.main.async {
+        UIView.performWithoutAnimation {
             self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
         }
+
+
+       
     }
     
     

@@ -9,8 +9,8 @@ class StaticPlayerLayerCollectionCell : PlayerLayerCollectionCell {
         }
     }
     
-    override func layoutPlayerlayer(media: Media) {
-        super.layoutPlayerlayer(media: media)
+    override func configure(media: Media) {
+        super.configure(media: media)
         let gesture = {
             let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(IntoLargePost (_ :)))
             longTapGesture.minimumPressDuration = 0.5
@@ -21,8 +21,8 @@ class StaticPlayerLayerCollectionCell : PlayerLayerCollectionCell {
         self.layoutIfNeeded()
     }
     
-    override func layoutSoundImageView() {
-        super.layoutSoundImageView()
+    override func soundImageViewSetup() {
+        super.soundImageViewSetup()
        
     }
 }
@@ -45,8 +45,8 @@ class NewPostPlayerLayerCollectionCell : PlayerLayerCollectionCell, UITextFieldD
         descriptionTextfield.adjustsFontSizeToFitWidth = true
     }}
     
-    override func layoutPlayerlayer(media : Media) {
-        super.layoutPlayerlayer(media: media)
+    override func configure(media : Media) {
+        super.configure(media: media)
         if descriptionTextfield == nil {
             descriptionTextfield = RoundedTextField()
             contentView.addSubview(descriptionTextfield)
@@ -72,8 +72,8 @@ class NewPostPlayerLayerCollectionCell : PlayerLayerCollectionCell, UITextFieldD
         layoutIfNeeded()
     }
     
-    override func layoutSoundImageView() {
-        super.layoutSoundImageView()
+    override func soundImageViewSetup() {
+        super.soundImageViewSetup()
     }
     
     var mediaTableViewDelegate : MediaTableViewCellDelegate!

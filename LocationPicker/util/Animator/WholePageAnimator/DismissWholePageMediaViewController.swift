@@ -80,12 +80,12 @@ class DismissWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
         
             if let toCollectionImageCell = toViewController.collectionView.visibleCells.first as?
                 ImageViewCollectionCell {
-                self.targetCornerRadius = toCollectionImageCell.cornerRadiusfloat
+                self.targetCornerRadius = toCollectionImageCell.mediaCornerRadius
                 targetFrame = toCollectionImageCell.contentView.convert(toCollectionImageCell.imageView.frame, to: containerView)
                 toCollectionImageCell.imageView.isHidden = true
                 
             } else if let toCollectionPlayerLayerCell =  toViewController.collectionView.visibleCells.first as? PlayerLayerCollectionCell {
-                self.targetCornerRadius = toCollectionPlayerLayerCell.cornerRadiusfloat
+                self.targetCornerRadius = toCollectionPlayerLayerCell.mediaCornerRadius
                 targetFrame = toCollectionPlayerLayerCell.contentView.convert(toCollectionPlayerLayerCell.playerLayer.frame, to: containerView)
                /* CATransaction.begin()
                 CATransaction.setAnimationDuration(0)

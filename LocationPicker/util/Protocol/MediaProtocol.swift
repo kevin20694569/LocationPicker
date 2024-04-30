@@ -19,7 +19,7 @@ protocol MediaCollectionCellDelegate : MediaCellDelegate {
 
 protocol MediaCollectionCell : UICollectionViewCell {
     func reload(media : Media?)
-    var cornerRadiusfloat : CGFloat! { get }
+    var mediaCornerRadius : CGFloat! { get }
 }
 
 protocol MediaTableCellDelegate : MediaCellDelegate, UIViewController {

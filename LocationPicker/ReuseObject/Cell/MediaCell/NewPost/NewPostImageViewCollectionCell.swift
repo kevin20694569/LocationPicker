@@ -10,8 +10,8 @@ class StaticImageViewCollectionCell : ImageViewCollectionCell, UITextFieldDelega
         }
     }
     
-    override func layoutImageView(media: Media) {
-        super.layoutImageView(media: media)
+    override func configure(media: Media) {
+        super.configure(media: media)
         let gesture = {
             let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(IntoLargePost (_ :)))
             longTapGesture.minimumPressDuration = 0.5
@@ -49,9 +49,9 @@ class NewPostImageViewCollectionCell : ImageViewCollectionCell, UITextFieldDeleg
         }
     }
     
-    override func layoutImageView(media: Media) {
+    override func configure(media: Media) {
         
-        super.layoutImageView(media: media)
+        super.configure(media: media)
         if descriptionTextfield == nil {
             descriptionTextfield = RoundedTextField()
             imageView.addSubview(descriptionTextfield)
