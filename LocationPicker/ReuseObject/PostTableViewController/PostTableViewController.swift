@@ -4,7 +4,7 @@ import AVFoundation
 
 class PostTableViewController : MainPostTableViewController, StandardPostCellDelegate, PanWholePageViewControllerDelegate {
     
-    var panViewGesture : UIPanGestureRecognizer!
+    var panViewGesture : UIPanGestureRecognizer! = UIPanGestureRecognizer()
     
     var isMovingView : Bool = false
     
@@ -25,7 +25,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
     var defaultLeftBarButtonItem : UIBarButtonItem! = UIBarButtonItem()
     
-    var isScrollAction : Bool! = false
+    var canScrollAction : Bool! = false
     
     var dismissButton : UIBarButtonItem! = UIBarButtonItem()
     
@@ -39,8 +39,21 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     }
     
     
-    override func initLayout() {
-        super.initLayout()
+    override func viewSetup() {
+        super.viewSetup()
+        tableView.delaysContentTouches = false
+
+        self.tableView.backgroundColor = UIColor.backgroundPrimary
+        if self.presentForTabBarLessView {
+            self.tableView.contentInset = .init(top: 0, left: 0, bottom: 0 , right: 0)
+        } else {
+        
+            self.tableView.contentInset = .init(top: 0, left: 0, bottom: Constant.bottomBarViewHeight - Constant.safeAreaInsets.bottom , right: 0)
+        }
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .secondaryBackgroundColor
+        tableView.separatorInset = Constant.standardTableViewInset
+        self.view.backgroundColor = .backgroundPrimary
         tableViewBottomAnchor.constant = 0
     }
     
@@ -58,11 +71,10 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         super.viewDidLoad()
         setGesture()
         self.view.layoutIfNeeded()
-
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
         self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
-       
+
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -73,21 +85,22 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
 
     
-    override func configureBarButton() {
+    override func barButtonItemSetup() {
         return
     }
     
     
     override func registerTableCell() {
         super.registerTableCell()
-        let StandardPostTableCell = UINib(nibName: "StandardPostTableCell", bundle: nil)
-        self.tableView.register(StandardPostTableCell, forCellReuseIdentifier: "StandardPostTableCell")
-        let StandardPostTitleTableCell = UINib(nibName: "StandardPostTitleTableCell", bundle: nil)
-        self.tableView.register(StandardPostTitleTableCell, forCellReuseIdentifier: "StandardPostTitleTableCell")
-        let StandardPostContentTableCell = UINib(nibName: "StandardPostContentTableCell", bundle: nil)
-        self.tableView.register(StandardPostContentTableCell, forCellReuseIdentifier: "StandardPostContentTableCell")
-        let StandardPostAllTextTableCell = UINib(nibName: "StandardPostAllTextTableCell", bundle: nil)
-        self.tableView.register(StandardPostAllTextTableCell, forCellReuseIdentifier: "StandardPostAllTextTableCell")
+        
+       // let StandardPostTableCell = UINib(nibName: "StandardPostTableCell", bundle: nil)
+        self.tableView.register(StandardPostTableCell.self, forCellReuseIdentifier: "StandardPostTableCell")
+       // let StandardPostTitleTableCell = UINib(nibName: "StandardPostTitleTableCell", bundle: nil)
+        self.tableView.register(StandardPostTitleTableCell.self, forCellReuseIdentifier: "StandardPostTitleTableCell")
+       // let StandardPostContentTableCell = UINib(nibName: "StandardPostContentTableCell", bundle: nil)
+        self.tableView.register(StandardPostContentTableCell.self, forCellReuseIdentifier: "StandardPostContentTableCell")
+       // let StandardPostAllTextTableCell = UINib(nibName: "StandardPostAllTextTableCell", bundle: nil)
+        self.tableView.register(StandardPostAllTextTableCell.self, forCellReuseIdentifier: "StandardPostAllTextTableCell")
     }
     
     override func presentWholePageMediaViewController(post: Post?) {
@@ -103,31 +116,17 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         controller.mediaAnimatorDelegate = self
         controller.currentMediaIndexPath = tableViewCurrentCell?.currentMediaIndexPath
         controller.panWholePageViewControllerwDelegate = self
-        controller.wholePageMediaDelegate = self
+      //  controller.reactionDelegate = self
+       // controller.wholePageMediaDelegate = self
         navController.modalPresentationStyle = .overFullScreen
         navController.transitioningDelegate = self
         navController.delegate = self
-        isScrollAction = true
+        canScrollAction = false
         self.present(navController, animated: true) {
             self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: false)
             BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
-            self.isScrollAction = false
+            self.canScrollAction = true
         }
-    }
-    override func viewStyleSetup() {
-        super.viewStyleSetup()
-        tableView.delaysContentTouches = false
-        self.view.backgroundColor = .backgroundPrimary
-        self.tableView.backgroundColor = UIColor.backgroundPrimary
-        if self.presentForTabBarLessView {
-            self.tableView.contentInset = .init(top: 0, left: 0, bottom: 0 , right: 0)
-        } else {
-        
-            self.tableView.contentInset = .init(top: 0, left: 0, bottom: Constant.bottomBarViewHeight - Constant.safeAreaInsets.bottom , right: 0)
-        }
-        tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .secondaryBackgroundColor
-        tableView.separatorInset = Constant.standardTableViewInset
     }
     
 
@@ -139,7 +138,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        gestureStatusToggle(isTopViewController: true)
+        canScrollAction = true
         gestureStatusToggle(isTopViewController: true)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled  = false
         self.navigationController?.delegate = self
@@ -153,7 +152,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         dismissButton.target = self
         dismissButton.action = #selector(dismissSelf)
         configureNavBar(title: nil)
-        self.view.layoutIfNeeded()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -296,7 +294,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
 
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !isScrollAction else {
+        guard canScrollAction else {
             return
         }
         
@@ -313,6 +311,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
             previousOffsetY = scrollView.contentOffset.y
             return
         }
+        
         scrollToUpdateIndexPath(diffY: diffY )
         previousOffsetY = scrollView.contentOffset.y
     }

@@ -38,8 +38,15 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         MainTabBarViewController.shared = self
-        bottomBarView = UIView()
-        bottomBarView.backgroundColor = .backgroundPrimary
+        childControllerSetup()
+        showViewController(at: 0)
+        tabBarSetup()
+
+
+    }
+    
+    func childControllerSetup() {
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let NavMainTableViewController = storyboard.instantiateViewController(withIdentifier: "NavMainTableViewController")  as! SwipeEnableNavViewController
         let NavUploadPostViewController = storyboard.instantiateViewController(withIdentifier: "NavUploadPostViewController")  as! SwipeEnableNavViewController
@@ -47,6 +54,9 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         let NavPlaylistMapViewController = storyboard.instantiateViewController(withIdentifier: "NavPlaylistMapViewController") as! SwipeEnableNavViewController
         
         viewControllers = [NavMainTableViewController, NavUploadPostViewController, NavProfileViewController, NavPlaylistMapViewController]
+    }
+    
+    func tabBarSetup() {
         
         for (index, item) in tabBar.items!.enumerated() {
             let image = item.image?.withConfiguration(UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .semibold)))
@@ -54,22 +64,25 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
             item.image = image
             item.tag = index
         }
-        tabBar.selectedItem?.isEnabled = true
-        tabBar.translatesAutoresizingMaskIntoConstraints = true
-        showViewController(at: 0)
-        finishFirstReload = true
-        self.view.addSubview(tabBar)
         tabBar.translatesAutoresizingMaskIntoConstraints = false
+        tabBar.selectedItem?.isEnabled = true
+        finishFirstReload = true
+
+        bottomBarView.backgroundColor = .backgroundPrimary
+        
+        self.view.addSubview(tabBar)
+        self.view.addSubview(bottomBarView)
         NSLayoutConstraint.activate([
             tabBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tabBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             tabBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
         ])
         tabBar.layoutIfNeeded()
-        
-        self.view.addSubview(bottomBarView)
         standardTabBarFrameInView = tabBar.frame
+        
     }
+
+
     @objc func tabBarButtonTapped(_ sender: UIButton) {
         // 在按鈕點擊時切換到相應的視圖
         if let index = tabBar.subviews.firstIndex(of: sender) {

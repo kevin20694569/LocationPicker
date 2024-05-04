@@ -7,11 +7,9 @@ protocol StandardEmojiReactionObject : EmojiReactionObject {
     var extendedEmojiBlurView : UIVisualEffectView? { get }
     func startEmojiExtendAnimation()
     func emojiButtonTapped( _ button : UIButton)
-    func emojiTargetTapped(_ button : UIButton)
 }
 
 protocol EmojiReactionObject : AnyObject {
-    func changeCurrentEmoji(emojiTag: Int?)
     var loveButton : ZoomAnimatedButton!  {get }
     var vomitButton : ZoomAnimatedButton! {get }
     var angryButton : ZoomAnimatedButton! {get }
@@ -19,5 +17,6 @@ protocol EmojiReactionObject : AnyObject {
     var surpriseButton : ZoomAnimatedButton! {get }
     var emojiTargetButtons : [ZoomAnimatedButton]! { get }
     var currentEmojiTag : Int? { get }
+    func emojiTargetTapped(_ button : UIButton)
     func startReactionTargetAnimation(targetTag : Int?)
 }

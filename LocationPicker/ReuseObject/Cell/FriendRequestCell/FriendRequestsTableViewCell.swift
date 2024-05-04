@@ -80,8 +80,6 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         labelsSetup()
         buttonsSetup()
         gestureSetup()
-
-       
     }
     
     
@@ -143,8 +141,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         self.sendTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .regular)
         userNameLabel.textColor = .label
         sendTimeLabel.textColor = .secondaryLabelColor
-        userNameLabel.isUserInteractionEnabled  = true
-        sendTimeLabel.isUserInteractionEnabled = true
+
     }
     
     func buttonsSetup() {
@@ -194,6 +191,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
             view?.addGestureRecognizer(gesture)
             view?.isUserInteractionEnabled = true
         }
+        
     }
     
     required init?(coder: NSCoder) {

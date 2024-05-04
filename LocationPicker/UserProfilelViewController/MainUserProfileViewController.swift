@@ -279,6 +279,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     func presentPostTableViewController(indexPath: IndexPath) {
         let targetPostCellIndexPath = IndexPath(row: indexPath.row , section: 0)
+        
         let controller = UserProfilePostTableViewController(presentForTabBarLessView: presentForTabBarLessView)
         let nav = SwipeEnableNavViewController(rootViewController: controller)
 
@@ -298,7 +299,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        
+     //   return nil
         if let nav = presented as? UINavigationController {
             if let toViewController = nav.viewControllers.first as? CollectionViewInTableViewMediaAnimatorDelegate {
                 guard let enterIndexPath = self.collectionView.indexPathsForSelectedItems?.first else { return nil }
@@ -307,6 +308,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
                 let collectoinViewTransionToIndexPath = IndexPath(row: posts[enterIndexPath.row].CurrentIndex, section: 0)
 
                 let animator = PresentGridCellAnimator(transitionToIndexPath: toIndexPath, toViewController: toViewController, fromViewController: self, collectoinViewTransionToIndexPath: collectoinViewTransionToIndexPath)
+                
                 return animator
             }
         }

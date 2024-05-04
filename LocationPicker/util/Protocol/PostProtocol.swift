@@ -13,7 +13,7 @@ protocol PostsTableForGridPostCellViewDelegate : GridPostCollectionViewAnimatorD
 
 protocol StandardPostTableCellProtocol : PostTableCell {
     var collectionViewHeight : CGFloat! { get set }
-    var standardPostCellDelegate : StandardPostCellDelegate! { get set }
+    var standardPostCellDelegate : StandardPostCellDelegate? { get set }
     var userImageView : UIImageView! { get }
     var userNameLabel : UILabel! { get }
 

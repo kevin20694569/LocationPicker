@@ -19,8 +19,8 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutNavBar() {
-        super.layoutNavBar()
+    override func navigationSetup() {
+        super.navigationSetup()
         self.navigationItem.title = ""
     }
     

@@ -371,9 +371,6 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
             openingTimeStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
-        
-    
-        
         Task {
             await getRestaurantSummary(restaurant_id: restaurantID)
         }
@@ -479,7 +476,6 @@ extension MapGridPostViewController : UICollectionViewDelegate {
                 let toIndexPath = IndexPath(row : enterCollectionIndexPath.row, section: 0)
                 let collectoinViewTransionToIndexPath = IndexPath(row: posts[enterIndexPath.row].CurrentIndex, section: 0)
                 let animator = PresentGridCellAnimator(transitionToIndexPath: toIndexPath, toViewController: toViewController, fromViewController: self, collectoinViewTransionToIndexPath: collectoinViewTransionToIndexPath)
-                
                 return animator
             }
         }

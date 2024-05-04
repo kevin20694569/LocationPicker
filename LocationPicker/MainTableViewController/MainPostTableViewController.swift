@@ -1,7 +1,7 @@
 import UIKit
 import AVFoundation
 
-class MainPostTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MediaTableCellDelegate, CollectionViewInTableViewMediaAnimatorDelegate, MediaTableViewCellDelegate, WholePageMediaViewControllerDelegate {
+class MainPostTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MediaTableCellDelegate, CollectionViewInTableViewMediaAnimatorDelegate, MediaTableViewCellDelegate {
     
     enum MainTablePostsStatus {
         case PublicNear
@@ -57,7 +57,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBOutlet var rightBarButtonItem : UIBarButtonItem! = UIBarButtonItem()
     
-    func configureBarButton() {
+    func barButtonItemSetup() {
        
         let style = UIFont.TextStyle.title3
         let mapImage = UIImage(systemName: "map", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: style, weight: .bold)))
@@ -125,7 +125,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         if let playerLayerCell = tableViewCurrentCell?.currentCollectionCell  as? PlayerLayerCollectionCell {
             soundImageViewArray = playerLayerCell.soundViewIncludeBlur
         }
-        var results : [UIView?] = [tableViewCurrentCell?.heartImageView, tableViewCurrentCell?.userImageView]
+        var results : [UIView?] = [tableViewCurrentCell?.heartButton, tableViewCurrentCell?.userImageView]
         results.append(contentsOf: soundImageViewArray ?? [])
         return results
     }
@@ -164,11 +164,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         setupAudioSession()
         layoutTitleButton()
         initRefreshControl()
-        viewStyleSetup()
-        configureBarButton()
+        viewSetup()
+        barButtonItemSetup()
         refreshPosts()
-        
-        
     }
     var tableViewBottomAnchor : NSLayoutConstraint!
     
@@ -182,13 +180,10 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
             self.tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             tableViewBottomAnchor
         ])
-        
-        self.view.layoutIfNeeded()
     }
     
     func registerTableCell() {
-        let mainPostTableCell = UINib(nibName: "MainPostTableCell", bundle: nil)
-        self.tableView.register(mainPostTableCell, forCellReuseIdentifier: "MainPostTableCell")
+        self.tableView.register(MainPostTableCell.self, forCellReuseIdentifier: "MainPostTableCell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -197,7 +192,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         tableViewRowHeightSet()
         navigationSetup()
         self.updateVisibleCellsMuteStatus()
-        
     }
     
     
@@ -385,7 +379,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         if let currentPostIndex = self.posts.firstIndex(of: post) {
             self.currentTableViewIndexPath = IndexPath(row: currentPostIndex, section: self.currentTableViewIndexPath.section)
         }
-        controller.wholePageMediaDelegate = self
+    //    controller.wholePageMediaDelegate = self
         controller.mediaAnimatorDelegate = self
         navcontroller.modalPresentationStyle = .overFullScreen
         navcontroller.definesPresentationContext = true
@@ -450,13 +444,14 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
-    func viewStyleSetup() {
+    func viewSetup() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
         tableView.allowsSelection = false
         tableView.separatorStyle = .none
+        tableView.delaysContentTouches = false
         navigationItem.backButtonTitle = ""
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
     }
@@ -548,7 +543,7 @@ extension MainPostTableViewController {
         
         if currentTableViewIndexPath.row != index {
             pauseCurrentMedia()
-            
+
             updateVisibleCellsMuteStatus()
             currentTableViewIndexPath = IndexPath(row: index, section: self.currentTableViewIndexPath.section)
             

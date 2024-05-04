@@ -85,34 +85,23 @@ class PresentGridCellAnimator : NSObject, UIViewControllerAnimatedTransitioning 
         let fromImageViewInitFrame = fromImageViewCell.contentView.superview?.convert(fromImageViewCell.contentView.frame, to: containerView)
         self.transitionImageView = fromImageViewCell.imageView
         self.initFrame = fromImageViewInitFrame
-
+        
         NavtoViewController.view.subviews.forEach { view in
             view.alpha = 0
         }
         NavtoViewController.view.alpha = 0
-        self.fadeInSubviews = self.toViewController.getFadeInSubviews()
+        containerView.addSubview(NavtoViewController.view)
+        containerView.layoutIfNeeded()
         
         DispatchQueue.main.async {
-            containerView.addSubview(NavtoViewController.view)
-            containerView.layoutIfNeeded()
-            if let toImageTableCell = self.toViewController.collectionView.visibleCells.first as? StandardImageViewCollectionCell {
-                let frame = toImageTableCell.contentView.convert(toImageTableCell.imageView.frame, to: containerView )
-                
-                self.targetFrame = frame
-   
-                self.targetCellRadius = toImageTableCell.mediaCornerRadius
-                self.fadeInSubviews.forEach { view in
-                    view?.alpha = 0
-                }
-                
-                
-            } else if let toPlayerLayerCell = self.toViewController.collectionView.visibleCells.first as? StandardPlayerLayerCollectionCell {
-                let frame = toPlayerLayerCell.contentView.convert(toPlayerLayerCell.playerLayer.frame, to: containerView )
-                self.targetFrame = frame
-                self.targetCellRadius = toPlayerLayerCell.mediaCornerRadius
-                self.fadeInSubviews.forEach { view in
-                    view?.alpha = 0
-                }
+            self.fadeInSubviews = self.toViewController.getFadeInSubviews()
+            let frame = self.toViewController.collectionView.superview!.convert(self.toViewController.collectionView.frame, to: containerView )
+            self.targetFrame = frame
+            self.fadeInSubviews.forEach { view in
+                view?.alpha = 0
+            }
+            if let cell = self.toViewController.collectionView.visibleCells.first as? MediaCollectionCell {
+                self.targetCellRadius = cell.mediaCornerRadius
             } else {
                 self.transitionContext.completeTransition(false)
                 return

@@ -9,37 +9,82 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
        }
     }
     
+    var textLabelHorConstant : CGFloat! = 20
     
+    var timeStampVerConstant : CGFloat! = 12
+    
+    var postTitleLabelTopConstant : CGFloat! = 10
+    
+    var timeStampTopAnchor : NSLayoutConstraint!  {
+        timeStampLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: timeStampVerConstant)
+    }
 
-    var collectionViewHeight : CGFloat!
+    var collectionViewHeight : CGFloat! = Constant.standardMinimumTableCellCollectionViewHeight
     
-    weak var standardPostCellDelegate : StandardPostCellDelegate!
+    weak var standardPostCellDelegate : StandardPostCellDelegate?
     
-    @IBOutlet weak var emojiButton : ZoomAnimatedButton! {didSet {
-        emojiButton.tag = -1
-    }}
+    var emojiButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
-    @IBOutlet weak var userNameLabel : UILabel! { didSet {
-        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium)
-    }}
+    var userNameLabel : UILabel! = UILabel()
+    
+    var isEmojiViewAnimated : Bool! = false
+    
+    var extendedEmojiBlurView : UIVisualEffectView?
     
     
-    override  func getEmojiButtonConfig(image : UIImage) -> UIButton.Configuration {
+    override func getEmojiButtonConfig(image : UIImage) -> UIButton.Configuration {
         let bounds = UIScreen.main.bounds
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
-        
-        config.image = image.scale(newWidth:  bounds.width * 0.08)
+        config.background.image = image
+        config.background.imageContentMode = .scaleAspectFit
+        config.contentInsets = NSDirectionalEdgeInsets.zero
         return config
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        layoutButton()
-        distanceLabel = nil
-        restaurantNameLabel = nil
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        emojiReactionsStackView?.isHidden = true
+        buttonSetup()
+        
+    }
+
+    override func configureData(post : Post) {
+        currentPost = post
+        self.collectionView.reloadSections([0])
+
+        setHeartButtonStatus()
+        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: post.CurrentIndex, section: self.currentMediaIndexPath.section))
+        if let image = post.selfReaction?.reactionType?.reactionImage {
+            self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
+            self.updateEmojiButtonImage(image: image)
+        } else {
+            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
+        }
+        if let userImage = currentPost.user?.image {
+            userImageView?.image = userImage
+        } else {
+            Task {
+                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
+                currentPost.user?.image = userImage
+                userImageView?.image = userImage
+            }
+        }
+
+        pageControll?.numberOfPages = post.media.count
+        timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
+        userNameLabel.text = post.user?.name
+        if let grade = post.grade {
+            self.gradeLabel?.text = String(grade)
+        }
+        DispatchQueue.main.async {
+            self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
+        }
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func registerCollectionCell() {
         super.registerCollectionCell()
@@ -47,33 +92,58 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         self.collectionView.register(StandardPlayerLayerCollectionCell.self, forCellWithReuseIdentifier: "StandardPlayerLayerCollectionCell")
     }
     
+    override func buttonSetup() {
+        super.buttonSetup()
+        let screenBounds = UIScreen.main.bounds
+        var heartConfig = UIButton.Configuration.filled()
+        heartConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        heartConfig.image = UIImage(systemName: "heart")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+        heartConfig.baseForegroundColor = .label
+        heartConfig.baseBackgroundColor = .clear
+        
+        heartButton.configuration = heartConfig
+        
+        var emojiConfig = UIButton.Configuration.filled()
+       
+        emojiConfig.background.image = UIImage(systemName: "smiley")?.scale(newWidth: screenBounds.width * 0.08).withTintColor(.label, renderingMode: .alwaysOriginal)
+        emojiConfig.background.imageContentMode = .scaleAspectFit
+        emojiConfig.baseForegroundColor = .label
     
-    override func setGesture() {
-        super.setGesture()
+        emojiConfig.baseBackgroundColor = .clear
+
+        emojiButton.configuration = emojiConfig
+        emojiButton.tag = -1
+    }
+    
+    override func labelSetup() {
+        super.labelSetup()
+        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        timeStampLabel.textColor = .secondaryLabelColor
+        userNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium)
+        userNameLabel.textColor = .label
+        
+    }
+    
+
+    
+    
+    override func setGestureTarget() {
+        super.setGestureTarget()
         
         self.emojiButton.addTarget(self, action: #selector(emojiButtonTapped( _ : )), for: .touchUpInside)
         for (index, button) in emojiTargetButtons.enumerated() {
             button.tag = index
             button.addTarget(self, action: #selector(emojiTargetTapped(_ : )), for: .touchUpInside)
         }
-        
+
         let userNameLabelGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ :)))
         self.userNameLabel.addGestureRecognizer(userNameLabelGesture)
+
         userNameLabel.isUserInteractionEnabled = true
     }
     
-    
-    func layoutButton() {
-        let bounds = UIScreen.main.bounds
-        var emojiConfig = UIButton.Configuration.filled()
-        emojiConfig.image = UIImage(systemName: "smiley")?.scale(newWidth: bounds.width * 0.08).withTintColor(.label, renderingMode: .alwaysOriginal)
-
-        emojiConfig.baseBackgroundColor = .clear
-        emojiButton.configuration = emojiConfig
-    }
-    
     override func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
-        self.standardPostCellDelegate.gestureStatusToggle(isTopViewController: true)
+        self.standardPostCellDelegate?.gestureStatusToggle(isTopViewController: true)
         return super.animationController(forDismissed: dismissed)
     }
 
@@ -90,107 +160,31 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
     }
     
-    
-    
-    override func changeCurrentEmoji(emojiTag: Int?) {
-        if let emojiTag = emojiTag {
-            
-            updateEmojiButtonImage(image: self.emojiTargetButtons[emojiTag].currentImage)
-        }
-
-    }
-    
     func updateEmojiButtonImage(image : UIImage?) {
-        if var config = self.emojiButton.configuration {
-            let targeImage = image?.scale(newWidth: self.contentView.bounds.width * 0.08)
-            config.image = targeImage
-            
-            self.emojiButton.configuration = config
-        }
+        let screenBounds = UIScreen.main.bounds
+        emojiButton.configuration?.background.image = image
     }
 
     
     
-    override func collectionViewFlowSet() {
+    override func collectionViewFlowSetup() {
+       DispatchQueue.main.async { [self] in
+            let flow = UICollectionViewFlowLayout()
+            let width = collectionView.bounds.width
+            let height = collectionView.bounds.height
+            flow.itemSize = CGSize(width: width , height: height )
+            flow.minimumLineSpacing = 0
+            flow.minimumInteritemSpacing = 0
+            flow.scrollDirection = .horizontal
+            collectionView.collectionViewLayout = flow
+        }
+    }
+    
+    override func setHeartButtonStatus() {
         
-        let flow = UICollectionViewFlowLayout()
-        let width = collectionView.bounds.width
-        let height = collectionView.bounds.height
-        flow.itemSize = CGSize(width: width   , height: height )
-        flow.minimumLineSpacing = 0
-        flow.minimumInteritemSpacing = 0
-        flow.scrollDirection = .horizontal
-        collectionView.collectionViewLayout = flow
-    }
-    
-    
-    override func configureData(post : Post) {
-        currentPost = post
-        NSLayoutConstraint.activate([
-            self.collectionView.heightAnchor.constraint(equalToConstant: collectionViewHeight),
-        ])
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-
-
-        if let image = post.selfReaction?.reactionType?.reactionImage {
-            self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
-            self.updateEmojiButtonImage(image: image)
-        } else {
-           
-            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
-        }
-        
-        setHeartImage()
-        if let userImage = currentPost.user?.image {
-            userImageView?.image = userImage
-        } else {
-            Task {
-                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
-                currentPost.user?.image = userImage
-                userImageView?.image = userImage
-            }
-        }
-
-        pageControll?.numberOfPages = post.media.count
-        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
-        timeStampLabel.textColor = .secondaryLabelColor
-        timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
-        userNameLabel.text = post.user?.name
-        userNameLabel.textColor = .label
-
-        if let grade = post.grade {
-            self.gradeLabel?.text = String(grade)
-        }
-
-
-        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: post.CurrentIndex, section: self.currentMediaIndexPath.section))
-        self.layoutIfNeeded()
-        UIView.performWithoutAnimation {
-            self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
-        }
-
-
-       
-    }
-    
-    
-         
-    
-    
-    override func setHeartImage() {
-        if currentPost.liked {
-            self.heartImageView.image = UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal)
-        } else {
-            heartImageView.image = UIImage(systemName: "heart")?.withTintColor(.label, renderingMode: .alwaysOriginal)
-        }
+        self.heartButton.configuration?.image =  currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) :  UIImage(systemName: "heart")?.withTintColor(.label, renderingMode: .alwaysOriginal)
     }
 
-    var extendedEmojiBlurView : UIVisualEffectView?
-    
-    override var emojiReactionsStackView: UIStackView? { didSet {
-        emojiReactionsStackView?.isHidden = true
-    }}
     
     @objc func emojiButtonTapped( _ button : UIButton) {
         if extendedEmojiBlurView == nil {
@@ -215,7 +209,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         startReactionTargetAnimation(targetTag: currentEmojiTag)
     }
     
-    var isEmojiViewAnimated : Bool! = false
+
     
     
     func startEmojiExtendAnimation() {
@@ -226,7 +220,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
         isEmojiViewAnimated = true
         let bounds = contentView.bounds
-        let emojiButtonFrameInContentView = self.emojiButton.imageView!.superview!.convert(self.emojiButton.imageView!.frame, to: contentView)
+        let emojiButtonFrameInContentView = self.emojiButton.superview!.convert(self.emojiButton.frame, to: contentView)
 
         let frame = CGRect(origin: emojiButtonFrameInContentView.origin, size: CGSize(width: bounds.width * 0.8, height: emojiButtonFrameInContentView.height * 1.8))
         extendedEmojiBlurView = UIVisualEffectView(frame:  frame, style: .dark)
@@ -247,9 +241,9 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         let zoomInTransform = CGAffineTransform(scaleX: 1, y: 1)
         
         let zoomOutTransform = CGAffineTransform(scaleX: 0.7, y: 0.7)
-        let collectionViewFrame = self.collectionView.superview?.convert(collectionView.frame, to: contentView)
+        let collectionViewFrame = self.collectionView.superview!.convert(collectionView.frame, to: contentView)
         let offset : CGFloat = 4
-        let targetBlurFrame = CGRect(x: emojiButtonCenterInContentView.x, y: collectionViewFrame!.maxY - extendedEmojiBlurView.frame.height - offset , width: blurViewWidth, height: extendedEmojiBlurView.frame.height)
+        let targetBlurFrame = CGRect(x: emojiButtonCenterInContentView.x, y: collectionViewFrame.maxY - extendedEmojiBlurView.frame.height - offset , width: blurViewWidth, height: extendedEmojiBlurView.frame.height)
 
         emojiTargetButtons.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = true
@@ -264,18 +258,24 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         
         
         UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations:  {
+
             extendedEmojiBlurView.transform = .identity
             extendedEmojiBlurView.frame = targetBlurFrame
             extendedEmojiBlurView.layer.cornerRadius = 20
+            self.emojiTargetButtons.forEach() {
+                
+                $0.transform = .identity
+            }
             let tag = self.currentPost.selfReaction?.reactionType?.reactionTag
             let emojiTargetWidth =  (blurViewWidth - ( blurViewXOffset * 2 )) / 5
  
             self.emojiTargetButtons.forEach() {
-                $0.transform = .identity
+                
 
                 let x = targetBlurFrame.minX + blurViewXOffset + emojiTargetWidth * CGFloat($0.tag)
                 $0.frame = CGRect(origin: .zero, size: CGSize(width: emojiTargetWidth, height: $0.frame.height))
-                $0.center.y = collectionViewFrame!.maxY - extendedEmojiBlurView.frame.height - offset + extendedEmojiBlurView.frame.height / 2
+                $0.center.y = targetBlurFrame.midY
+
                 $0.frame.origin.x = x
                 if tag != nil {
 
@@ -308,14 +308,14 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
         isEmojiViewAnimated = true
         self.emojiButton.isUserInteractionEnabled = false
-        let frame = self.emojiButton.imageView!.superview!.convert(emojiButton.imageView!.frame, to: self.collectionView)
+        let frame = self.emojiButton.superview!.convert(emojiButton.frame, to: self.collectionView)
         let centerInFrame = self.emojiButton.superview!.convert(emojiButton.center, to: contentView)
         let newFrame = CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: frame.height * 0.8)
         if currentEmojiTag == nil {
             if targetTag != nil {
                 self.emojiButton.alpha = 0
             }
-            if emojiButton.imageView?.image != UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
+            if emojiButton?.configuration?.background.image != UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
                 self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
             }
         }
@@ -348,7 +348,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }) { bool in
             if let currentEmojiTag = self.currentEmojiTag {
                 
-                let image = self.emojiTargetButtons[currentEmojiTag].configuration?.image
+                let image = self.emojiTargetButtons[currentEmojiTag].configuration?.background.image
                 self.updateEmojiButtonImage(image: image)
             }
             self.emojiButton.alpha = 1
@@ -368,35 +368,78 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         self.emojiButton.configuration?.image = UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal)
         
         Task(priority: .low) { [weak self] in
-            
             guard let self = self else {
                 return
             }
-            
             self.currentPost.media.forEach() {
                $0.player?.seek(to: CMTime.zero)
            }
         }
-        
     }
 
-    override func autoLayoutActive() {
-        let width = collectionView.bounds.width
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        userImageView.translatesAutoresizingMaskIntoConstraints = false
-        heartImageView.translatesAutoresizingMaskIntoConstraints  = false
-        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+    override func viewLayoutSetup() {
+        
+        contentView.addSubview(collectionView)
+        contentView.addSubview(userImageView)
+        contentView.addSubview(heartButton)
+        contentView.addSubview(gradeStackView)
+        contentView.addSubview(pageControll)
+        contentView.addSubview(collectButton)
+        contentView.addSubview(shareButton)
+        contentView.addSubview(restaurantNameLabel)
+        contentView.addSubview(distanceLabel)
+        
+        contentView.addSubview(emojiReactionsStackView)
+        contentView.addSubview(timeStampLabel)
+        contentView.addSubview(emojiButton)
+        contentView.addSubview(userNameLabel)
+        
+        self.contentView.subviews.forEach() {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+
         NSLayoutConstraint.activate([
-            userImageView.widthAnchor.constraint(equalToConstant: width * 0.08),
-            userImageView.heightAnchor.constraint(equalToConstant: width * 0.08),
+            userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            userImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:  16),
+            userImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.08),
+            userImageView.heightAnchor.constraint(equalTo: userImageView.widthAnchor),
+            
             userNameLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: 12),
-            userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor)
-        ])
-    }
-    
+            userNameLabel.trailingAnchor.constraint(equalTo: gradeStackView.leadingAnchor, constant: -6),
+            userNameLabel.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
 
-        
-    
-    
-    
+            gradeStackView.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
+            gradeStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            pageControll.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 8),
+            pageControll.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
+            pageControll.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            pageControll.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.3),
+            
+            collectionView.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 6),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            collectionView.heightAnchor.constraint(equalToConstant: collectionViewHeight),
+            
+            shareButton.centerYAnchor.constraint(equalTo: pageControll  .centerYAnchor),
+            shareButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            
+            collectButton.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
+            collectButton.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -8),
+            
+            heartButton.centerYAnchor.constraint(equalTo: pageControll.centerYAnchor),
+            
+            heartButton.trailingAnchor.constraint(equalTo: collectButton.leadingAnchor, constant: -8),
+            
+            emojiButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.08),
+            emojiButton.heightAnchor.constraint(equalTo: emojiButton.widthAnchor, multiplier: 1),
+            emojiButton.centerXAnchor.constraint(equalTo: userImageView.centerXAnchor),
+            emojiButton.centerYAnchor.constraint(equalTo: pageControll.centerYAnchor),
+            
+            timeStampTopAnchor,
+            timeStampLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor , constant: -timeStampVerConstant),
+            timeStampLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant)
+        ])
+        gradeStackView.layoutIfNeeded()
+    }
 }

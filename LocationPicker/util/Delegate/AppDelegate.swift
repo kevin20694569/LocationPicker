@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import SHFullscreenPopGestureSwift
+import AVFoundation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -8,7 +9,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         SHFullscreenPopGesture.configure()
-
+        LocationManager.shared.startUpdatingLocation()
+        setupAudioSession()
+        navBarAppearanceSetup()
+        return true
+    }
+    
+    func navBarAppearanceSetup() {
         let navBarAppearance = UINavigationBarAppearance()
         let pointSize = UIFont.preferredFont(forTextStyle: .title3).pointSize
         navBarAppearance.titleTextAttributes = [
@@ -25,7 +32,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
-        return true
+    }
+    
+    func setupAudioSession() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playback, mode: .default, options: [])
+            try audioSession.setActive(true)
+        } catch {
+            print("聲音設定錯誤: \(error)")
+        }
     }
     
     

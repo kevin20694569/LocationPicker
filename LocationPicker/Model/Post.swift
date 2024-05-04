@@ -45,7 +45,16 @@ class Post : Hashable, Equatable {
         static let likeTotal = "likeTotal"
         static let timestamp = "timestamp"
     }
-    init() { }
+    init() {}
+    static let defaultExample = {
+        let post = Post()
+        post.media = Media.defaultExamples
+        return post
+    }()
+    
+    
+    
+    
     
     init(postId : String, username : String?, restanrantname: String?, restaurantaddress: String?, mediacontents: [Media], timestamp : String, distance : Double?, RestaurantID : String, userID : String, content : String? , title : String?, selfReaction : Reaction?, publicReactions : [Reaction]?, liked : Bool?, likedTotal : Int, lovedTotal : Int?, vomitedTotal : Int?, angryTotal : Int?, sadTotal : Int?, surpriseTotal : Int?, grade : Double?) {
         self.id = postId

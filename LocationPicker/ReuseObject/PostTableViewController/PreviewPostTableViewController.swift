@@ -2,6 +2,20 @@ import UIKit
 import AVFoundation
 
 class PreviewPostTableViewController : MainPostTableViewController {
+    var loveButton: ZoomAnimatedButton!
+    
+    var vomitButton: ZoomAnimatedButton!
+    
+    var angryButton: ZoomAnimatedButton!
+    
+    var sadButton: ZoomAnimatedButton!
+    
+    var surpriseButton: ZoomAnimatedButton!
+    
+    var emojiTargetButtons: [ZoomAnimatedButton]!
+    
+    var currentEmojiTag: Int?
+    
     
     @IBAction func dismissSelf() {
         self.pauseCurrentMedia()
@@ -21,10 +35,9 @@ class PreviewPostTableViewController : MainPostTableViewController {
         cell.mediaTableCellDelegate = self
         cell.configureData(post: post)
         cell.gradeStackView.isUserInteractionEnabled = false
-        cell.collectImageView.isUserInteractionEnabled = false
-        cell.shareImageView.isUserInteractionEnabled = false
-        cell.tapHeartGesture.isEnabled = false
-        cell.heartImageView.isUserInteractionEnabled = false
+        cell.collectButton.isUserInteractionEnabled = false
+        cell.shareButton.isUserInteractionEnabled = false
+        cell.heartButton.isUserInteractionEnabled = false
         return cell
     }
 
@@ -39,15 +52,15 @@ class PreviewPostTableViewController : MainPostTableViewController {
         }
         
         controller.mediaAnimatorDelegate = self
-        controller.wholePageMediaDelegate = self
+        controller.reactionDelegate = tableViewCurrentCell
         navController.modalPresentationStyle = .overFullScreen
         navController.transitioningDelegate = self
         navController.delegate = self
         self.present(navController, animated: true)
     }
     
-    override func viewStyleSetup() {
-        super.viewStyleSetup()
+    override func viewSetup() {
+        super.viewSetup()
         tableView.isScrollEnabled = false
         self.navigationItem.title = "貼文預覽"
     }
@@ -74,7 +87,7 @@ class PreviewPostTableViewController : MainPostTableViewController {
     override func showUserProfile(user : User) {
         
     }
-    override func configureBarButton() {
+    override func barButtonItemSetup() {
         
     }
 }

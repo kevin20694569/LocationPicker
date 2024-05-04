@@ -4,6 +4,11 @@ import UIKit
 class Media : Hashable, Equatable {
     
     static let mediaTitleCountLimit : Int = 16
+    
+    static let defaultExamples = {
+        let media = Media()
+        return [media]
+    }()
     static func == (lhs: Media, rhs: Media) -> Bool {
         lhs.DonwloadURL == rhs.DonwloadURL
     }

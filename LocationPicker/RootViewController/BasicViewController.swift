@@ -16,7 +16,7 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
         return viewControllerArray[self.page]
     }
 
-    static var shared : BasicViewController! =  BasicViewController()
+    static var shared : BasicViewController!
     
     var navMapViewController : NavMapViewController!
     
@@ -26,26 +26,29 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var viewControllerArray : [UIViewController]! = []
     
-    var swipePanGesture : UIPanGestureRecognizer!
+    var swipePanGesture : UIPanGestureRecognizer! = UIPanGestureRecognizer()
     
     var isSwiping : Bool! = false
     
-    var hasAnotherPanGestureActive : Bool! = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        LocationManager.shared.startUpdatingLocation()
         BasicViewController.shared = self
-
-        
+        initViewControllerSetup()
+        gestureSetup()
+    }
+    
+    func initViewControllerSetup() {
         navMapViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavMapViewController") as? NavMapViewController
         mainTabBarViewController = self.storyboard?.instantiateViewController(withIdentifier: "CustomTabBarController")  as? MainTabBarViewController
 
         navChatRoomViewController = self.storyboard?.instantiateViewController(withIdentifier: "NavChatRoomViewController") as? SwipeEnableNavViewController
+        viewControllerArray = [navMapViewController, mainTabBarViewController, navChatRoomViewController]
+    }
+    
+    func gestureSetup() {
         swipePanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_ :)))
         swipePanGesture.cancelsTouchesInView = false
         swipePanGesture.delegate = self
-        viewControllerArray = [navMapViewController, mainTabBarViewController, navChatRoomViewController]
         self.view.addGestureRecognizer(swipePanGesture)
     }
     
@@ -93,7 +96,6 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
             BasicViewController.shared.swipeEnable(bool: true)
         } else {
             BasicViewController.shared.swipeEnable(bool: false)
-            
         }
         
         
@@ -138,8 +140,6 @@ class BasicViewController: UIViewController, UIGestureRecognizerDelegate {
 }
 extension BasicViewController {
     @objc private func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
-        
-        // 獲取手勢的位置
         
         let translation = recognizer.translation(in: view)
         

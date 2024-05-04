@@ -10,8 +10,3 @@ protocol PostDetailSheetViewControllerDelegate : AnyObject {
     func setHeartImage()
     func presentShareViewController(_ gesture : UITapGestureRecognizer)
 }
-
-
-protocol WholePageMediaViewControllerDelegate : AnyObject {
-    func changeCurrentEmoji(emojiTag:  Int?)
-}

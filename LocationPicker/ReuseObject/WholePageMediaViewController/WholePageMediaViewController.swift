@@ -16,7 +16,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     weak var mediaAnimatorDelegate : MediaCollectionViewAnimatorDelegate?
     
-    weak var wholePageMediaDelegate : WholePageMediaViewControllerDelegate?
+    weak var reactionDelegate : EmojiReactionObject?
     
     weak var panWholePageViewControllerwDelegate : PanWholePageViewControllerDelegate?
     
@@ -262,6 +262,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
+        collectionViewSetup()
         layoutBottomBarView()
         collectionViewFlowSet()
         registerCells()
@@ -269,24 +270,23 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         setGestureTarget()
         layoutBlurView()
         configurePostTitleView()
-        
+        self.view.layoutIfNeeded()
+        configureData(post: currentPost)
+    }
+    
+    func collectionViewSetup() {
         collectionView.delegate = self
         collectionView.dataSource = self
-        self.configureData(post: currentPost)
-        self.view.layoutIfNeeded()
-        self.collectionView.layoutIfNeeded()
-        let indexPath = IndexPath(row: self.currentPost.CurrentIndex, section: 0 )
-        self.currentMediaIndexPath = indexPath
-        self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        self.view.endEditing(true)
-        
+        collectionView.backgroundColor = .clear
+        self.collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         updateCellPageControll(currentCollectionIndexPath: currentMediaIndexPath)
-        layoutNavBar()
+        navigationSetup()
     }
     
     
@@ -295,7 +295,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
         super.viewDidAppear(animated)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = false
-        collectionView.backgroundColor = .clear
+
         self.view.backgroundColor = .clear
         lengthLabel.layer.opacity = 0
         currentTimeLabel.layer.opacity  = 0
@@ -319,12 +319,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func configureData(post : Post) {
-        
         currentPost = post
         self.postID = currentPost.id
-        
-        
         self.currentMediaIndexPath = IndexPath(row:  currentPost.CurrentIndex, section: 0)
+        self.collectionView.scrollToItem(at: currentMediaIndexPath, at: .centeredHorizontally, animated: false)
         if let userImage = post.user?.image {
             self.userImageView.image = userImage
         } else {
@@ -551,14 +549,13 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
         self.navigationController?.navigationBar.backgroundColor = .clear
         self.view.clipsToBounds = true
-        self.collectionView.isPagingEnabled = true
-        collectionView.showsHorizontalScrollIndicator = false
+
         self.userImageView.translatesAutoresizingMaskIntoConstraints = false
         self.pageControll.hidesForSinglePage = true
         pageControll.currentPageIndicatorTintColor = .tintOrange
         self.pageControll.isUserInteractionEnabled = false
     }
-    func layoutNavBar() {
+    func navigationSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         navigationController?.navigationBar.isTranslucent = true
@@ -982,7 +979,8 @@ extension WholePageMediaViewController {
         if extendedEmojiBlurView == nil {
             startEmojiExtendAnimation()
         } else {
-            wholePageMediaDelegate?.changeCurrentEmoji(emojiTag: currentEmojiTag)
+        
+            reactionDelegate?.startReactionTargetAnimation(targetTag: currentEmojiTag)
             startReactionTargetAnimation(targetTag: currentEmojiTag)
         }
     }

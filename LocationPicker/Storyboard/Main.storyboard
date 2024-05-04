@@ -175,7 +175,7 @@
                     <connections>
                         <outlet property="leftBarButtonItem" destination="5Zu-Ev-oup" id="D1I-Jc-s9K"/>
                         <outlet property="rightBarButtonItem" destination="wHb-78-DZu" id="Tor-3r-BTR"/>
-                        <outlet property="tableView" destination="woN-Es-Jyz" id="drp-Iz-UlO"/>
+                        <outlet property="tableView" destination="woN-Es-Jyz" id="v3K-gy-1bE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vxc-4c-fmZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

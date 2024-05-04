@@ -3,6 +3,8 @@ struct Constant {
     static let standardCornerRadius : CGFloat = 46
     static var bottomBarViewHeight : CGFloat = 83
     
+    
+    
     enum account {
         case kevin20694569, kevin29779499, a110070026
         

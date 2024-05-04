@@ -1,9 +1,9 @@
 import UIKit
 import AVFoundation
 
-class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MediaCollectionCellDelegate, EmojiReactionObject, PostTableCell, UIViewControllerTransitioningDelegate     {
+/*class DeMainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, MediaCollectionCellDelegate, EmojiReactionObject, PostTableCell, UIViewControllerTransitioningDelegate     {
     func changeCurrentEmoji(emojiTag: Int?) {
-        
+        return
     }
     
     
@@ -55,7 +55,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     var currentMediaIndexPath : IndexPath! = IndexPath(row: 0, section: 0)
     
     
-    var currentPost : Post! = Post.defaultExample
+    var currentPost : Post!
 
     var currentCollectionCell : UICollectionViewCell? {
         let cell =  collectionView.cellForItem(at: currentMediaIndexPath)
@@ -103,44 +103,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     var sadButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var surpriseButton : ZoomAnimatedButton! = ZoomAnimatedButton()
-    
-    func configureData(post: Post)  {
-        currentPost = post
-        self.collectionView.reloadSections([0])
-        currentMediaIndexPath = IndexPath(row: post.CurrentIndex, section: 0)
-        if let userImage = currentPost.user?.image {
-            userImageView.image = userImage
-        } else {
-            Task(priority: .low) {
-                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
-                currentPost.user?.image = userImage
-                userImageView.image = userImage
-            }
-        }
-        if let grade = post.grade {
-            gradeStackView.isHidden = false
-            self.gradeLabel.text = String(grade)
-        } else {
-            gradeStackView.isHidden = true
-        }
-        
-        self.startReactionTargetAnimation(targetTag: post.selfReaction?.reactionType?.reactionTag)
-        
-        timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
-
-        distanceLabel?.text = currentPost.distance?.milesTransform()
-        restaurantNameLabel?.text = currentPost.restaurant?.name
-      
-        setHeartButtonStatus()
-
-        updateVisibleCellsMuteStatus()
-        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0) )
-        
-        UIView.performWithoutAnimation {
-            self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
-            
-        }
-    }
     
     
     func emojiButtonSetup() {
@@ -238,27 +200,36 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         ])
         
         
-     //   self.layoutIfNeeded()
-      //  self.emojiReactionsStackView.layoutIfNeeded()
+        self.layoutIfNeeded()
+        self.emojiReactionsStackView.layoutIfNeeded()
 
         
         
     }
     
     func labelSetup() {
-        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium)
+        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         restaurantNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         restaurantNameLabel.textAlignment = .center
-        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
         timeStampLabel.textColor = .secondaryLabelColor
     }
     
-
-    
+    func collectionViewFlowSet() {
+        let flow = UICollectionViewFlowLayout()
+        let height = collectionView.bounds.height
+        let spacing = self.contentView.bounds.width - height
+        flow.itemSize = CGSize(width: height  , height: height )
+        flow.minimumLineSpacing = spacing
+        flow.minimumInteritemSpacing = 0
+        flow.scrollDirection = .horizontal
+        flow.sectionInset = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: spacing / 2)
+        collectionView.collectionViewLayout = flow
+    }
     
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
-      //  collectionViewFlowSet()
+        collectionViewFlowSet()
     }
     
     
@@ -280,6 +251,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         gradeStackViewSetup()
         emojiStackViewSetup()
         setGestureTarget()
+
     }
     
     func gradeStackViewSetup() {
@@ -312,7 +284,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         var heartConfig = UIButton.Configuration.filled()
         heartConfig.image = UIImage(systemName: "heart")
         heartConfig.baseBackgroundColor = .clear
-        
         heartConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title1, weight: .bold))
         heartButton.configuration = heartConfig
     }
@@ -353,35 +324,54 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
 
     
     func collectionViewSetup() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.isPagingEnabled = true
-        collectionView.delaysContentTouches = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.automaticallyAdjustsScrollIndicatorInsets = false
         collectionView.clipsToBounds = true
-        collectionViewFlowSetup()
-        
     }
     
-    func collectionViewFlowSetup() {
-        DispatchQueue.main.async { [self] in
-            let flow = UICollectionViewFlowLayout()
-            let height = self.collectionView.bounds.height
-            let spacing = self.contentView.bounds.width - height
-            flow.itemSize = CGSize(width: height  , height: height )
-            flow.minimumLineSpacing = spacing
-            flow.minimumInteritemSpacing = 0
-            flow.scrollDirection = .horizontal
-            flow.sectionInset = UIEdgeInsets(top: 0, left: spacing / 2, bottom: 0, right: spacing / 2)
-            self.collectionView.collectionViewLayout = flow
+    
+    func configureData(post: Post)  {
+        currentPost = post
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        self.layoutIfNeeded()
+        currentMediaIndexPath = IndexPath(row: post.CurrentIndex, section: 0)
+        if let userImage = currentPost.user?.image {
+            userImageView.image = userImage
+        } else {
+            Task(priority: .low) {
+                let userImage = try await currentPost.user?.imageURL?.getImageFromURL()
+                currentPost.user?.image = userImage
+                userImageView.image = userImage
+            }
+        }
+        if let grade = post.grade {
+            gradeStackView.isHidden = false
+            self.gradeLabel.text = String(grade)
+        } else {
+            gradeStackView.isHidden = true
         }
         
-    }
-    
+        self.startReactionTargetAnimation(targetTag: post.selfReaction?.reactionType?.reactionTag)
+        
+        timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
 
-    
+        distanceLabel?.text = currentPost.distance?.milesTransform()
+        restaurantNameLabel?.text = currentPost.restaurant?.name
+      
+        setHeartButtonStatus()
+
+        updateVisibleCellsMuteStatus()
+        updateCellPageControll(currentCollectionIndexPath: IndexPath(row: currentPost.CurrentIndex, section: 0) )
+
+        UIView.performWithoutAnimation {
+            self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
+        }
+
+        
+    }
     func setHeartButtonStatus() {
         
         self.heartButton.configuration?.image =  currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) :  UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
@@ -415,6 +405,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         self.emojiTargetButtons.forEach() {
             $0.addTarget(self, action: #selector(emojiTargetTapped(_:)), for: .touchUpInside)
+            
         }
         
     }
@@ -472,15 +463,16 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
 }
 
-extension MainPostTableCell {
+extension DeMainPostTableCell {
     
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         resetPostMediasPlayer()
+        self.collectionView.dataSource = nil
+        self.restaurantNameLabel?.text = ""
+        self.distanceLabel?.text = ""
     }
-    
     func resetPostMediasPlayer() {
         currentPost.media.forEach { Media in
             if let player = Media.player {
@@ -577,7 +569,7 @@ extension MainPostTableCell {
 }
 
 
-extension MainPostTableCell {
+extension DeMainPostTableCell {
     
     
     func reloadCollectionCell(reloadIndexPath : IndexPath, scrollTo : IndexPath) {
@@ -610,7 +602,7 @@ extension MainPostTableCell {
     
 }
 
-extension MainPostTableCell {
+extension DeMainPostTableCell {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         playCurrentMedia(indexPath: self.currentMediaIndexPath)
     }
@@ -625,7 +617,7 @@ extension MainPostTableCell {
     }
 }
 
-extension MainPostTableCell {
+extension DeMainPostTableCell {
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let bounds = UIScreen.main.bounds
@@ -647,13 +639,13 @@ extension MainPostTableCell {
     
     
     @objc func presentAddCollectViewController(_ gesture : UITapGestureRecognizer) {
-        
-        let viewController = AddCollectViewController()
-        viewController.modalPresentationStyle = .custom
-        viewController.transitioningDelegate = self
-        mediaTableCellDelegate?.present(viewController, animated: true)
-        
-        
+        if let delegateViewController = self.mediaTableCellDelegate as? UIViewController {
+            let viewController = AddCollectViewController()
+            viewController.modalPresentationStyle = .custom
+            viewController.transitioningDelegate = self
+            delegateViewController.present(viewController, animated: true) {
+            }
+        }
     }
     
     @objc func presentShareViewController(_ gesture : UITapGestureRecognizer) {
@@ -662,10 +654,8 @@ extension MainPostTableCell {
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         mediaTableCellDelegate?.present(viewController, animated: true)
+        
     }
-
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? PlayerLayerCollectionCell {
@@ -675,6 +665,6 @@ extension MainPostTableCell {
         }
     }
     
-}
+}*/
 
 

@@ -2,15 +2,35 @@
 import UIKit
 class StandardPostTitleTableCell : StandardPostTableCell {
 
-    @IBOutlet weak var postTitleLabel : UILabel! { didSet {
-        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
-    }}
+    var postTitleLabel : UILabel! = UILabel()
+    
+    override var timeStampTopAnchor : NSLayoutConstraint!  {
+        timeStampLabel.topAnchor.constraint(equalTo: postTitleLabel.bottomAnchor, constant: timeStampVerConstant)
+    }
+    
     override func configureData(post: Post) {
         super.configureData(post: post)
         if let title = currentPost.postTitle {
             self.postTitleLabel.text = title
-
         }
+    }
+    
+    override func viewLayoutSetup() {
+        self.contentView.addSubview(postTitleLabel)
+        postTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        super.viewLayoutSetup()
+
+        NSLayoutConstraint.activate([
+            postTitleLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: postTitleLabelTopConstant),
+            postTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant),
+            postTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -textLabelHorConstant),
+        ])
+    }
+    
+    override func labelSetup() {
+        super.labelSetup()
+        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+        postTitleLabel.textColor = .label
     }
 }
 
@@ -18,18 +38,59 @@ class StandardPostTitleTableCell : StandardPostTableCell {
 class StandardPostContentTableCell : StandardPostTableCell {
     var postsContentLabelHeightAnchor : NSLayoutConstraint!
 
-    @IBOutlet weak var postContentLabel : UILabel! { didSet {
-        postContentLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
-        postContentLabel!.isUserInteractionEnabled = true
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(postsContentExpand))
-        postContentLabel!.addGestureRecognizer(gesture)
-    }}
-    var postContentLabelBottomAnchor : NSLayoutConstraint!
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        postContentLabel?.numberOfLines = 3
+    var postContentLabel : UILabel! = UILabel()
+    
+    
+    var postContentTopAnchor : NSLayoutConstraint!  {
+        postContentLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: 6)
+       
+    }
+    
+    override var timeStampTopAnchor : NSLayoutConstraint!  {
+        timeStampLabel.topAnchor.constraint(equalTo: postContentLabel.bottomAnchor, constant: timeStampVerConstant)
+    }
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         postsContentLabelHeightAnchor = self.postContentLabel?.heightAnchor.constraint(equalToConstant: 0)
-        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewLayoutSetup() {
+        self.contentView.addSubview(postContentLabel)
+        postContentLabel.translatesAutoresizingMaskIntoConstraints = false
+        super.viewLayoutSetup()
+
+        NSLayoutConstraint.activate([
+            postContentTopAnchor,
+            postContentLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant),
+            postContentLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -textLabelHorConstant),
+        ])
+    }
+    
+    override func configureData(post: Post) {
+        super.configureData(post: post)
+
+        if let content = currentPost.postContent {
+            self.postContentLabel.text = content
+        }
+    }
+    
+    override func labelSetup() {
+        super.labelSetup()
+        postContentLabel.numberOfLines = 3
+        postContentLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
+        postContentLabel.isUserInteractionEnabled = true
+        postContentLabel.contentMode = .topLeft 
+    }
+    
+    override func setGestureTarget() {
+        super.setGestureTarget()
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(postsContentExpand))
+        postContentLabel.addGestureRecognizer(gesture)
     }
     
     override func prepareForReuse() {
@@ -38,8 +99,9 @@ class StandardPostContentTableCell : StandardPostTableCell {
         postContentLabel?.frame.size.height = 0
         postsContentLabelHeightAnchor.isActive = false
         contentView.layoutIfNeeded()
-        self.standardPostCellDelegate.cellRowHeightSizeFit()
+        self.standardPostCellDelegate?.cellRowHeightSizeFit()
     }
+    
     @objc func postsContentExpand() {
         guard let postContentLabel = postContentLabel else {
             return
@@ -52,7 +114,7 @@ class StandardPostContentTableCell : StandardPostTableCell {
         if postContentLabel.frame.height == actualSize.height {
             return
         }
-        if (self.contentView.frame.height - postContentLabel.frame.height + actualSize.height) > standardPostCellDelegate.tableView.frame.height  {
+        if (self.contentView.frame.height - postContentLabel.frame.height + actualSize.height) > standardPostCellDelegate?.tableView.frame.height ?? 0  {
 
             return
         }
@@ -60,10 +122,10 @@ class StandardPostContentTableCell : StandardPostTableCell {
             postsContentLabelHeightAnchor
         ])
         
-        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations:  { [self] in
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveEaseInOut, animations:  { [self] in
             postsContentLabelHeightAnchor.constant = actualSize.height
             contentView.layoutIfNeeded()
-            self.standardPostCellDelegate.cellRowHeightSizeFit()
+            self.standardPostCellDelegate?.cellRowHeightSizeFit()
         })
     }
     
@@ -89,28 +151,47 @@ class StandardPostContentTableCell : StandardPostTableCell {
         remainingLabel.numberOfLines = 0
         self.postContentLabel = remainingLabel
         // 将新的UILabel添加到父视图中
-        // contentView.addSubview(remainingLabel)
     }
     
-    override func configureData(post: Post) {
-        super.configureData(post: post)
 
-        if let content = currentPost.postContent {
-            self.postContentLabel.text = content
-        }
-    }
     
 }
 
 class StandardPostAllTextTableCell : StandardPostContentTableCell {
-    @IBOutlet weak var postTitleLabel : UILabel! { didSet {
+    var postTitleLabel : UILabel! = UILabel()
+    
+    override var postContentTopAnchor : NSLayoutConstraint!  {
+        postContentLabel.topAnchor.constraint(equalTo: postTitleLabel.bottomAnchor, constant: 6)
+    }
+    
+    override var timeStampTopAnchor : NSLayoutConstraint!  {
+        timeStampLabel.topAnchor.constraint(equalTo: postContentLabel.bottomAnchor, constant: timeStampVerConstant)
+    }
+    
+    override func viewLayoutSetup() {
+        self.contentView.addSubview(postTitleLabel)
+        postTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        super.viewLayoutSetup()
+        
+
+        NSLayoutConstraint.activate([
+            postTitleLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: postTitleLabelTopConstant),
+            postTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant),
+            postTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: textLabelHorConstant),
+
+        ])
+    }
+    
+    override func labelSetup() {
+        super.labelSetup()
         postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
-    }}
+        postTitleLabel.textColor = .label
+    }
+    
     override func configureData(post: Post) {
         super.configureData(post: post)
         if let title = currentPost.postTitle {
             self.postTitleLabel.text = title
-
         }
         if let content = currentPost.postContent {
             self.postContentLabel.text = content

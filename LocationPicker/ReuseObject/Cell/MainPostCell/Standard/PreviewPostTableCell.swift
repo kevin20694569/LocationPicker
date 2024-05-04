@@ -5,8 +5,8 @@ class PreviewPostTableCell : MainPostTableCell {
         return false
     }
     
-    override var shareImageView: UIImageView! {didSet {
-        shareImageView.isUserInteractionEnabled = false
+    override var shareButton: ZoomAnimatedButton! { didSet {
+        shareButton.isUserInteractionEnabled = false
     }}
     override var userImageView: UIImageView! { didSet {
         userImageView.contentMode = .scaleAspectFill

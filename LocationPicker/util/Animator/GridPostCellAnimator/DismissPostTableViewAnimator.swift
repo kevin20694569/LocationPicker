@@ -78,7 +78,7 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
         fromViewController.view.isUserInteractionEnabled = false
         toViewController.view.isUserInteractionEnabled = false
         self.toViewController.collectionView.isPagingEnabled = false
-        self.toViewController.collectionView.scrollToItem(at: self.collectionViewTransitionToIndexPath, at: .centeredHorizontally, animated: false)
+
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
@@ -93,7 +93,7 @@ class DismissPostTableViewAnimator : NSObject, UIViewControllerAnimatedTransitio
                 self.transitionContext.completeTransition(false)
                 return
             }
-            
+
             
 
             if let fromWholeImageCell = fromViewController.currentCollectionCell as? StandardImageViewCollectionCell {
