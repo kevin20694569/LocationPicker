@@ -130,13 +130,6 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         return results
     }
     
-    
-
-    
-    func changeCurrentEmoji(emojiTag : Int?) {
-        self.tableViewCurrentCell?.changeCurrentEmoji(emojiTag: emojiTag)
-    }
-    
     var isFirstLoad : Bool = true
     
     var postsStatus : MainTablePostsStatus = .PublicNear

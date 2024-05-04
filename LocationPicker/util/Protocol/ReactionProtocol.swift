@@ -19,4 +19,5 @@ protocol EmojiReactionObject : AnyObject {
     var currentEmojiTag : Int? { get }
     func emojiTargetTapped(_ button : UIButton)
     func startReactionTargetAnimation(targetTag : Int?)
+    func updateEmojiButtonImage(targetTag : Int?)
 }

@@ -23,10 +23,8 @@ protocol MediaCollectionCell : UICollectionViewCell {
 }
 
 protocol MediaTableCellDelegate : MediaCellDelegate, UIViewController {
-    
     func presentWholePageMediaViewController(post: Post?)
     func showUserProfile(user : User)
-   // func changeCurrentEmoji(emojiTag : Int?)
 }
 
 protocol MediaTableViewCellDelegate : MediaTableCellDelegate  {

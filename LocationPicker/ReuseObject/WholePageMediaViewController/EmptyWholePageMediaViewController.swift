@@ -32,14 +32,13 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
     }
     
     override func viewDidLoad() {
-        layout()
+        initLayout()
         layoutBottomBarView()
-        collectionViewFlowSet()
+        collectionViewFlowSetup()
         registerCells()
-        viewStyleSet()
+        viewSetup()
         setGestureTarget()
-        layoutBlurView()
-        configurePostTitleView()
+        postTextButtonSetup()
         Task {
             do {
                 let post = try await PostManager.shared.getPostDetail(post_id: self.postID, request_user_id: Constant.user_id)

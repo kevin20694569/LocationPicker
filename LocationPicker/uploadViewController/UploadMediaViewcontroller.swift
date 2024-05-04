@@ -3,9 +3,6 @@ import UIKit
 import PhotosUI
 
 class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegate, UIViewControllerTransitioningDelegate, MediaCollectionViewAnimatorDelegate, MediaTableCellDelegate, PanWholePageViewControllerDelegate {
-    func changeCurrentEmoji(emojiTag: Int?) {
-        return
-    }
     
     func gestureStatusToggle(isTopViewController: Bool) {
         

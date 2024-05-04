@@ -33,7 +33,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     
     
     override func getEmojiButtonConfig(image : UIImage) -> UIButton.Configuration {
-        let bounds = UIScreen.main.bounds
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
         config.background.image = image
@@ -52,15 +51,11 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     override func configureData(post : Post) {
         currentPost = post
         self.collectionView.reloadSections([0])
-
+        self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
+        self.updateEmojiButtonImage(targetTag: post.selfReaction?.reactionType?.reactionTag)
         setHeartButtonStatus()
         updateCellPageControll(currentCollectionIndexPath: IndexPath(row: post.CurrentIndex, section: self.currentMediaIndexPath.section))
-        if let image = post.selfReaction?.reactionType?.reactionImage {
-            self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
-            self.updateEmojiButtonImage(image: image)
-        } else {
-            self.updateEmojiButtonImage(image:  UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
-        }
+
         if let userImage = currentPost.user?.image {
             userImageView?.image = userImage
         } else {
@@ -70,6 +65,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
                 userImageView?.image = userImage
             }
         }
+       
 
         pageControll?.numberOfPages = post.media.count
         timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
@@ -160,9 +156,13 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
     }
     
-    func updateEmojiButtonImage(image : UIImage?) {
-        let screenBounds = UIScreen.main.bounds
-        emojiButton.configuration?.background.image = image
+    override func updateEmojiButtonImage(targetTag : Int?) {
+        if let targetTag = targetTag {
+            let image = self.emojiTargetButtons[targetTag].configuration?.background.image
+            self.emojiButton.configuration?.background.image = image
+        } else {
+            self.emojiButton.configuration?.background.image = UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+        }
     }
 
     
@@ -299,6 +299,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
     }
     
+    
+    
     override func startReactionTargetAnimation(targetTag : Int?) {
         guard !isEmojiViewAnimated else {
             return
@@ -316,7 +318,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
                 self.emojiButton.alpha = 0
             }
             if emojiButton?.configuration?.background.image != UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
-                self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal))
+                self.updateEmojiButtonImage(targetTag: currentEmojiTag)
             }
         }
         let zoomOutTransForm = CGAffineTransform(scaleX: 0.01, y: 0.01)
@@ -346,11 +348,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             extendedEmojiView.transform = zoomOutTransForm
             extendedEmojiView.alpha = 1
         }) { bool in
-            if let currentEmojiTag = self.currentEmojiTag {
-                
-                let image = self.emojiTargetButtons[currentEmojiTag].configuration?.background.image
-                self.updateEmojiButtonImage(image: image)
-            }
+            self.updateEmojiButtonImage(targetTag: self.currentEmojiTag)
             self.emojiButton.alpha = 1
             self.emojiTargetButtons.forEach() {
                 $0.transform = .identity

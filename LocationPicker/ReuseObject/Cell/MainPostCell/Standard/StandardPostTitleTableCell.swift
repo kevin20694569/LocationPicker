@@ -127,6 +127,7 @@ class StandardPostContentTableCell : StandardPostTableCell {
             contentView.layoutIfNeeded()
             self.standardPostCellDelegate?.cellRowHeightSizeFit()
         })
+        
     }
     
     func expandLabel() {

@@ -2,9 +2,10 @@ import UIKit
 import AVFoundation
 
 class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MediaCollectionCellDelegate, EmojiReactionObject, PostTableCell, UIViewControllerTransitioningDelegate     {
-    func changeCurrentEmoji(emojiTag: Int?) {
-        
+    func updateEmojiButtonImage(targetTag: Int?) {
+        self.startReactionTargetAnimation(targetTag: targetTag)
     }
+
     
     
     weak var mediaTableCellDelegate : MediaTableCellDelegate?
@@ -215,7 +216,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             emojiReactionsStackView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.08),
             
             timeStampLabel.bottomAnchor.constraint(equalTo: emojiReactionsStackView.topAnchor, constant: -16),
-            timeStampLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            timeStampLabel.trailingAnchor.constraint(equalTo: emojiReactionsStackView.trailingAnchor)
             
         ])
 
@@ -231,8 +232,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             heartButton.centerYAnchor.constraint(equalTo: userImageView.centerYAnchor),
             
             heartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -width * scale),
-            
- 
             heartButton.heightAnchor.constraint(equalToConstant: width * 0.12),
             heartButton.widthAnchor.constraint(equalTo: heartButton.heightAnchor, multiplier: 1),
         ])
@@ -246,10 +245,10 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     }
     
     func labelSetup() {
-        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .subheadline, weight: .medium)
+        gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         restaurantNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         restaurantNameLabel.textAlignment = .center
-        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         timeStampLabel.textColor = .secondaryLabelColor
     }
     
@@ -297,6 +296,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     func buttonSetup() {
         var paperplaneConfig = UIButton.Configuration.filled()
         paperplaneConfig.image = UIImage(systemName: "paperplane")
+        paperplaneConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
         paperplaneConfig.baseBackgroundColor = .clear
         paperplaneConfig.baseForegroundColor = .label
         paperplaneConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
@@ -305,6 +305,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         starConfig.image = UIImage(systemName: "star")
         starConfig.baseBackgroundColor = .clear
         starConfig.baseForegroundColor = .label
+        starConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
         starConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         collectButton.configuration = starConfig
         
@@ -446,7 +447,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
         if let targetTag = targetTag {
             
             let label = self.emojiReactionsStackView!.arrangedSubviews[targetTag]
-            let zoomInTransform = CGAffineTransform(scaleX: 1.4, y: 1.4)
+            let zoomInTransform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             let zoomOutTransform = CGAffineTransform(scaleX: 0.65, y: 0.65)
             UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut , animations: {
                 label.transform = zoomInTransform

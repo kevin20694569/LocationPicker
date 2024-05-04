@@ -92,14 +92,9 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
     override func registerTableCell() {
         super.registerTableCell()
-        
-       // let StandardPostTableCell = UINib(nibName: "StandardPostTableCell", bundle: nil)
         self.tableView.register(StandardPostTableCell.self, forCellReuseIdentifier: "StandardPostTableCell")
-       // let StandardPostTitleTableCell = UINib(nibName: "StandardPostTitleTableCell", bundle: nil)
         self.tableView.register(StandardPostTitleTableCell.self, forCellReuseIdentifier: "StandardPostTitleTableCell")
-       // let StandardPostContentTableCell = UINib(nibName: "StandardPostContentTableCell", bundle: nil)
         self.tableView.register(StandardPostContentTableCell.self, forCellReuseIdentifier: "StandardPostContentTableCell")
-       // let StandardPostAllTextTableCell = UINib(nibName: "StandardPostAllTextTableCell", bundle: nil)
         self.tableView.register(StandardPostAllTextTableCell.self, forCellReuseIdentifier: "StandardPostAllTextTableCell")
     }
     
@@ -116,8 +111,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         controller.mediaAnimatorDelegate = self
         controller.currentMediaIndexPath = tableViewCurrentCell?.currentMediaIndexPath
         controller.panWholePageViewControllerwDelegate = self
-      //  controller.reactionDelegate = self
-       // controller.wholePageMediaDelegate = self
+        controller.reactionDelegate = tableViewCurrentCell
         navController.modalPresentationStyle = .overFullScreen
         navController.transitioningDelegate = self
         navController.delegate = self

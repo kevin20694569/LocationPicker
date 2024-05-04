@@ -8,9 +8,23 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     var presentForTabBarLessView : Bool! = false
     
+    let heartButtonTextAttr = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium), .foregroundColor : UIColor.white])
+    
     var canPostReaction : Bool!  {
         true
     }
+    
+    func updateEmojiButtonImage(targetTag: Int?) {
+        if let targetTag = targetTag {
+            let image = self.emojiTargetButtons[targetTag].configuration?.background.image
+            self.emojiButton.configuration?.background.image = image
+        } else {
+            self.emojiButton.configuration?.background.image = UIImage(systemName: "smiley")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        }
+    }
+    
+    
+    var rightStackView : UIStackView! = UIStackView()
     
     var postTitleTextWiderThanAllItemTitle : Bool = true
     
@@ -28,7 +42,6 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     deinit {
         self.cacelTimer()
-        
     }
     
     func recoverInteraction() {
@@ -52,8 +65,6 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     let symbolConfig : UIImage.SymbolConfiguration! = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
     
     var heartSymbolConfig : UIImage.SymbolConfiguration! = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
-    
-    var restaurantNameLabel  : UILabel! = UILabel()
     
     var locationimageView: UIImageView! = UIImageView()
     
@@ -180,7 +191,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         let cell = self.collectionView.cellForItem(at: self.currentMediaIndexPath)
         return cell
     }
-    var blurView : UIVisualEffectView!
+    var blurView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemChromeMaterialDark)
     
     var postTitleButtonBlurView : UIVisualEffectView!
     
@@ -261,20 +272,36 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        layout()
+        viewSetup()
+        rightStackViewSetup()
+        imageViewSetup()
+        pageControllSetup()
+        buttonSetup()
+        buttonItemSetup()
+        sliderSetup()
+        labelSetup()
+        gradeStackViewSetup()
+        postTextButtonSetup()
         collectionViewSetup()
+        collectionViewFlowSetup()
         layoutBottomBarView()
-        collectionViewFlowSet()
-        registerCells()
-        viewStyleSet()
         setGestureTarget()
-        layoutBlurView()
-        configurePostTitleView()
-        self.view.layoutIfNeeded()
+        initLayout()
         configureData(post: currentPost)
     }
     
+    func rightStackViewSetup() {
+        rightStackView.axis = .vertical
+        rightStackView.spacing = 2
+        rightStackView.alignment = .fill
+        rightStackView.distribution = .fillEqually
+        [heartButton, emojiButton, shareButton, collectButton, resizeToggleButton].forEach {
+            rightStackView.addArrangedSubview($0)
+        }
+    }
+    
     func collectionViewSetup() {
+        registerCells()
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .clear
@@ -322,6 +349,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         currentPost = post
         self.postID = currentPost.id
         self.currentMediaIndexPath = IndexPath(row:  currentPost.CurrentIndex, section: 0)
+        
         self.collectionView.scrollToItem(at: currentMediaIndexPath, at: .centeredHorizontally, animated: false)
         if let userImage = post.user?.image {
             self.userImageView.image = userImage
@@ -361,10 +389,9 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             ])
         }
         configureHeartImage()
-        
-        if let image = self.currentPost.selfReaction?.reactionType?.reactionImage {
-            self.currentEmojiTag = self.currentPost.selfReaction?.reactionType?.reactionTag
-            self.updateEmojiButtonImage(image: image)
+        self.currentEmojiTag = self.currentPost.selfReaction?.reactionType?.reactionTag
+        if let reactionTag = self.currentPost.selfReaction?.reactionType?.reactionTag {
+            self.updateEmojiButtonImage(targetTag: reactionTag)
         }
         self.collectionView.performBatchUpdates(nil, completion: { bool in
             self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
@@ -514,7 +541,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
     }
     
-    func configurePostTitleView() {
+    func postTextButtonSetup() {
         if postTitleButton.isHidden && itemTitleButton.isHidden {
             return
         }
@@ -534,7 +561,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
                 button.translatesAutoresizingMaskIntoConstraints = false
                 
                 button.configuration  = configuration
-                button.titleLabel?.font =  UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+                
                 button.scaleTargets?.append(contentsOf:  button.subviews)
             }
             
@@ -544,55 +571,41 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
     }
     
-    func viewStyleSet() {
+    func viewSetup() {
+        bottomBarView.backgroundColor = .black
         definesPresentationContext = true
-        
-        self.navigationController?.navigationBar.backgroundColor = .clear
         self.view.clipsToBounds = true
-
-        self.userImageView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func pageControllSetup() {
         self.pageControll.hidesForSinglePage = true
         pageControll.currentPageIndicatorTintColor = .tintOrange
         self.pageControll.isUserInteractionEnabled = false
     }
+    
+    
+    
     func navigationSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+        navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.backgroundColor = .clear
     }
     
-    func layoutBlurView() {
+    func initLayout() {
         
-        blurView = UIVisualEffectView(frame: self.collectionView.frame, style: .systemChromeMaterialDark)
-        self.view.insertSubview(blurView, at: 0)
-        blurView.isUserInteractionEnabled = true
-    }
-    
-    func layout() {
-        layoutImageView()
-        layoutButtonConfig()
-        layoutButtonItem()
-        layoutSlider()
-        layoutLabel()
-        gradeStackViewSetup()
         let bounds = self.view.bounds
+        self.view.addSubview(blurView)
         self.view.addSubview(collectionView)
         
         self.view.addSubview(bottomBarView)
-        bottomBarView.backgroundColor = .black
         self.view.addSubview(progressSlider)
         self.view.addSubview(postTitleButton)
         self.view.addSubview(itemTitleButton)
-        
-        //right
         self.view.addSubview(pageControll)
         self.view.addSubview(lengthLabel)
-        self.view.addSubview(resizeToggleButton)
-        self.view.addSubview(collectButton)
-        self.view.addSubview(shareButton)
-        self.view.addSubview(emojiButton)
         
-        self.view.addSubview(heartButton)
+        self.view.addSubview(rightStackView)
         
         // left
         self.view.addSubview(currentTimeLabel)
@@ -613,6 +626,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor),
             collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            blurView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            blurView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            blurView.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor),
+            blurView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
         ])
         NSLayoutConstraint.activate([
             progressSlider.bottomAnchor.constraint(equalTo: bottomBarView.topAnchor, constant: -1),
@@ -640,20 +657,9 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         ])
         
         NSLayoutConstraint.activate([
-            resizeToggleButton.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -8),
-            resizeToggleButton.widthAnchor.constraint(equalTo: resizeToggleButton.heightAnchor, multiplier: 1),
-            collectButton.bottomAnchor.constraint(equalTo: resizeToggleButton.topAnchor, constant: -16),
-            shareButton.bottomAnchor.constraint(equalTo: collectButton.topAnchor, constant: -16),
-            emojiButton.bottomAnchor.constraint(equalTo: shareButton.topAnchor, constant: -16),
-            
-            heartButton.bottomAnchor.constraint(equalTo: emojiButton.topAnchor, constant: -16),
-            heartButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 4),
-            emojiButton.centerXAnchor.constraint(equalTo: heartButton.centerXAnchor),
-            emojiButton.widthAnchor.constraint(equalTo: emojiButton.heightAnchor, multiplier: 1),
-            shareButton.centerXAnchor.constraint(equalTo: heartButton.centerXAnchor),
-            collectButton.centerXAnchor.constraint(equalTo: heartButton.centerXAnchor),
-            resizeToggleButton.centerXAnchor.constraint(equalTo: heartButton.centerXAnchor),
-            
+            rightStackView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: -8),
+            rightStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor, constant: -12),
+            rightStackView.widthAnchor.constraint(equalTo: userImageView.widthAnchor, multiplier: 0.95)
         ])
         
         
@@ -713,7 +719,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         gradeStackView.distribution = .equalCentering
     }
     
-    func layoutLabel() {
+    func labelSetup() {
         currentTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         currentTimeLabel.layer.opacity  = 0
         lengthLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
@@ -722,7 +728,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         gradeLabel.textColor = .white
     }
     
-    func layoutImageView() {
+    func imageViewSetup() {
         soundImageBlurView.layer.opacity = 0
         soundImageBlurView.backgroundColor = .clear
         soundImageBlurView.clipsToBounds = true
@@ -747,40 +753,57 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     
-    func layoutButtonConfig() {
+    func buttonSetup() {
         
         var resizeConfig = UIButton.Configuration.filled()
-        resizeConfig.image = UIImage(systemName: "arrow.down.forward.and.arrow.up.backward", withConfiguration: symbolConfig)
+        resizeConfig.background.image = UIImage(systemName: "arrow.down.forward.and.arrow.up.backward", withConfiguration: symbolConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        resizeConfig.background.imageContentMode = .scaleAspectFit
         resizeConfig.baseBackgroundColor = .clear
+        resizeConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         resizeToggleButton.configuration = resizeConfig
         
         var collectConfig = UIButton.Configuration.filled()
-        collectConfig.image = UIImage(systemName: "star", withConfiguration: symbolConfig)
+        collectConfig.background.image = UIImage(systemName: "star", withConfiguration: symbolConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        collectConfig.background.imageContentMode = .scaleAspectFit
         collectConfig.preferredSymbolConfigurationForImage = symbolConfig
         collectConfig.baseBackgroundColor = .clear
+        collectConfig.baseForegroundColor = .white
+        collectConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         collectButton.configuration = collectConfig
         collectButton.addTarget(self, action: #selector(presentAddCollectViewController( _ :)), for: .touchUpInside)
         
         var shareConfig = UIButton.Configuration.filled()
-        shareConfig.image = UIImage(systemName: "paperplane", withConfiguration: symbolConfig)
+        shareConfig.background.image = UIImage(systemName: "paperplane", withConfiguration: symbolConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        shareConfig.background.imageContentMode = .scaleAspectFit
+        shareConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         shareConfig.baseBackgroundColor = .clear
+        shareConfig.baseForegroundColor = .white
         shareButton.configuration = shareConfig
         
         
         var heartConfig = UIButton.Configuration.filled()
-        heartConfig.image = UIImage(systemName: "heart", withConfiguration: heartSymbolConfig)
+        heartConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration.init(font: .preferredFont(forTextStyle: .title1))
+        heartConfig.image = UIImage(systemName: "heart", withConfiguration: heartSymbolConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        heartConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+  
+        let attributedString = AttributedString("0", attributes: heartButtonTextAttr)
         heartConfig.preferredSymbolConfigurationForImage = heartSymbolConfig
         heartConfig.imagePlacement = .top
-        heartConfig.title = "0"
+        heartConfig.attributedTitle = attributedString
+        heartConfig.baseForegroundColor = .white
         heartConfig.baseBackgroundColor = .clear
         heartConfig.imagePadding = 4
         heartButton.configuration = heartConfig
         heartButton.addTarget(self, action: #selector( LikeToggle(_ :) ) , for: .touchUpInside)
         
         var emojiConfig = UIButton.Configuration.filled()
-        emojiConfig.image = UIImage(systemName: "smiley")?.scale(newWidth: self.view.bounds.width * 0.1).withTintColor(.white, renderingMode: .alwaysOriginal)
+        
+        emojiConfig.background.image = UIImage(systemName: "smiley")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        emojiConfig.background.imageContentMode = .scaleAspectFit
         emojiConfig.baseForegroundColor = .white
         emojiConfig.baseBackgroundColor = .clear
+        emojiConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        
         emojiButton.configuration = emojiConfig
         emojiButton.addTarget(self, action: #selector(emojiButtonTapped), for: .touchUpInside)
         
@@ -788,7 +811,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     
     
-    func layoutButtonItem() {
+    func buttonItemSetup() {
         let style = UIFont.TextStyle.title3
         let backImage = UIImage(systemName: "chevron.backward", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: style, weight: .bold)))
         dismissButtonItem.image = backImage
@@ -799,7 +822,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         self.navigationItem.backButtonTitle = nil
     }
     
-    func layoutSlider() {
+    func sliderSetup() {
         progressSlider.tintColor = .tintColor
         progressSlider.addTarget(self, action: #selector(changeCurrentTime( _ :)), for: .touchDragInside)
         progressSlider.addTarget(self, action: #selector(sliderTouchCompletion( _ :)), for: .touchUpInside)
@@ -814,14 +837,11 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     func getEmojiButtonConfig(image : UIImage) -> UIButton.Configuration {
         var config = UIButton.Configuration.filled()
         
-        config.image = image.scale(newWidth: self.view.bounds.width * 0.1)
+        config.background.image = image
+        config.background.imageContentMode = .scaleAspectFit
         config.baseForegroundColor = .white
         config.baseBackgroundColor = .clear
         return config
-    }
-    
-    func changeCurrentEmoji(emojiTag: Int?) {
-        return
     }
     
     func getFadedSubviews() -> [UIView]! {
@@ -872,7 +892,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         return self.currentPost.media.count
     }
     
-    func collectionViewFlowSet() {
+    func collectionViewFlowSetup() {
         let height = UIScreen.main.bounds.height - Constant.bottomBarViewHeight
         let flow = UICollectionViewFlowLayout()
         flow.scrollDirection = .horizontal
@@ -980,7 +1000,7 @@ extension WholePageMediaViewController {
             startEmojiExtendAnimation()
         } else {
         
-            reactionDelegate?.startReactionTargetAnimation(targetTag: currentEmojiTag)
+            reactionDelegate?.updateEmojiButtonImage(targetTag: currentEmojiTag)
             startReactionTargetAnimation(targetTag: currentEmojiTag)
         }
     }
@@ -1001,12 +1021,12 @@ extension WholePageMediaViewController {
         self.emojiButton.translatesAutoresizingMaskIntoConstraints = true
         self.emojiButton.isUserInteractionEnabled = false
         let bounds = view.bounds
-        let emojiImageviewFrameInView = self.emojiButton.imageView!.superview!.convert(self.emojiButton.imageView!.frame, to: view)
+        let emojiImageviewFrameInView = self.emojiButton.superview!.convert(self.emojiButton.frame, to: view)
         let blurViewWidth = bounds.width * 0.7
-        let scaleY = 1.8
+        let scaleY = 1.0
         let blurViewHeight = emojiImageviewFrameInView.height * scaleY
         let blurViewYOffset = emojiImageviewFrameInView.height * (scaleY - 1 )  / 2
-        let blurViewXOffset : CGFloat = 12
+        let blurViewXOffset : CGFloat = 16
         let frame = CGRect(origin: emojiImageviewFrameInView.origin, size: CGSize(width: blurViewWidth, height: blurViewHeight ))
         extendedEmojiBlurView = UIVisualEffectView(frame:  frame, style: .dark)
         guard let extendedEmojiBlurView = extendedEmojiBlurView else {
@@ -1018,7 +1038,7 @@ extension WholePageMediaViewController {
         extendedEmojiBlurView.alpha = 0
         
         let emojiImageViewCenterInView = self.emojiButton.superview!.convert(self.emojiButton.center, to: view)
-        extendedEmojiBlurView.center.y = emojiImageViewCenterInView.y
+        extendedEmojiBlurView.center = emojiImageViewCenterInView
         self.view.insertSubview(extendedEmojiBlurView, aboveSubview: self.collectionView)
         
         
@@ -1036,6 +1056,8 @@ extension WholePageMediaViewController {
             $0.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         }
         extendedEmojiBlurView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        let tag = self.currentPost.selfReaction?.reactionType?.reactionTag
+        let emojiButtonsSpacing = (targetBlurFrame.width -  blurViewXOffset * 2  - emojiImageviewFrameInView.width * 5)  / 4
         UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: .curveEaseOut, animations:  { [weak self] in
             guard let self = self else { return }
             extendedEmojiBlurView.transform = .identity
@@ -1044,13 +1066,12 @@ extension WholePageMediaViewController {
             extendedEmojiBlurView.layer.cornerRadius = 20
             
             emojiButton.alpha = 1
-            let tag = self.currentPost.selfReaction?.reactionType?.reactionTag
-            let emojiTargetWidth =  (blurViewWidth - ( blurViewXOffset * 2 )) / 5
+
             self.emojiTargetButtons.forEach() {
                 $0.transform = .identity
-                let x = targetBlurFrame.minX + blurViewXOffset + ( emojiTargetWidth * CGFloat($0.tag) )
+                let x = targetBlurFrame.minX + blurViewXOffset + ( (emojiImageviewFrameInView.width + emojiButtonsSpacing)  * CGFloat($0.tag) )
                 
-                $0.frame = CGRect(origin: .zero, size: CGSize(width: emojiTargetWidth, height: $0.frame.height))
+                $0.frame = CGRect(origin: CGPoint(x: x, y: emojiImageviewFrameInView.origin.y), size: CGSize(width: emojiImageviewFrameInView.width, height: emojiImageviewFrameInView.height))
                 $0.center.y = emojiImageViewCenterInView.y
                 $0.frame.origin.x = x
                 if tag != nil {
@@ -1074,14 +1095,6 @@ extension WholePageMediaViewController {
         }
     }
     
-    func updateEmojiButtonImage(image : UIImage?) {
-        if var config = self.emojiButton.configuration {
-            config.image = image?.scale(newWidth: self.view.bounds.width * 0.1)
-            self.emojiButton.configuration = config
-        }
-        
-    }
-    
     func startReactionTargetAnimation(targetTag : Int?) {
         
         guard let extendedEmojiView = extendedEmojiBlurView else {
@@ -1095,8 +1108,7 @@ extension WholePageMediaViewController {
             if currentEmojiTag != nil {
                 self.emojiButton.alpha = 0
             }
-            self.updateEmojiButtonImage(image: UIImage(systemName: "smiley")?.withTintColor(.white, renderingMode: .alwaysOriginal))
-            
+            self.updateEmojiButtonImage(targetTag: targetTag)
         }
         UIView.animate(withDuration: 0.25, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: .curveEaseOut, animations:  {
             self.emojiTargetButtons.forEach() {
@@ -1125,8 +1137,8 @@ extension WholePageMediaViewController {
             extendedEmojiView.alpha = 0
         }) { bool in
             self.emojiButton.alpha = 1
-            if let int = targetTag {
-                self.updateEmojiButtonImage(image: self.emojiTargetButtons[int].imageView?.image)
+            if let targetTag = targetTag {
+                self.updateEmojiButtonImage(targetTag: targetTag)
             }
             self.emojiTargetButtons.forEach() {
                 $0.removeFromSuperview()
@@ -1324,15 +1336,14 @@ extension WholePageMediaViewController {
         addPeriodicTimeObserver(indexPath: indexPath)
     }
     
+    
+    
     func configureHeartImage() {
-        
-        let config = UIImage.SymbolConfiguration.init(font: .preferredFont(forTextStyle: .title1))
-        heartButton.setPreferredSymbolConfiguration(config, forImageIn: .application)
-        
         let heartImage = currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         heartButton.configuration?.image = heartImage
-        
-        self.heartButton.setTitle( String(currentPost.likedTotal), for: .normal )
+        let attributedString = AttributedString(String(currentPost.likedTotal), attributes: self.heartButtonTextAttr)
+        heartButton.configuration?.attributedTitle = attributedString
+       
     }
 }
 
@@ -1462,19 +1473,19 @@ extension WholePageMediaViewController {
         
     }
     func setResizeButtonImageToggle(indexPath : IndexPath) {
-        let zoomInImage =  UIImage(systemName: "arrow.down.right.and.arrow.up.left", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)) )
-        let zoomOutImage =  UIImage(systemName: "arrow.up.left.and.arrow.down.right", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)) )
+        let zoomInImage =  UIImage(systemName: "arrow.down.right.and.arrow.up.left", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)) )?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        let zoomOutImage =  UIImage(systemName: "arrow.up.left.and.arrow.down.right", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)) )?.withTintColor(.white, renderingMode: .alwaysOriginal)
         if let cell = collectionView.cellForItem(at: indexPath) as? WholeImageViewCollectionCell {
             if cell.imageView.contentMode == .scaleAspectFill {
-                self.resizeToggleButton.setImage( zoomInImage, for: .normal)
+                resizeToggleButton.configuration?.background.image = zoomInImage
             } else {
-                self.resizeToggleButton.setImage( zoomOutImage, for: .normal)
+                resizeToggleButton.configuration?.background.image = zoomOutImage
             }
-        } else  if let cell = collectionView.cellForItem(at: indexPath) as? WholePlayerLayerCollectionCell  {
+        } else if let cell = collectionView.cellForItem(at: indexPath) as? WholePlayerLayerCollectionCell  {
             if cell.playerLayer.videoGravity == .resizeAspectFill {
-                self.resizeToggleButton.setImage( zoomInImage  , for: .normal)
+                resizeToggleButton.configuration?.background.image = zoomInImage
             } else {
-                self.resizeToggleButton.setImage(zoomOutImage , for: .normal)
+                resizeToggleButton.configuration?.background.image = zoomOutImage
             }
         }
     }
@@ -1742,11 +1753,7 @@ extension WholePageMediaViewController {
     }
     
     func setHeartImage() {
-        if currentPost.liked {
-            self.heartButton.setImage(UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal), for: .normal)
-        } else {
-            self.heartButton.setImage(UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
-        }
+        self.heartButton.configuration?.image = currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
     }
     
     
