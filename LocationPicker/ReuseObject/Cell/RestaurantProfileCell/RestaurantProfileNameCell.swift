@@ -110,13 +110,14 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
     
     
     func fillStar(grade : Double) {
+
         let integerPart = Int(grade)
-        
         let decimalPart = grade - Double(integerPart)
-        
-        for index in 0...integerPart - 1 {
-            let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
-            starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+        if integerPart > 0 {
+            for index in 0...integerPart - 1 {
+                let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
+                starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
+            }
         }
         if grade == 5 {
             return

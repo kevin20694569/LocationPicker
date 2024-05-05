@@ -146,7 +146,7 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         }
         return nil
     }
-    var titleButton : UIButton!
+    var titleButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var currentTableViewIndexPath : IndexPath! = IndexPath(row: 0, section: 0)
     
@@ -154,8 +154,9 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         super.viewDidLoad()
         initLayout()
         registerTableCell()
+        tableViewSetup()
         setupAudioSession()
-        layoutTitleButton()
+        titleButtonSetup()
         initRefreshControl()
         viewSetup()
         barButtonItemSetup()
@@ -253,12 +254,13 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
                 self.posts.insert(contentsOf: newposts, at: self.posts.count)
                 if currentTableViewIndexPath != IndexPath(row: 0, section: 0) {
                     currentTableViewIndexPath = IndexPath(row: 0, section: 0)
-                    
-                    if self.posts.first != nil {
-                        self.tableView.scrollToRow(at: currentTableViewIndexPath, at: .none, animated: true)
+                    DispatchQueue.main.async {
+                        if self.posts.first != nil {
+                            self.tableView.scrollToRow(at: self.currentTableViewIndexPath, at: .top, animated: true)
+                        }
                     }
                 }
-                tableView.reloadSections([0], with: .fade)
+                tableView.reloadSections([0], with: .automatic)
             } catch {
                 tableView.reloadSections([0], with: .fade)
                 throw error
@@ -308,9 +310,11 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
         return
         
     }
-    func layoutTitleButton() {
-        titleButton = ZoomAnimatedButton(type: .system)
-        titleButton.frame.size = CGSize(width: self.view.bounds.width * 0.4, height: titleButton.bounds.height)
+    func titleButtonSetup() {
+        let screenBounds = UIScreen.main.bounds
+        NSLayoutConstraint.activate([
+            titleButton.widthAnchor.constraint(equalToConstant: screenBounds.width * 0.65)
+        ])
         navigationItem.titleView = titleButton
         titleButton.clipsToBounds = true
         setTitleText(text: self.postsStatus.titleString, subText: self.postsStatus.subTitleString)
@@ -438,14 +442,18 @@ class MainPostTableViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func viewSetup() {
+        navigationItem.backButtonTitle = ""
+    }
+    
+    func tableViewSetup() {
         tableView.dataSource = self
         tableView.delegate = self
+        
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
         tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.delaysContentTouches = false
-        navigationItem.backButtonTitle = ""
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
     }
     

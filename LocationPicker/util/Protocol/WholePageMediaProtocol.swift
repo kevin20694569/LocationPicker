@@ -7,6 +7,6 @@ protocol PanWholePageViewControllerDelegate : UIViewController {
 
 protocol PostDetailSheetViewControllerDelegate : AnyObject {
     func recoverInteraction()
-    func setHeartImage()
+    func updateHeartButtonStatus()
     func presentShareViewController(_ gesture : UITapGestureRecognizer)
 }

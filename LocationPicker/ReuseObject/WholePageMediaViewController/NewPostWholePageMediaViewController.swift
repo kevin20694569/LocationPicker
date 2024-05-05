@@ -10,16 +10,18 @@ class NewPostWholePageMediaViewController: WholePageMediaViewController {
         super.viewDidLoad()
         self.userImageView.isHidden = true
         self.locationimageView.isHidden = true
-        self.heartButton.isHidden = true
-        self.emojiButton.isHidden = true
-        self.shareButton.isHidden = true
-        self.collectButton.isHidden = true
-        
+        [heartButton, emojiButton, shareButton, collectButton].forEach() {
+            $0?.layer.opacity = 0
+            $0?.isUserInteractionEnabled = false
+        }
+
+        //rightStackView.backgroundColor = .red
     }
 
     override func initLayout() {
 
         super.initLayout()
+    
         for con in self.view.constraints {
             if con.identifier ==  "soundImageBottomAnchor" {
                 self.view.removeConstraint(con)
@@ -27,8 +29,10 @@ class NewPostWholePageMediaViewController: WholePageMediaViewController {
             }
         }
         NSLayoutConstraint.activate([
+            rightStackView.heightAnchor.constraint(greaterThanOrEqualTo: rightStackView.widthAnchor, multiplier: 1),
             soundImageView.centerYAnchor.constraint(equalTo: resizeToggleButton.centerYAnchor   )
         ])
+        self.view.layoutIfNeeded()
         
     }
     

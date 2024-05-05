@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource , UIViewControllerTransitioningDelegate, UIEditMenuInteractionDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate,  WholePageCollectionViewAnimatorDelegate, PostDetailSheetViewControllerDelegate, EmojiReactionObject{
     
-    var currentPost : Post!
+    var currentPost : Post! = Post.defaultExample
     
     var postID : String!
     
@@ -85,15 +85,19 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     var lengthLabel : UILabel! = UILabel()
     
+    var lengthLabelBlurView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemChromeMaterialDark)
+    
     var currentTimeLabel : UILabel!  = UILabel()
+    
+    var currentTimeLabelBlurView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemChromeMaterialDark)
     
     var gradeStackView : UIStackView! = UIStackView()
     
     var gradeLabel : UILabel! = UILabel()
-    
-    var resizeToggleButton : UIButton! = UIButton()
-    
+
     var userImageView: UIImageView! = UIImageView()
+    
+    var resizeToggleButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var collectButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
@@ -135,9 +139,9 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     var currentEmojiTag : Int?
     
-    var buttonHiddenStatus : ButtonsStatus! = .bothActive
+    var buttonHiddenStatus : PostTextButtonStatus! = .bothActive
     
-    enum ButtonsStatus {
+    enum PostTextButtonStatus {
         case bothActive, onlyPresentTitleButton, onlyPresentItemTitleButton, bothHidden
     }
     
@@ -272,21 +276,22 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        layoutBottomBarView()
+        collectionViewSetup()
         viewSetup()
+        gradeStackViewSetup()
         rightStackViewSetup()
+        initLayout()
         imageViewSetup()
         pageControllSetup()
         buttonSetup()
         buttonItemSetup()
         sliderSetup()
         labelSetup()
-        gradeStackViewSetup()
+        timeLabelSetup()
         postTextButtonSetup()
-        collectionViewSetup()
         collectionViewFlowSetup()
-        layoutBottomBarView()
         setGestureTarget()
-        initLayout()
         configureData(post: currentPost)
     }
     
@@ -298,6 +303,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         [heartButton, emojiButton, shareButton, collectButton, resizeToggleButton].forEach {
             rightStackView.addArrangedSubview($0)
         }
+
     }
     
     func collectionViewSetup() {
@@ -322,11 +328,11 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
         super.viewDidAppear(animated)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = false
-
         self.view.backgroundColor = .clear
-        lengthLabel.layer.opacity = 0
-        currentTimeLabel.layer.opacity  = 0
         
+       /* self.getPlayerSubviews().forEach() {
+            $0.layer.opacity = 0
+        }*/
         self.navigationController?.delegate = self
         self.navigationController?.transitioningDelegate = self
         self.view.layer.cornerRadius = Constant.standardCornerRadius
@@ -334,9 +340,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         gestureStatusToggle(isTopViewController: true)
         self.addPeriodicTimeObserver(indexPath: currentMediaIndexPath)
         
-        [postTitleButton, itemTitleButton].forEach() {
-            $0.addTarget(self, action: #selector(presentPostContent ( _ : )), for: .touchUpInside)
-        }
+
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -388,7 +392,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
                 self.userImageView.centerYAnchor.constraint(equalTo: self.resizeToggleButton.centerYAnchor)
             ])
         }
-        configureHeartImage()
+        updateHeartButtonStatus()
         self.currentEmojiTag = self.currentPost.selfReaction?.reactionType?.reactionTag
         if let reactionTag = self.currentPost.selfReaction?.reactionType?.reactionTag {
             self.updateEmojiButtonImage(targetTag: reactionTag)
@@ -545,6 +549,9 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         if postTitleButton.isHidden && itemTitleButton.isHidden {
             return
         }
+        [postTitleButton, itemTitleButton].forEach() {
+            $0.addTarget(self, action: #selector(presentPostContent ( _ : )), for: .touchUpInside)
+        }
         
         [postTitleButton, itemTitleButton].forEach { button  in
             if let button = button  {
@@ -583,8 +590,6 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         self.pageControll.isUserInteractionEnabled = false
     }
     
-    
-    
     func navigationSetup() {
         navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
         navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
@@ -597,17 +602,20 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         let bounds = self.view.bounds
         self.view.addSubview(blurView)
         self.view.addSubview(collectionView)
+
         
         self.view.addSubview(bottomBarView)
         self.view.addSubview(progressSlider)
         self.view.addSubview(postTitleButton)
         self.view.addSubview(itemTitleButton)
         self.view.addSubview(pageControll)
+        self.view.addSubview(lengthLabelBlurView)
         self.view.addSubview(lengthLabel)
         
         self.view.addSubview(rightStackView)
         
         // left
+        self.view.addSubview(currentTimeLabelBlurView)
         self.view.addSubview(currentTimeLabel)
         self.view.addSubview(locationimageView)
         self.view.addSubview(userImageView)
@@ -659,31 +667,47 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         NSLayoutConstraint.activate([
             rightStackView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: -8),
             rightStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor, constant: -12),
-            rightStackView.widthAnchor.constraint(equalTo: userImageView.widthAnchor, multiplier: 0.95)
+            rightStackView.widthAnchor.constraint(equalTo: collectionView.widthAnchor, multiplier: 0.1)
         ])
         
         
         NSLayoutConstraint.activate([
+            currentTimeLabelBlurView.centerXAnchor.constraint(equalTo: currentTimeLabel.centerXAnchor),
+            currentTimeLabelBlurView.centerYAnchor.constraint(equalTo: currentTimeLabel.centerYAnchor),
+            currentTimeLabelBlurView.widthAnchor.constraint(equalTo: currentTimeLabel.widthAnchor, multiplier: 1.5),
+            currentTimeLabelBlurView.heightAnchor.constraint(equalTo: currentTimeLabel.heightAnchor, multiplier: 1.5),
+            
             currentTimeLabel.bottomAnchor.constraint(equalTo: self.bottomBarView.topAnchor, constant: -16),
-            currentTimeLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
-            lengthLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16),
+            currentTimeLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
+            
+            lengthLabelBlurView.centerXAnchor.constraint(equalTo: lengthLabel.centerXAnchor),
+            lengthLabelBlurView.centerYAnchor.constraint(equalTo: lengthLabel.centerYAnchor),
+            lengthLabelBlurView.widthAnchor.constraint(equalTo: lengthLabel.widthAnchor, multiplier: 1.5),
+            lengthLabelBlurView.heightAnchor.constraint(equalTo: lengthLabel.heightAnchor, multiplier: 1.5),
+            
+            lengthLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             lengthLabel.centerYAnchor.constraint(equalTo: currentTimeLabel.centerYAnchor),
+            
             locationimageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
             locationimageView.bottomAnchor.constraint(equalTo: self.userImageView.topAnchor, constant: -16),
             
-            locationimageView.widthAnchor.constraint(equalToConstant: 40),
-            userImageView.widthAnchor.constraint(equalToConstant: 40),
+            locationimageView.widthAnchor.constraint(equalTo: userImageView.widthAnchor),
             
             locationimageView.centerXAnchor.constraint(equalTo: gradeStackView.centerXAnchor),
             locationimageView.heightAnchor.constraint(equalTo: locationimageView.widthAnchor, multiplier: 1),
-            userImageView.centerXAnchor.constraint(equalTo: gradeStackView.centerXAnchor),
             
-            userImageView.bottomAnchor.constraint(equalTo: gradeStackView.topAnchor, constant: -20),
+            userImageView.widthAnchor.constraint(equalTo: collectionView.widthAnchor, multiplier: 0.1),
             userImageView.heightAnchor.constraint(equalTo: userImageView.widthAnchor, multiplier: 1),
+            userImageView.centerXAnchor.constraint(equalTo: gradeStackView.centerXAnchor),
+            userImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
+
+            userImageView.bottomAnchor.constraint(equalTo: gradeStackView.topAnchor, constant: -20),
+
             
             gradeStackView.centerYAnchor.constraint(equalTo: self.resizeToggleButton.centerYAnchor),
+            
             gradeStackView.centerXAnchor.constraint(equalTo: userImageView.centerXAnchor, constant: 30),
-            userImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
+
             
             soundImageView.widthAnchor.constraint(equalTo: locationimageView.widthAnchor, multiplier: 1.8),
             soundImageView.heightAnchor.constraint(equalToConstant: self.view.bounds.width * 0.06),
@@ -704,6 +728,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         
         self.view.layoutIfNeeded()
         soundImageBlurView.layer.cornerRadius = soundImageBlurView.bounds.height / 2
+
         
     }
     
@@ -720,12 +745,21 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func labelSetup() {
-        currentTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
-        currentTimeLabel.layer.opacity  = 0
-        lengthLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
-        lengthLabel.layer.opacity = 0
         gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         gradeLabel.textColor = .white
+    }
+    
+    func timeLabelSetup() {
+        [currentTimeLabelBlurView, lengthLabelBlurView].forEach() {
+            $0.clipsToBounds = true
+            $0.layer.cornerRadius = 10
+            $0.layer.opacity = 0
+        }
+        [currentTimeLabel, lengthLabel].forEach() {
+            $0.textColor = .white
+            $0.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+            $0.layer.opacity = 0
+        }
     }
     
     func imageViewSetup() {
@@ -736,6 +770,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         soundImageView.tintColor = .white
         soundImageView.clipsToBounds = true
         soundImageView.layer.opacity = 0
+        
         locationimageView.contentMode = .scaleAspectFill
         locationimageView.isUserInteractionEnabled = true
         locationimageView.clipsToBounds = true
@@ -751,6 +786,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
         let userImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ :)))
         userImageView.addGestureRecognizer(userImageViewGesture)
     }
+    
+    
+    
+    
     
     
     func buttonSetup() {
@@ -846,7 +885,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     
     func getFadedSubviews() -> [UIView]! {
         let array = view.subviews.filter { view in
-            if view is UICollectionView || view == bottomBarView || view == self.blurView || self.soundImageViews.contains(view) {
+            if view is UICollectionView || view == bottomBarView || view == self.blurView || self.soundImageViews.contains(view) || self.getPlayerSubviews().contains(view)  {
                 return false
             }
             return true
@@ -856,7 +895,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
     }
     
     func getPlayerSubviews() -> [UIView] {
-        return [currentTimeLabel, lengthLabel, progressSlider]
+        return [currentTimeLabel, currentTimeLabelBlurView, lengthLabel,  lengthLabelBlurView, progressSlider]
     }
     func getFadeInSubviews() -> [UIView?] {
         return []
@@ -1318,11 +1357,16 @@ extension WholePageMediaViewController {
             self.progressSlider.isHidden = true
             self.currentTimeLabel.isHidden = true
             self.lengthLabel.isHidden = true
+            self.currentTimeLabelBlurView.isHidden = true
+            self.lengthLabelBlurView.isHidden = true
         } else {
             self.mutedAllgesture.isEnabled = true
             self.progressSlider.isHidden = false
             self.currentTimeLabel.isHidden = false
+            self.currentTimeLabelBlurView.isHidden = false
+            self.lengthLabelBlurView.isHidden = false
             self.lengthLabel.isHidden = false
+            
         }
     }
     
@@ -1338,12 +1382,11 @@ extension WholePageMediaViewController {
     
     
     
-    func configureHeartImage() {
+    func updateHeartButtonStatus() {
         let heartImage = currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         heartButton.configuration?.image = heartImage
         let attributedString = AttributedString(String(currentPost.likedTotal), attributes: self.heartButtonTextAttr)
         heartButton.configuration?.attributedTitle = attributedString
-       
     }
 }
 
@@ -1399,7 +1442,7 @@ extension WholePageMediaViewController {
     
     
     @objc func presentShareViewController(_ gesture : UITapGestureRecognizer) {
-        let viewController =  SharePostViewController(post: currentPost)
+        let viewController = SharePostViewController(post: currentPost)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         self.present(viewController, animated: true)
@@ -1736,40 +1779,28 @@ extension WholePageMediaViewController {
     
     @objc func LikeToggle(_ button: UIButton) {
         self.currentPost.liked.toggle()
-        setHeartTotal()
-        setHeartImage()
-        if canPostReaction {
-            currentPost.initNewReaction(reactionTag : nil, liked : currentPost.liked )
-        }
-    }
-    
-    func setHeartTotal() {
         if currentPost.liked {
             currentPost.likedTotal += 1
         } else {
             currentPost.likedTotal -= 1
         }
-        heartButton.setTitle(String(currentPost.likedTotal), for: .normal)
+        self.updateHeartButtonStatus()
+        if canPostReaction {
+            currentPost.initNewReaction(reactionTag : nil, liked : currentPost.liked )
+        }
     }
-    
-    func setHeartImage() {
-        self.heartButton.configuration?.image = currentPost.liked ? UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) : UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-    }
-    
-    
-    
+
     @objc func tapToCloseExtendedView() {
         startReactionTargetAnimation(targetTag: currentEmojiTag)
     }
-    
     
     @objc func DoubleLike() {
         let lastLike = currentPost.liked
         self.currentPost.liked = true
         if currentPost.liked != lastLike {
-            setHeartTotal()
+            currentPost.likedTotal += 1
+            self.updateHeartButtonStatus()
         }
-        setHeartImage()
         if canPostReaction {
             currentPost.initNewReaction(reactionTag : nil, liked : currentPost.liked )
         }

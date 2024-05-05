@@ -19,7 +19,7 @@ struct Constant {
             }
         }
     }
-    static let user_id : String = account.a110070026.user_id
+    static let user_id : String = account.kevin20694569.user_id
     
     static let GridPostCellRadius : CGFloat = 16
     

@@ -32,13 +32,6 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
     }
     
     override func viewDidLoad() {
-        initLayout()
-        layoutBottomBarView()
-        collectionViewFlowSetup()
-        registerCells()
-        viewSetup()
-        setGestureTarget()
-        postTextButtonSetup()
         Task {
             do {
                 let post = try await PostManager.shared.getPostDetail(post_id: self.postID, request_user_id: Constant.user_id)
@@ -52,6 +45,29 @@ class EmptyWholePageMediaViewController : WholePageMediaViewController {
                 print(error)
             }
         }
+        layoutBottomBarView()
+        collectionViewSetup()
+        viewSetup()
+        gradeStackViewSetup()
+        rightStackViewSetup()
+        initLayout()
+        imageViewSetup()
+        pageControllSetup()
+        buttonSetup()
+        buttonItemSetup()
+        sliderSetup()
+        labelSetup()
+        timeLabelSetup()
+        postTextButtonSetup()
+        collectionViewFlowSetup()
+        setGestureTarget()
+    }
+    
+    override func collectionViewSetup() {
+        registerCells()
+        collectionView.backgroundColor = .clear
+        self.collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
     }
     
     override func recoverInteraction() {

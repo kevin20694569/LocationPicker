@@ -69,9 +69,6 @@
 		233BC73B2B1AE22400844844 /* MainUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233BC73A2B1AE22400844844 /* MainUserProfileViewController.swift */; };
 		233BC73D2B1AE3E200844844 /* ProfileMainCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233BC73C2B1AE3E200844844 /* ProfileMainCell.swift */; };
 		233CC5FA2B67D15B0012238C /* DismissPostTableViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233CC5F92B67D15B0012238C /* DismissPostTableViewAnimator.swift */; };
-		233D30102B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 233D300F2B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib */; };
-		233D30122B8DF29700FDA0B4 /* StandardPostContentTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 233D30112B8DF29700FDA0B4 /* StandardPostContentTableCell.xib */; };
-		233D30142B8DF2AE00FDA0B4 /* StandardPostAllTextTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 233D30132B8DF2AE00FDA0B4 /* StandardPostAllTextTableCell.xib */; };
 		233E2DA62B6541E800D9951F /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233E2DA52B6541E800D9951F /* MainTabBarViewController.swift */; };
 		233EB5642BBD20A000E415D6 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5632BBD20A000E415D6 /* MessageManager.swift */; };
 		233EB5662BBDB53000E415D6 /* FriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233EB5652BBDB53000E415D6 /* FriendViewController.swift */; };
@@ -82,7 +79,6 @@
 		235A13CE2A53533A004156D3 /* LocationPicker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 235A13CC2A53533A004156D3 /* LocationPicker.xcdatamodeld */; };
 		235A13D02A53533A004156D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 235A13CF2A53533A004156D3 /* Assets.xcassets */; };
 		235A13D32A53533A004156D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 235A13D12A53533A004156D3 /* LaunchScreen.storyboard */; };
-		236B95E52B87764200E63999 /* StandardPostTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 236B95E42B87764200E63999 /* StandardPostTableCell.xib */; };
 		236B95E72B8777C900E63999 /* StandardPostTitleTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B95E62B8777C900E63999 /* StandardPostTitleTableCell.swift */; };
 		23749C212B0F0047007241A8 /* FriendRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C202B0F0047007241A8 /* FriendRequestViewController.swift */; };
 		23749C232B0F018C007241A8 /* FriendRequestsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C222B0F018C007241A8 /* FriendRequestsTableViewCell.swift */; };
@@ -91,7 +87,6 @@
 		23749C2D2B0F7C0B007241A8 /* ChatRoomPreviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C2C2B0F7C0B007241A8 /* ChatRoomPreviewManager.swift */; };
 		23749C2F2B0F7CA7007241A8 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C2E2B0F7CA7007241A8 /* ChatRoom.swift */; };
 		23749C312B0F90A8007241A8 /* UserFriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23749C302B0F90A8007241A8 /* UserFriendRequest.swift */; };
-		23753AD92B8AF80700168ED8 /* MainPostTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23753AD82B8AF80700168ED8 /* MainPostTableCell.xib */; };
 		237BE2CB2B9B18FA00F3B06D /* OpeningTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BE2CA2B9B18FA00F3B06D /* OpeningTimeView.swift */; };
 		237CD14B2B5EBAD900644BDA /* UserProfilePostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237CD14A2B5EBAD900644BDA /* UserProfilePostTableViewController.swift */; };
 		239A00642B2C4FBF00803B96 /* PostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239A00632B2C4FBF00803B96 /* PostTableViewController.swift */; };
@@ -250,9 +245,6 @@
 		233BC73A2B1AE22400844844 /* MainUserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUserProfileViewController.swift; sourceTree = "<group>"; };
 		233BC73C2B1AE3E200844844 /* ProfileMainCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileMainCell.swift; path = ../ProfileMainCell.swift; sourceTree = "<group>"; };
 		233CC5F92B67D15B0012238C /* DismissPostTableViewAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissPostTableViewAnimator.swift; sourceTree = "<group>"; };
-		233D300F2B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandardPostTitleTableCell.xib; sourceTree = "<group>"; };
-		233D30112B8DF29700FDA0B4 /* StandardPostContentTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandardPostContentTableCell.xib; sourceTree = "<group>"; };
-		233D30132B8DF2AE00FDA0B4 /* StandardPostAllTextTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandardPostAllTextTableCell.xib; sourceTree = "<group>"; };
 		233E1CFB2AED05E6000602A5 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		233E2DA52B6541E800D9951F /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		233EB5632BBD20A000E415D6 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
@@ -266,7 +258,6 @@
 		235A13CF2A53533A004156D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		235A13D22A53533A004156D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		235A13D42A53533A004156D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		236B95E42B87764200E63999 /* StandardPostTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandardPostTableCell.xib; sourceTree = "<group>"; };
 		236B95E62B8777C900E63999 /* StandardPostTitleTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardPostTitleTableCell.swift; sourceTree = "<group>"; };
 		23749C202B0F0047007241A8 /* FriendRequestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestViewController.swift; sourceTree = "<group>"; };
 		23749C222B0F018C007241A8 /* FriendRequestsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestsTableViewCell.swift; sourceTree = "<group>"; };
@@ -275,7 +266,6 @@
 		23749C2C2B0F7C0B007241A8 /* ChatRoomPreviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomPreviewManager.swift; sourceTree = "<group>"; };
 		23749C2E2B0F7CA7007241A8 /* ChatRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
 		23749C302B0F90A8007241A8 /* UserFriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFriendRequest.swift; sourceTree = "<group>"; };
-		23753AD82B8AF80700168ED8 /* MainPostTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainPostTableCell.xib; sourceTree = "<group>"; };
 		237BE2CA2B9B18FA00F3B06D /* OpeningTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningTimeView.swift; sourceTree = "<group>"; };
 		237CD14A2B5EBAD900644BDA /* UserProfilePostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfilePostTableViewController.swift; sourceTree = "<group>"; };
 		239A00632B2C4FBF00803B96 /* PostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewController.swift; sourceTree = "<group>"; };
@@ -691,29 +681,8 @@
 				231B3FD62B5CE28300DB4132 /* LoginViewController.storyboard */,
 				235A13D12A53533A004156D3 /* LaunchScreen.storyboard */,
 				23DCB7062B94B13500D97BF2 /* RestaurantColllectionCell */,
-				236B95EE2B88463400E63999 /* MainTablePostCell */,
 			);
 			path = Storyboard;
-			sourceTree = "<group>";
-		};
-		236B95EE2B88463400E63999 /* MainTablePostCell */ = {
-			isa = PBXGroup;
-			children = (
-				23753AD82B8AF80700168ED8 /* MainPostTableCell.xib */,
-				236B95EF2B8872F700E63999 /* Standard */,
-			);
-			path = MainTablePostCell;
-			sourceTree = "<group>";
-		};
-		236B95EF2B8872F700E63999 /* Standard */ = {
-			isa = PBXGroup;
-			children = (
-				236B95E42B87764200E63999 /* StandardPostTableCell.xib */,
-				233D300F2B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib */,
-				233D30112B8DF29700FDA0B4 /* StandardPostContentTableCell.xib */,
-				233D30132B8DF2AE00FDA0B4 /* StandardPostAllTextTableCell.xib */,
-			);
-			path = Standard;
 			sourceTree = "<group>";
 		};
 		23749C292B0F333A007241A8 /* APIManager */ = {
@@ -799,11 +768,11 @@
 		23B7FE092AEA3B050053EC79 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				232971002B21EE70000C35D9 /* MainPostCell */,
 				23F21A8A2BCBF2B5000E1F98 /* EditUserProfileCell */,
 				23881A492B4D3D35008BE6AA /* CommonCell */,
 				23F085DB2BBE5A4700A024D6 /* MessageCell */,
 				23DCB70D2B94C88900D97BF2 /* RestaurantProfileCell */,
-				232971002B21EE70000C35D9 /* MainPostCell */,
 				23F085DF2BBE5B4C00A024D6 /* UploadMediaDetailCell */,
 				232971012B21EF4C000C35D9 /* MediaCell */,
 				23BD13D82B18AD0A00F80B25 /* ProfileCell */,
@@ -1188,14 +1157,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				239A00672B2C50AA00803B96 /* ReuseViewController.storyboard in Resources */,
-				23753AD92B8AF80700168ED8 /* MainPostTableCell.xib in Resources */,
-				236B95E52B87764200E63999 /* StandardPostTableCell.xib in Resources */,
 				230D08202BB2DB3600FE2C5A /* ChIJzX6ag3qVbjQRrXIrYvoydGk_1.jpg in Resources */,
 				230D083A2BB2E13000FE2C5A /* ChIJ0zybGjupQjQRyNW1QbZilHA_1.jpg in Resources */,
 				230D08342BB2E13000FE2C5A /* ChIJX7_HEwCpQjQRpQGoSKkxVWE_1.jpg in Resources */,
 				230D08212BB2DB3600FE2C5A /* ChIJzX6ag3qVbjQRrXIrYvoydGk_4.jpg in Resources */,
 				230D081E2BB2DB3600FE2C5A /* ChIJzX6ag3qVbjQRrXIrYvoydGk_5.jpg in Resources */,
-				233D30142B8DF2AE00FDA0B4 /* StandardPostAllTextTableCell.xib in Resources */,
 				235A13D32A53533A004156D3 /* LaunchScreen.storyboard in Resources */,
 				23DCB7082B94B16800D97BF2 /* RestaurantProfileNameCell.xib in Resources */,
 				230D08392BB2E13000FE2C5A /* ChIJe2XGItM1BhQRtMUBxFrKia4_1.jpg in Resources */,
@@ -1204,7 +1170,6 @@
 				230D08002BB2CBEA00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_2.jpg in Resources */,
 				230D08022BB2CBEA00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_5.jpg in Resources */,
 				230D08382BB2E13000FE2C5A /* ChIJIeU7y5QjaDQR63dFe9KvspU_1.jpg in Resources */,
-				233D30122B8DF29700FDA0B4 /* StandardPostContentTableCell.xib in Resources */,
 				230D08362BB2E13000FE2C5A /* ChIJiyGm7cupQjQRvh4ipZERQcw_1.jpg in Resources */,
 				230D080B2BB2D51B00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_1.mp4 in Resources */,
 				235A13D02A53533A004156D3 /* Assets.xcassets in Resources */,
@@ -1215,7 +1180,6 @@
 				23DD48822AE98DC300C63821 /* ChatView.storyboard in Resources */,
 				234BF4C62BD823D20012CF6A /* GoogleService-Info.plist in Resources */,
 				231B3FD72B5CE28300DB4132 /* LoginViewController.storyboard in Resources */,
-				233D30102B8DF28A00FDA0B4 /* StandardPostTitleTableCell.xib in Resources */,
 				230D08012BB2CBEA00FE2C5A /* ChIJcZwPjtGdbjQRi5Crxhf2cyk_3.jpg in Resources */,
 				23AAB9A82B65634C00D0F22F /* Main.storyboard in Resources */,
 				230D07E42BB1CB9E00FE2C5A /* APIKey.plist in Resources */,

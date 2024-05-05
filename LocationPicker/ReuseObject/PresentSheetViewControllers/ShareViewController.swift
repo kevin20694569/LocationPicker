@@ -35,7 +35,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
     
     var searchBar : UISearchBar! = UISearchBar()
     
-    var friends : [Friend]! = [] //= User.examples
+    var friends : [Friend]! = []
     
     var bottomView : UIView! = UIView()
     
@@ -44,6 +44,17 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
     
     func registerCells() {
         self.collectionView.register(SharedToFriendCollectionViewCell.self, forCellWithReuseIdentifier: "SharedToFriendCollectionViewCell")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Task {
+            await loadFriends(user_id: Constant.user_id, date: "")
+        }
+        registerCells()
+        layout()
+        layoutShareButton()
+        setCollectionViewStyle()
     }
     
     override func layout() {
@@ -113,16 +124,7 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        Task {
-            await loadFriends(user_id: Constant.user_id, date: "")
-        }
-        registerCells()
-        layout()
-        layoutShareButton()
-        setCollectionViewStyle()
-    }
+
     
     func setCollectionViewStyle() {
         collectionView.delegate = self
@@ -176,11 +178,6 @@ extension ShareViewController {
         }
         if indexPath.row == self.friends.count - 6 {
             isLoadingFriends = true
-            
-            Task {
-                
-                
-            }
         }
     }
 }

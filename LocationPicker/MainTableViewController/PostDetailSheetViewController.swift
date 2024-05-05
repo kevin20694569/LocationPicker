@@ -31,7 +31,7 @@ class PostDetailSheetViewController: UIViewController, UITableViewDelegate, UITa
         } else {
             heartButton.setImage(UIImage(systemName: "heart")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
         }
-        postDetailSheetViewControllerDelegate?.setHeartImage()
+        postDetailSheetViewControllerDelegate?.updateHeartButtonStatus()
     }
     
     @IBOutlet var titleSlideView : UIView! { didSet {

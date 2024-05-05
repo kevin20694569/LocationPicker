@@ -72,7 +72,7 @@ class PreviewPostTableViewController : MainPostTableViewController {
     }
     
     
-    override func layoutTitleButton() {
+    override func titleButtonSetup() {
         
     }
     

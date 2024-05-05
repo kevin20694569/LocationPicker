@@ -108,7 +108,7 @@ class PresentWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
         self.toViewController.collectionView.isPagingEnabled = false
         self.toViewController.collectionView.scrollToItem(at: self.transitionToIndexPath, at: .centeredHorizontally, animated: false)
         self.toViewController.collectionView.isPagingEnabled = true
-        toViewController.view.layoutIfNeeded()
+        containerView.layoutIfNeeded()
 
         DispatchQueue.main.async {
             if let toImageViewCollectionCell = self.toViewController.collectionView.visibleCells.first as? WholeImageViewCollectionCell {
@@ -287,7 +287,7 @@ class PresentWholePageMediaViewControllerAnimator : NSObject, UIViewControllerAn
     func fadeInPlyaerViewStartAnimation() {
         UIView.animate(withDuration: 0.2, animations: {
             self.playerViews?.forEach { view in
-                if view is UILabel {
+                if view is UILabel || view is UIVisualEffectView {
                     view.alpha = 0
                     return
                 }

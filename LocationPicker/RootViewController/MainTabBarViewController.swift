@@ -79,7 +79,6 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         ])
         tabBar.layoutIfNeeded()
         standardTabBarFrameInView = tabBar.frame
-        
     }
 
 
@@ -92,11 +91,12 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
     }
     
     func layoutTabBarAndBottomView() {
-        self.tabBar.frame = standardTabBarFrameInView
-        self.bottomBarView.frame = standardBottomFrameInView
+        
         wholeTabBarView.forEach() {
             self.view.addSubview($0)
+            $0.layoutIfNeeded()
         }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -106,8 +106,7 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
         Constant.bottomBarViewHeight = height
         bottomBarView.translatesAutoresizingMaskIntoConstraints = true
         bottomBarView.frame = CGRect(x: tabBar.frame.minX, y: tabBar.frame.maxY, width: tabBar.frame.width, height: height - tabBar.frame.height)
-        standardBottomFrameInView = bottomBarView.frame
-        
+        standardBottomFrameInView = CGRect(x: tabBar.frame.minX, y: tabBar.frame.maxY, width: tabBar.frame.width, height: height - tabBar.frame.height)
     }
     
     func showViewController(at index: Int) {

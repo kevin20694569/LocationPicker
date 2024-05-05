@@ -200,7 +200,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             pageControll.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             pageControll.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.3),
             
-            restaurantNameLabel.topAnchor.constraint(equalTo: pageControll.bottomAnchor, constant: 4),
+            restaurantNameLabel.topAnchor.constraint(equalTo: pageControll.bottomAnchor, constant: 6),
             restaurantNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             restaurantNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             restaurantNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
@@ -235,10 +235,6 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             heartButton.heightAnchor.constraint(equalToConstant: width * 0.12),
             heartButton.widthAnchor.constraint(equalTo: heartButton.heightAnchor, multiplier: 1),
         ])
-        
-        
-     //   self.layoutIfNeeded()
-      //  self.emojiReactionsStackView.layoutIfNeeded()
 
         
         
@@ -246,21 +242,15 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func labelSetup() {
         gradeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        
         restaurantNameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
+        restaurantNameLabel.numberOfLines = 2
         restaurantNameLabel.textAlignment = .center
         timeStampLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         timeStampLabel.textColor = .secondaryLabelColor
+        distanceLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+        distanceLabel.textColor = .secondaryLabelColor
     }
-    
-
-    
-    
-    override func layoutIfNeeded() {
-        super.layoutIfNeeded()
-      //  collectionViewFlowSet()
-    }
-    
-    
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

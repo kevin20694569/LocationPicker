@@ -110,7 +110,7 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     func layoutButton() {
         nextTapButton.updateTitle(Title: "下一步", backgroundColor: .secondaryBackgroundColor, tintColor: .black, font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
         nextTapButton.isEnabled = false
-        let image = UIImage(systemName:"plus.circle", withConfiguration: UIImage.SymbolConfiguration.init(font: UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)) )
+        let image = UIImage(systemName:"plus.circle", withConfiguration: UIImage.SymbolConfiguration.init(font: UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)) )
         addMediaButton.imageView?.image = image
         addMediaButton.addTarget(self, action: #selector(presentPHPPicker), for: .touchUpInside)
         addMediaButton.alpha = 0
@@ -120,6 +120,7 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     func viewStyleSet() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.delaysContentTouches = false
         self.collectionView.isPagingEnabled = true
         PageControll.numberOfPages = MediaStorage.count
     }

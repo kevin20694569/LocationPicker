@@ -9,7 +9,6 @@ class PreviewWholePageMediaViewController : WholePageMediaViewController {
         self.heartButton.isUserInteractionEnabled = false
         self.emojiButton.isUserInteractionEnabled = false
         self.collectButton.isUserInteractionEnabled = false
-        self.collectButton.isUserInteractionEnabled = false
     }
 }
 

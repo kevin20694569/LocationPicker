@@ -266,7 +266,7 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.tableView.rowHeight = UITableView.automaticDimension
     }
     
-    override func layoutTitleButton() {
+    override func titleButtonSetup() {
         
     }
     
