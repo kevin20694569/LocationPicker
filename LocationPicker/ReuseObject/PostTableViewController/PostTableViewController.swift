@@ -18,6 +18,13 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.presentForTabBarLessView = presentForTabBarLessView
     }
     
+    override func deletePostCell(post: Post) {
+        super.deletePostCell(post: post)
+        self.postsTableDelegate?.deletePostCell(post: post)
+        scrollViewDidScroll(self.tableView)
+        
+    }
+    
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

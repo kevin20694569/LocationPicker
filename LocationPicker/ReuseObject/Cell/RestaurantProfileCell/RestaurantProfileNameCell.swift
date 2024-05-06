@@ -112,6 +112,9 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
     func fillStar(grade : Double) {
 
         let integerPart = Int(grade)
+        guard grade != 0 else {
+            return
+        }
         let decimalPart = grade - Double(integerPart)
         if integerPart > 0 {
             for index in 0...integerPart - 1 {

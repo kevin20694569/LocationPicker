@@ -27,7 +27,7 @@ final class PostManager : NSObject {
                   let url = URL(string: urlstring) else {
                 throw  APIError.URLnotFound(urlstring)
             }
-
+            
             var req = URLRequest(url: url)
             req.httpMethod = "GET"
             req.timeoutInterval = 2.0
@@ -45,7 +45,7 @@ final class PostManager : NSObject {
         } catch  {
             print(error)
             if error is PostError {
-               
+                
             } else {
                 PresentErrorMessageManager.shared.presentErrorMessage(error: error)
             }
@@ -233,6 +233,69 @@ final class PostManager : NSObject {
         } catch {
             print(error)
             throw PostError.PostNotFound
+        }
+    }
+    
+    
+    func updatePostDetail(post_id : String, title : String?, content : String?, grade : Double?) async throws  {
+        guard title != nil || content != nil || grade != nil else {
+            return
+        }
+        do {
+            let urlstring = API + "/\(post_id)"
+            
+            guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
+                  let url = URL(string: urlstring) else {
+                throw  APIError.URLnotFound(urlstring)
+            }
+            let encoder = JSONEncoder()
+            let decoder = JSONDecoder()
+            var req = URLRequest(url: url)
+            req.httpMethod = "PUT"
+            let body = updatePostDetailRequestBody(title: title, content: content, grade: grade)
+            let bodyData = try? encoder.encode(body)
+            req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            req.httpBody = bodyData
+            let (data, res) = try await URLSession.shared.data(for: req)
+            if let res = res as? HTTPURLResponse {
+                if 200...299 ~= res.statusCode  {
+                    print("updatePost成功")
+                } else {
+                    throw PostError.UpdatePostError
+                }
+            }
+        } catch {
+            throw PostError.UpdatePostError
+        }
+        
+        struct updatePostDetailRequestBody : Encodable {
+            var title : String?
+            var content : String?
+            var grade : Double?
+        }
+        
+    }
+    
+    func deletePost(post_id : String) async throws {
+        do {
+            let urlstring = API + "/\(post_id)"
+            
+            guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
+                  let url = URL(string: urlstring) else {
+                throw  APIError.URLnotFound(urlstring)
+            }
+            var req = URLRequest(url: url)
+            req.httpMethod = "DELETE"
+            let (data, res) = try await URLSession.shared.data(for: req)
+            if let res = res as? HTTPURLResponse {
+                if 200...299 ~= res.statusCode  {
+                    print("deletePost成功")
+                } else {
+                    throw PostError.UpdatePostError
+                }
+            }
+        } catch {
+            throw PostError.UpdatePostError
         }
     }
     

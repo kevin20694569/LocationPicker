@@ -3,6 +3,8 @@ import UIKit
 import PhotosUI
 
 class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegate, UIViewControllerTransitioningDelegate, MediaCollectionViewAnimatorDelegate, MediaTableCellDelegate, PanWholePageViewControllerDelegate {
+    var presentForTabBarLessView: Bool! = false
+    
     
     func gestureStatusToggle(isTopViewController: Bool) {
         

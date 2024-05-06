@@ -22,7 +22,7 @@ protocol MediaCollectionCell : UICollectionViewCell {
     var mediaCornerRadius : CGFloat! { get }
 }
 
-protocol MediaTableCellDelegate : MediaCellDelegate, UIViewController {
+protocol MediaTableCellDelegate : MediaCellDelegate, ShowViewControllerDelegate {
     func presentWholePageMediaViewController(post: Post?)
     func showUserProfile(user : User)
 }
@@ -30,5 +30,6 @@ protocol MediaTableCellDelegate : MediaCellDelegate, UIViewController {
 protocol MediaTableViewCellDelegate : MediaTableCellDelegate  {
     var tableView : UITableView! { get }
     var collectionView : UICollectionView! { get }
+    func deletePostCell(post : Post)
 }
 

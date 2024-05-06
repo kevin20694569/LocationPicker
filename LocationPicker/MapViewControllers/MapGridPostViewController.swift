@@ -11,6 +11,24 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
         self.collectionView.cellForItem(at: self.enterCollectionIndexPath)
     }
     
+    func deletePostCell(post: Post) {
+        guard let index = self.posts.firstIndex(of: post) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: self.enterCollectionIndexPath.section)
+        posts.remove(at: index)
+        collectionView.performBatchUpdates {
+            collectionView.deleteItems(at: [indexPath])
+        } completion: { bool in
+            
+        }
+        Task {
+            await self.getRestaurantSummary(restaurant_id: self.restaurantID )
+        }
+        
+
+    }
+    
     @IBOutlet var openingTimeStackView : UIStackView!
     
     var getServerData : Bool = Constant.getServerData

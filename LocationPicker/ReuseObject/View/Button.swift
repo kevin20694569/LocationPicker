@@ -20,6 +20,20 @@ class RoundedButton : ZoomAnimatedButton {
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
     }
+    init() {
+        super.init(frame: .zero)
+        var config = UIButton.Configuration.bordered()
+        config.cornerStyle = .fixed
+        config.titleAlignment = .center
+        config.buttonSize = .medium
+        config.baseBackgroundColor = backgroundColor
+        config.baseForegroundColor = tintColor
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 30, bottom: 10, trailing: 30)
+        config.attributedTitle =  AttributedString("")
+        self.configuration = config
+        layer.cornerRadius = 12
+        clipsToBounds = true
+    }
     
     
     required init?(coder: NSCoder) {

@@ -52,21 +52,20 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
             await loadFriends(user_id: Constant.user_id, date: "")
         }
         registerCells()
-        layout()
+        initLayout()
         layoutShareButton()
         setCollectionViewStyle()
     }
     
-    override func layout() {
-        super.layout()
-        self.view.backgroundColor = .backgroundPrimary
+    override func initLayout() {
+        super.initLayout()
         self.view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delaysContentTouches = false
         collectionView.allowsMultipleSelection = true
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .secondaryBackgroundColor
         self.view.addSubview(bottomView)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(shareButton)

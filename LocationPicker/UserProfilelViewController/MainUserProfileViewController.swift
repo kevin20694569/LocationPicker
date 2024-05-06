@@ -3,6 +3,25 @@ import UIKit
 
 
 class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate, ShowMessageControllerProtocol {
+    
+    func deletePostCell(post: Post) {
+        guard let index = self.posts.firstIndex(of: post) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: self.enterCollectionIndexPath.section)
+        posts.remove(at: index)
+        collectionView.performBatchUpdates {
+            collectionView.deleteItems(at: [indexPath])
+        } completion: { bool in
+            
+        }
+        Task {
+            async let userProfile = getUserProfile()
+            self.userProfile = await userProfile
+            self.collectionView.reloadSections([0])
+        }
+
+    }
 
     
     var tempModifiedPostsWithMediaCurrentIndex: [String : (Post, Int)]! = [ : ]
@@ -120,7 +139,9 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        MainTabBarViewController.shared.layoutTabBarAndBottomView()
+        if !self.presentForTabBarLessView {
+            MainTabBarViewController.shared.layoutTabBarAndBottomView()
+        }
     }
     
     
@@ -185,7 +206,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         }
         async let userProfile = getUserProfile()
         async let chatRoomPreview = getChatRoomPreview()
-        
+
         self.userProfile = await userProfile
         self.chatRoomPreview = await chatRoomPreview
         await configureNavBar(title: userProfile?.user?.name)
@@ -205,18 +226,22 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         }
 
         let controller = MessageViewController(room_users: user_ids, chatRoomPreview: self.chatRoomPreview, messages: targetMessages, navBarTitle: self.userProfile.user.name)
-        let tabBarframe =  MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
         if let user_id = self.userProfile.user.id {
             controller.userImageDict[user_id] = self.userProfile.user.image
         }
-        MainTabBarViewController.shared.bottomBarView.translatesAutoresizingMaskIntoConstraints = true
-        MainTabBarViewController.shared.tabBar.translatesAutoresizingMaskIntoConstraints = true
-        MainTabBarViewController.shared.tabBar.frame = tabBarframe
-        let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
-        MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
-        
-        view.addSubview(MainTabBarViewController.shared.bottomBarView)
-        view.addSubview(MainTabBarViewController.shared.tabBar)
+
+
+        if !presentForTabBarLessView {
+            let tabBarframe =  MainTabBarViewController.shared.tabBar.superview!.convert(MainTabBarViewController.shared.tabBar.frame, to: self.view)
+            MainTabBarViewController.shared.bottomBarView.translatesAutoresizingMaskIntoConstraints = true
+            MainTabBarViewController.shared.tabBar.translatesAutoresizingMaskIntoConstraints = true
+            MainTabBarViewController.shared.tabBar.frame = tabBarframe
+            let bottomBarframe = MainTabBarViewController.shared.bottomBarView.superview!.convert(MainTabBarViewController.shared.bottomBarView.frame, to: view)
+            MainTabBarViewController.shared.bottomBarView.frame = bottomBarframe
+            
+            view.addSubview(MainTabBarViewController.shared.bottomBarView)
+            view.addSubview(MainTabBarViewController.shared.tabBar)
+        }
 
         self.show(controller, sender: nil)
     }

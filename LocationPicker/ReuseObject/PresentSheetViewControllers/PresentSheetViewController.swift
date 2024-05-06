@@ -8,12 +8,17 @@ class PresentedSheetViewController : UIViewController, PresentedSheetViewControl
     
     
     
-    var titleSlideView: UIView! = TitleSlideView()
+    var titleSlideView: TitleSlideView! = TitleSlideView()
     var originFrame : CGRect!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewSetup()
         setGesture()
+    }
+    
+    func viewSetup() {
+        self.view.backgroundColor = .secondaryBackgroundColor
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -39,7 +44,7 @@ class PresentedSheetViewController : UIViewController, PresentedSheetViewControl
         view?.endEditing(true)
     }
     
-    func layout() {
+    func initLayout() {
         self.view.addSubview(titleSlideView)
         titleSlideView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -48,7 +53,7 @@ class PresentedSheetViewController : UIViewController, PresentedSheetViewControl
             
             titleSlideView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             titleSlideView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            ])
+        ])
     }
     
     

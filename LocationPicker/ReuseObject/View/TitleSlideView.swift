@@ -11,13 +11,14 @@ class TitleSlideView : UIView {
     }
     
     func layout() {
-        slider.backgroundColor = .secondaryBackgroundColor
+        slider.backgroundColor = .secondaryLabelColor
         self.slider.clipsToBounds = true
         self.slider.layer.cornerRadius = 2
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.isUserInteractionEnabled = true
         self.isUserInteractionEnabled = true
         self.addSubview(slider)
+        self.backgroundColor = .secondaryBackgroundColor
         let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
             slider.centerXAnchor.constraint(equalTo: self.centerXAnchor),

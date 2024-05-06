@@ -46,7 +46,7 @@ class MaxFrameContainerViewPresentationController: UIPresentationController, Max
 class MaxFramePresentedViewPresentationController : UIPresentationController, MaxFrameController {
     
     var cornerRadius : CGFloat!  {
-        8
+        16
     }
     var maxWidth : CGFloat!
     var blurView : UIView! = {

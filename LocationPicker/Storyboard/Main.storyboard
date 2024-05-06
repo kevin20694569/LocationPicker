@@ -467,149 +467,8 @@
                                             <outlet property="collectionView" destination="c61-Rw-D5S" id="jhd-1o-UCJ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadPostDetailTitleCell" rowHeight="114" id="zwF-mK-laI" customClass="UploadPostDetailTitleCell" customModule="LocationPicker" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="226" width="393" height="114"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zwF-mK-laI" id="bJ0-Ky-M2q">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="114"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bHj-27-J2C">
-                                                    <rect key="frame" x="20" y="44" width="353" height="59"/>
-                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                    <color key="textColor" systemColor="labelColor"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="標題" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VWR-6G-cCY">
-                                                    <rect key="frame" x="20" y="4" width="41" height="24"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(不得超過2行）" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kLq-Og-q0L">
-                                                    <rect key="frame" x="91" y="6.6666666666666661" width="109.33333333333331" height="19.333333333333336"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                                    <color key="textColor" systemColor="systemRedColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="exclamationmark.triangle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Ps7-e4-DSS">
-                                                    <rect key="frame" x="69" y="7.6666666666666679" width="20" height="17"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="font">
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                                    </preferredSymbolConfiguration>
-                                                </imageView>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="VWR-6G-cCY" firstAttribute="top" secondItem="bJ0-Ky-M2q" secondAttribute="top" constant="4" id="3v8-84-TXc"/>
-                                                <constraint firstItem="kLq-Og-q0L" firstAttribute="leading" secondItem="Ps7-e4-DSS" secondAttribute="trailing" constant="2" id="4ap-vV-Y83"/>
-                                                <constraint firstItem="kLq-Og-q0L" firstAttribute="centerY" secondItem="Ps7-e4-DSS" secondAttribute="centerY" id="I2n-Hy-49R"/>
-                                                <constraint firstItem="VWR-6G-cCY" firstAttribute="leading" secondItem="bJ0-Ky-M2q" secondAttribute="leadingMargin" id="Jy5-Gt-zmp"/>
-                                                <constraint firstItem="Ps7-e4-DSS" firstAttribute="bottom" secondItem="VWR-6G-cCY" secondAttribute="bottom" constant="-2" id="Rhb-fV-pmA"/>
-                                                <constraint firstItem="Ps7-e4-DSS" firstAttribute="leading" secondItem="VWR-6G-cCY" secondAttribute="trailing" constant="8" id="U1v-oR-ZhF"/>
-                                                <constraint firstItem="bHj-27-J2C" firstAttribute="top" secondItem="VWR-6G-cCY" secondAttribute="bottom" constant="16" id="q1c-AW-2v1"/>
-                                                <constraint firstItem="bHj-27-J2C" firstAttribute="leading" secondItem="bJ0-Ky-M2q" secondAttribute="leadingMargin" id="s3N-wG-K4t"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="bHj-27-J2C" secondAttribute="bottom" id="xJT-rm-6Zk"/>
-                                                <constraint firstItem="bHj-27-J2C" firstAttribute="trailing" secondItem="bJ0-Ky-M2q" secondAttribute="trailingMargin" id="yi7-J6-JyT"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="limitCharacterImageView" destination="Ps7-e4-DSS" id="uoU-Mh-9Li"/>
-                                            <outlet property="limitCharacterLabel" destination="kLq-Og-q0L" id="kZc-SM-LI9"/>
-                                            <outlet property="textView" destination="bHj-27-J2C" id="qiA-fQ-kuf"/>
-                                            <outlet property="titleLabel" destination="VWR-6G-cCY" id="ZFq-VL-bQD"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadPostDetailContentCell" rowHeight="183" id="1w5-bq-KBm" customClass="UploadPostDetailContentCell" customModule="LocationPicker" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="340" width="393" height="183"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1w5-bq-KBm" id="BNG-GD-gG1">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="183"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zZl-tg-1xK">
-                                                    <rect key="frame" x="20" y="42" width="353" height="130"/>
-                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                    <color key="textColor" systemColor="labelColor"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="內文" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="svA-Yi-vAo">
-                                                    <rect key="frame" x="20" y="6" width="41" height="24"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="zZl-tg-1xK" secondAttribute="bottom" id="RXH-tX-Y4S"/>
-                                                <constraint firstItem="svA-Yi-vAo" firstAttribute="leading" secondItem="BNG-GD-gG1" secondAttribute="leadingMargin" id="WW7-Uu-lIu"/>
-                                                <constraint firstItem="svA-Yi-vAo" firstAttribute="top" secondItem="BNG-GD-gG1" secondAttribute="top" constant="6" id="a9y-99-wyO"/>
-                                                <constraint firstItem="zZl-tg-1xK" firstAttribute="leading" secondItem="BNG-GD-gG1" secondAttribute="leadingMargin" id="fFK-cj-GUy"/>
-                                                <constraint firstItem="zZl-tg-1xK" firstAttribute="top" secondItem="svA-Yi-vAo" secondAttribute="bottom" constant="12" id="rg1-6y-qaF"/>
-                                                <constraint firstItem="zZl-tg-1xK" firstAttribute="trailing" secondItem="BNG-GD-gG1" secondAttribute="trailingMargin" id="yCe-jG-Dlg"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="textView" destination="zZl-tg-1xK" id="aFn-Wq-15C"/>
-                                            <outlet property="titleLabel" destination="svA-Yi-vAo" id="qol-zW-M9q"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadPostDetailGradeCell" rowHeight="79" id="alT-y6-K8S" customClass="UploadPostDetailGradeCell" customModule="LocationPicker" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="523" width="393" height="79"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="alT-y6-K8S" id="lC7-HY-QSe">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="79"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3c9-cm-hPK">
-                                                    <rect key="frame" x="20" y="11" width="126" height="57"/>
-                                                    <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="eEp-ZE-sh4">
-                                                            <rect key="frame" x="0.0" y="-0.33333333333333215" width="22" height="56.666666666666657"/>
-                                                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </imageView>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="G41-0f-cFx">
-                                                            <rect key="frame" x="26" y="-0.33333333333333215" width="22" height="56.666666666666657"/>
-                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </imageView>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="EPD-Qa-KHa">
-                                                            <rect key="frame" x="52" y="-0.33333333333333215" width="22" height="56.666666666666657"/>
-                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </imageView>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="iKa-KO-MNu">
-                                                            <rect key="frame" x="78" y="-0.33333333333333215" width="22" height="56.666666666666657"/>
-                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </imageView>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Ygs-J6-7Zx">
-                                                            <rect key="frame" x="104" y="-0.33333333333333215" width="22" height="56.666666666666657"/>
-                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </imageView>
-                                                    </subviews>
-                                                </stackView>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bQJ-69-GK2" customClass="RoundedButton" customModule="LocationPicker" customModuleProvider="target">
-                                                    <rect key="frame" x="162" y="22.333333333333332" width="203" height="34.333333333333343"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="3c9-cm-hPK" firstAttribute="leading" secondItem="lC7-HY-QSe" secondAttribute="leadingMargin" id="DRo-uY-r0s"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="bQJ-69-GK2" secondAttribute="trailing" constant="8" id="SBL-Jf-BJO"/>
-                                                <constraint firstItem="3c9-cm-hPK" firstAttribute="centerY" secondItem="lC7-HY-QSe" secondAttribute="centerY" id="gLE-hy-jrl"/>
-                                                <constraint firstItem="bQJ-69-GK2" firstAttribute="centerY" secondItem="lC7-HY-QSe" secondAttribute="centerY" id="oaU-ng-iDT"/>
-                                                <constraint firstItem="3c9-cm-hPK" firstAttribute="top" secondItem="lC7-HY-QSe" secondAttribute="topMargin" id="sgW-zq-2NF"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="3c9-cm-hPK" secondAttribute="bottom" id="uwR-6c-xGi"/>
-                                                <constraint firstItem="bQJ-69-GK2" firstAttribute="leading" secondItem="3c9-cm-hPK" secondAttribute="trailing" constant="16" id="yz8-Xn-9QL"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="gradeToggleButton" destination="bQJ-69-GK2" id="xOf-aH-sXW"/>
-                                            <outlet property="starStackView" destination="3c9-cm-hPK" id="qem-oB-MJm"/>
-                                        </connections>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostDetailViewControllerCell" rowHeight="70" id="eEC-U1-ND6" customClass="UploadPostDetailExtraTableCell" customModule="LocationPicker" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="602" width="393" height="70"/>
+                                        <rect key="frame" x="0.0" y="226" width="393" height="70"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eEC-U1-ND6" id="flf-IM-jGQ">
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="70"/>
@@ -751,13 +610,11 @@
     <color key="tintColor" red="0.85490196080000003" green="0.37647058820000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
         <image name="camera" catalog="system" width="128" height="93"/>
-        <image name="exclamationmark.triangle.fill" catalog="system" width="128" height="109"/>
         <image name="house" catalog="system" width="128" height="104"/>
         <image name="map" catalog="system" width="128" height="112"/>
         <image name="message" catalog="system" width="128" height="116"/>
         <image name="person" catalog="system" width="128" height="121"/>
         <image name="plus.circle" catalog="system" width="128" height="123"/>
-        <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -2,6 +2,18 @@ import UIKit
 import AVFoundation
 
 class MainPostTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource , UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, MediaTableCellDelegate, CollectionViewInTableViewMediaAnimatorDelegate, MediaTableViewCellDelegate {
+    func deletePostCell(post: Post) {
+        guard let index = self.posts.firstIndex(of: post) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: self.currentTableViewIndexPath.section)
+        posts.remove(at: index)
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+
+    }
+    
     
     enum MainTablePostsStatus {
         case PublicNear

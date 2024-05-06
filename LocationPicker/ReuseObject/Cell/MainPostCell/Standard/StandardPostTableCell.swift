@@ -18,6 +18,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     var timeStampTopAnchor : NSLayoutConstraint!  {
         timeStampLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: timeStampVerConstant)
     }
+    
+    
 
     var collectionViewHeight : CGFloat! = Constant.standardMinimumTableCellCollectionViewHeight
     
@@ -26,6 +28,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     var emojiButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var userNameLabel : UILabel! = UILabel()
+    
+    var settingButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var isEmojiViewAnimated : Bool! = false
     
@@ -50,6 +54,9 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
     override func configureData(post : Post) {
         currentPost = post
+        if currentPost.user?.id == Constant.user_id {
+            self.settingButton.isHidden = false
+        }
         self.collectionView.reloadSections([0])
         self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
         self.updateEmojiButtonImage(targetTag: post.selfReaction?.reactionType?.reactionTag)
@@ -71,7 +78,10 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
         userNameLabel.text = post.user?.name
         if let grade = post.grade {
+            gradeStackView.isHidden = false
             self.gradeLabel?.text = String(grade)
+        } else {
+            gradeStackView.isHidden = true
         }
         DispatchQueue.main.async {
             self.collectionView.scrollToItem(at: self.currentMediaIndexPath, at: .centeredHorizontally, animated: false)
@@ -109,6 +119,18 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
         emojiButton.configuration = emojiConfig
         emojiButton.tag = -1
+        
+        
+        
+        var settingConfig = UIButton.Configuration.filled()
+       
+        settingConfig.background.image = UIImage(systemName: "ellipsis")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+        settingConfig.background.imageContentMode = .scaleAspectFit
+        settingConfig.baseBackgroundColor = .clear
+
+        settingButton.configuration = settingConfig
+        settingButton.isHidden = true
+        
     }
     
     override func labelSetup() {
@@ -131,11 +153,44 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             button.tag = index
             button.addTarget(self, action: #selector(emojiTargetTapped(_ : )), for: .touchUpInside)
         }
+        settingButton.addTarget(self, action: #selector(presentEditPostOptionViewController (_ : )), for: .touchUpInside)
 
         let userNameLabelGesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile(_ :)))
         self.userNameLabel.addGestureRecognizer(userNameLabelGesture)
 
         userNameLabel.isUserInteractionEnabled = true
+    }
+    
+    @objc func presentEditPostOptionViewController(_ button : UIButton) {
+        let controller = EditPostOptionViewController(post: currentPost)
+        controller.transitioningDelegate = self
+        controller.modalPresentationStyle = .custom
+        controller.postTableViewController = self.standardPostCellDelegate
+        controller.tableViewCell = self
+        self.standardPostCellDelegate?.present(controller, animated: true)
+    }
+    
+    func refreshData() async {
+        do {
+            let post = try await PostManager.shared.getPostDetail(post_id: self.currentPost.id, request_user_id: Constant.user_id)
+            self.configureData(post: post)
+        } catch {
+            print(error)
+        }
+    }
+    
+    override func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let bounds = UIScreen.main.bounds
+        
+        let maxWidth = bounds.width - 16
+        var maxHeight : CGFloat! = bounds.height * 0.5
+
+        if presented is EditPostOptionViewController {
+            maxHeight =  bounds.height * 0.3
+            self.mediaTableCellDelegate?.pauseCurrentMedia()
+            return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
+        }
+        return super.presentationController(forPresented: presented, presenting: presenting, source: source)
     }
     
     override func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
@@ -363,7 +418,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     override func prepareForReuse() {
         super.prepareForReuse()
         self.currentEmojiTag = nil
-        self.emojiButton.configuration?.image = UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+        self.emojiButton.configuration?.background.image = UIImage(systemName: "smiley")?.withTintColor(.label, renderingMode: .alwaysOriginal)
         
         Task(priority: .low) { [weak self] in
             guard let self = self else {
@@ -391,6 +446,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         contentView.addSubview(timeStampLabel)
         contentView.addSubview(emojiButton)
         contentView.addSubview(userNameLabel)
+        contentView.addSubview(settingButton)
         
         self.contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -436,7 +492,13 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
             
             timeStampTopAnchor,
             timeStampLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor , constant: -timeStampVerConstant),
-            timeStampLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant)
+            timeStampLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant),
+            
+            settingButton.centerYAnchor.constraint(equalTo: timeStampLabel.centerYAnchor),
+            settingButton.centerXAnchor.constraint(equalTo: shareButton.centerXAnchor),
+
+            settingButton.widthAnchor.constraint(equalTo: shareButton.widthAnchor),
+            settingButton.heightAnchor.constraint(equalTo: settingButton.widthAnchor, multiplier: 1)
         ])
         gradeStackView.layoutIfNeeded()
     }

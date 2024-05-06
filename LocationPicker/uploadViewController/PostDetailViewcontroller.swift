@@ -163,6 +163,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+        registerCell()
         viewStyleSet()
         layoutStandardButton()
         SocketIOManager.shared.progressDelegate = self
@@ -398,16 +399,27 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         if textView == self.titleCell.textView {
             let font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold  )
             let attributes = [NSAttributedString.Key.font: font]
-            titleTextOverrange   = textView.numberOfLines() > 2
-            titleCell.limitViews.forEach {
-                $0.isHidden = !titleTextOverrange
-            }
+            titleTextOverrange = textView.numberOfLines() > 2
+            titleCell.warningStackView.isHidden = !titleTextOverrange
             if textView == self.titleCell.textView {
                 contentCell.textView.isEditable = !textView.text.isEmpty
                 contentCell.forbiddenView.isHidden = !textView.text.isEmpty
             }
         }
         
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        activeTextView = textView
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.activeTextView?.resignFirstResponder()
+        self.activeTextField?.resignFirstResponder()
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -481,11 +493,16 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
             return 1
         }
         return tableViewStyles.count
-        
+    }
+    
+    func registerCell() {
+        tableView.register(UploadPostDetailTitleCell.self, forCellReuseIdentifier: "UploadPostDetailTitleCell")
+        tableView.register(UploadPostDetailContentCell.self, forCellReuseIdentifier: "UploadPostDetailContentCell")
+        tableView.register(UploadPostDetailGradeCell.self, forCellReuseIdentifier: "UploadPostDetailGradeCell")
     }
     
     
-    
+     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let width = self.view.bounds.width
@@ -532,7 +549,7 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func  tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let titleCell = self.tableView.cellForRow(at: self.titleCellIndexPath) as? UploadPostDetailTitleCell  {
             if titleCell.textView.text.allSatisfy({
                 $0.isWhitespace
@@ -544,18 +561,7 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeTextField = textField
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        activeTextView = textView
-    }
-    
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        self.activeTextView?.resignFirstResponder()
-        self.activeTextField?.resignFirstResponder()
-    }
+
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let mediaTableCell = tableView.cellForRow(at: self.mediaCollectionCellIndexPath) as? UploadMediaDetailTableCell,

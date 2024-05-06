@@ -14,6 +14,7 @@ enum PostError  : LocalizedError {
     case PostNotFound
     case DownloadPostFail
     case uploadDetailError
+    case UpdatePostError
     
     var errorDescription: String? {
         switch self {
@@ -23,6 +24,8 @@ enum PostError  : LocalizedError {
             return "Posts下載失敗"
         case .uploadDetailError :
             return "上傳問題"
+        case .UpdatePostError:
+            return "編輯貼文失敗"
         }
     }
 }

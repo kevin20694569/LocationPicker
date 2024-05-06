@@ -160,6 +160,9 @@
 		23DD487E2AE9886300C63821 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD483C2AE9886300C63821 /* LocationManager.swift */; };
 		23DD48822AE98DC300C63821 /* ChatView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23DD48812AE98DC300C63821 /* ChatView.storyboard */; };
 		23E05DC92BE4E6F500117CC2 /* DeMainPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DC82BE4E6F500117CC2 /* DeMainPostCell.swift */; };
+		23E05DCB2BE8F8CB00117CC2 /* EditPostOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */; };
+		23E05DCD2BE8FA9B00117CC2 /* EditPostOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */; };
+		23E05DCF2BE9043700117CC2 /* EditPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCE2BE9043700117CC2 /* EditPostViewController.swift */; };
 		23E8C7992B28859E007F0888 /* PostDetailSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8C7982B28859E007F0888 /* PostDetailSheetViewController.swift */; };
 		23E8C79B2B2889E8007F0888 /* PostDetailTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8C79A2B2889E8007F0888 /* PostDetailTextCell.swift */; };
 		23E8C7A02B288E6A007F0888 /* MaxHeightContainerViewPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8C79F2B288E6A007F0888 /* MaxHeightContainerViewPresentationController.swift */; };
@@ -340,6 +343,9 @@
 		23DD483C2AE9886300C63821 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		23DD48812AE98DC300C63821 /* ChatView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ChatView.storyboard; sourceTree = "<group>"; };
 		23E05DC82BE4E6F500117CC2 /* DeMainPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeMainPostCell.swift; sourceTree = "<group>"; };
+		23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostOptionViewController.swift; sourceTree = "<group>"; };
+		23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostOptionCell.swift; sourceTree = "<group>"; };
+		23E05DCE2BE9043700117CC2 /* EditPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostViewController.swift; sourceTree = "<group>"; };
 		23E8C7982B28859E007F0888 /* PostDetailSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailSheetViewController.swift; sourceTree = "<group>"; };
 		23E8C79A2B2889E8007F0888 /* PostDetailTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailTextCell.swift; sourceTree = "<group>"; };
 		23E8C79F2B288E6A007F0888 /* MaxHeightContainerViewPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxHeightContainerViewPresentationController.swift; sourceTree = "<group>"; };
@@ -571,6 +577,7 @@
 				23DD48162AE9886300C63821 /* PlaceFindtableViewController.swift */,
 				2307938C2B7363E000266227 /* SwipeEnableNavViewController.swift */,
 				233EB5652BBDB53000E415D6 /* FriendViewController.swift */,
+				23E05DCE2BE9043700117CC2 /* EditPostViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -743,6 +750,7 @@
 				23DCB7132B95BE3500D97BF2 /* CollectionViewButtonCell.swift */,
 				23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */,
 				23F21A862BCAF31C000E1F98 /* LoadingCollectionCell.swift */,
+				23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */,
 			);
 			path = CommonCell;
 			sourceTree = "<group>";
@@ -797,6 +805,7 @@
 			children = (
 				23D3FD7C2BA33ED50011964D /* AddCollectViewController.swift */,
 				23CDFAC52BA6D9A700549AA0 /* ShareViewController.swift */,
+				23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */,
 				23CDFAC92BA6EE2100549AA0 /* PresentSheetViewController.swift */,
 			);
 			path = PresentSheetViewControllers;
@@ -1283,6 +1292,7 @@
 				23DD48772AE9886300C63821 /* PostManager.swift in Sources */,
 				23F21A902BCD24B2000E1F98 /* EditEmailViewController.swift in Sources */,
 				235A13CE2A53533A004156D3 /* LocationPicker.xcdatamodeld in Sources */,
+				23E05DCD2BE8FA9B00117CC2 /* EditPostOptionCell.swift in Sources */,
 				23CDFAC62BA6D9A700549AA0 /* ShareViewController.swift in Sources */,
 				23F085ED2BBE6F5100A024D6 /* UploadMediaDetailPlayerLayerCollectionCell.swift in Sources */,
 				2339550F2AFD1E3100B17C28 /* UserManager.swift in Sources */,
@@ -1341,6 +1351,7 @@
 				23C407382AF3F212008C1088 /* GoogleMapLocationResultsJson.swift in Sources */,
 				23DD48402AE9886300C63821 /* Media.swift in Sources */,
 				23DD48612AE9886300C63821 /* PlaceFindtableViewController.swift in Sources */,
+				23E05DCF2BE9043700117CC2 /* EditPostViewController.swift in Sources */,
 				23749C312B0F90A8007241A8 /* UserFriendRequest.swift in Sources */,
 				23DD48502AE9886300C63821 /* ChatRoomViewController.swift in Sources */,
 				23DD487E2AE9886300C63821 /* LocationManager.swift in Sources */,
@@ -1389,6 +1400,7 @@
 				234BF4C42BD6B8320012CF6A /* UserAccountManager.swift in Sources */,
 				230D07F82BB2A37E00FE2C5A /* ReactionProtocol.swift in Sources */,
 				23F085DE2BBE5AE300A024D6 /* WholeImageViewCollectionCell.swift in Sources */,
+				23E05DCB2BE8F8CB00117CC2 /* EditPostOptionViewController.swift in Sources */,
 				230D07F02BB2A28A00FE2C5A /* RestaurantProfileProtocol.swift in Sources */,
 				23D3677E2BB472F500D53CFF /* DismissLikePopAnimator.swift in Sources */,
 				233BC73D2B1AE3E200844844 /* ProfileMainCell.swift in Sources */,

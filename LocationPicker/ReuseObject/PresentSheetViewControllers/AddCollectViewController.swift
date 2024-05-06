@@ -101,28 +101,29 @@ class AddCollectViewController : PresentedSheetViewController, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        layout()
+        viewSetup()
+        initLayout()
+        tableViewSetup()
         setGesture()
         registerCells()
-        viewStyleSet()
     }
     
-    func viewStyleSet() {
-
+    override func viewSetup() {
+        super.viewSetup()   
+        self.view.backgroundColor = .secondaryBackgroundColor
+    
+    }
+    
+    func tableViewSetup() {
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .secondaryLabelColor
         tableView.backgroundColor = .clear
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         tableView.rowHeight = self.view.bounds.height * 0.07
         tableView.allowsMultipleSelection = true
-    
-        self.view.backgroundColor = .backgroundPrimary
-
         self.tableView.dataSource = self
         self.tableView.delegate = self
         tableView.delaysContentTouches = false
-    
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -165,8 +166,8 @@ class AddCollectViewController : PresentedSheetViewController, UITableViewDelega
     }
     
     
-    override func layout() {
-        super.layout()
+    override func initLayout() {
+        super.initLayout()
         
         self.view.addSubview(titleView)
         self.view.addSubview(tableView)

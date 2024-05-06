@@ -708,14 +708,31 @@ extension UIColor {
         }
     }
     
-    static let secondaryBackgroundColor = UIColor  { (trait) -> UIColor in
+    static let thirdBackgroundColor = UIColor { (trait) -> UIColor in
+        var float : CGFloat = 20
         switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
         case (.dark, _):
-                
-            return .darkGray
+            let float : CGFloat = 20
+            return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
         default:
+            float = 255 - float
+            return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
+        }
+    }
+    
+    
+    
+    static let secondaryBackgroundColor = UIColor  { (trait) -> UIColor in
+        var float : CGFloat = 40
+        switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
+        case (.dark, _):
+            let float : CGFloat = 40
+            return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
+        default:
+            float = 255 - float
+            return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
 
-            return .systemGray3
+     //       return .systemGray3
         }
     }
     

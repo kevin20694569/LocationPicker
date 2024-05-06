@@ -7,6 +7,20 @@ class RestaurantDetailViewController : UIViewController, UICollectionViewDelegat
         self.restaurant = restaurant
     }
     
+    func deletePostCell(post: Post) {
+        guard let index = self.posts.firstIndex(of: post) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: self.enterCollectionIndexPath.section)
+        posts.remove(at: index)
+        collectionView.performBatchUpdates {
+            collectionView.deleteItems(at: [indexPath])
+        } completion: { bool in
+            
+        }
+
+    }
+    
     var presentForTabBarLessView : Bool! = false
     
     required init?(coder: NSCoder) {
