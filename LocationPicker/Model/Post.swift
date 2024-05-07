@@ -35,6 +35,8 @@ class Post : Hashable, Equatable {
     
     var user : User?
     
+    var isdeleted : Bool! = false
+    
     
     enum PostInfoKey {
         static let user = "user"
@@ -56,7 +58,7 @@ class Post : Hashable, Equatable {
     
     
     
-    init(postId : String, username : String?, restanrantname: String?, restaurantaddress: String?, mediacontents: [Media], timestamp : String, distance : Double?, RestaurantID : String, userID : String, content : String? , title : String?, selfReaction : Reaction?, publicReactions : [Reaction]?, liked : Bool?, likedTotal : Int, lovedTotal : Int?, vomitedTotal : Int?, angryTotal : Int?, sadTotal : Int?, surpriseTotal : Int?, grade : Double?) {
+    init(postId : String, username : String?, restanrantname: String?, restaurantaddress: String?, mediacontents: [Media], timestamp : String, distance : Double?, RestaurantID : String, userID : String, content : String? , title : String?, selfReaction : Reaction?, publicReactions : [Reaction]?, liked : Bool?, likedTotal : Int, lovedTotal : Int?, vomitedTotal : Int?, angryTotal : Int?, sadTotal : Int?, surpriseTotal : Int?, grade : Double?, isdeleted : Bool? ) {
         self.id = postId
         self.liked = liked ?? false
         self.media = mediacontents
@@ -73,6 +75,9 @@ class Post : Hashable, Equatable {
         self.sadTotal = sadTotal
         self.surpriseTotal = surpriseTotal
         self.grade = grade
+        if let isdeleted = isdeleted {
+            self.isdeleted = isdeleted
+        }
     }
     
     
@@ -103,6 +108,7 @@ class Post : Hashable, Equatable {
         let angryTotal : Int! = postJson.postDetail?.reactionsCount.angryTotal
         let sadTotal : Int! = postJson.postDetail?.reactionsCount.sadTotal
         let surpriseTotal : Int! = postJson.postDetail?.reactionsCount.surpriseTotal
+        let isdeleted : Bool = postJson.postDetail?.isdeleted ?? false
         
         
         if let selfReactionJson = postJson.selfReaction {
@@ -138,7 +144,7 @@ class Post : Hashable, Equatable {
             return mediaArray
         }
         
-        self.init(postId: post_id!, username: user_name, restanrantname: restaurant_name, restaurantaddress: restaurant_address, mediacontents: mediaContents, timestamp: created_at, distance: distance, RestaurantID: restaurant_id, userID: user_id, content: post_content, title: post_title, selfReaction: selfReaction, publicReactions: publicReactions, liked : liked, likedTotal: likedTotal, lovedTotal: lovedTotal, vomitedTotal: vomitedTotal, angryTotal: angryTotal, sadTotal: sadTotal, surpriseTotal: surpriseTotal, grade : grade )
+        self.init(postId: post_id!, username: user_name, restanrantname: restaurant_name, restaurantaddress: restaurant_address, mediacontents: mediaContents, timestamp: created_at, distance: distance, RestaurantID: restaurant_id, userID: user_id, content: post_content, title: post_title, selfReaction: selfReaction, publicReactions: publicReactions, liked : liked, likedTotal: likedTotal, lovedTotal: lovedTotal, vomitedTotal: vomitedTotal, angryTotal: angryTotal, sadTotal: sadTotal, surpriseTotal: surpriseTotal, grade : grade, isdeleted: isdeleted )
         if let restaurantJson = postJson.restaurant {
             
             self.restaurant = Restaurant(json: restaurantJson)

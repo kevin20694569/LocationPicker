@@ -14,7 +14,7 @@
 		23005C122B9C6B1C00425BEA /* RestaurantDetailOpeningTimesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23005C112B9C6B1C00425BEA /* RestaurantDetailOpeningTimesCell.swift */; };
 		23005C142B9C6B3D00425BEA /* BlurCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23005C132B9C6B3D00425BEA /* BlurCollectionCell.swift */; };
 		230793872B7344E800266227 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230793862B7344E800266227 /* Button.swift */; };
-		230793892B73450300266227 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230793882B73450300266227 /* UIView.swift */; };
+		230793892B73450300266227 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230793882B73450300266227 /* View.swift */; };
 		2307938B2B73451A00266227 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2307938A2B73451A00266227 /* TextField.swift */; };
 		2307938D2B7363E000266227 /* SwipeEnableNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2307938C2B7363E000266227 /* SwipeEnableNavViewController.swift */; };
 		230793942B73649600266227 /* UniqueVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230793932B73649600266227 /* UniqueVariable.swift */; };
@@ -159,7 +159,6 @@
 		23DD487D2AE9886300C63821 /* RestaurantManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD483B2AE9886300C63821 /* RestaurantManager.swift */; };
 		23DD487E2AE9886300C63821 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DD483C2AE9886300C63821 /* LocationManager.swift */; };
 		23DD48822AE98DC300C63821 /* ChatView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23DD48812AE98DC300C63821 /* ChatView.storyboard */; };
-		23E05DC92BE4E6F500117CC2 /* DeMainPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DC82BE4E6F500117CC2 /* DeMainPostCell.swift */; };
 		23E05DCB2BE8F8CB00117CC2 /* EditPostOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */; };
 		23E05DCD2BE8FA9B00117CC2 /* EditPostOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */; };
 		23E05DCF2BE9043700117CC2 /* EditPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E05DCE2BE9043700117CC2 /* EditPostViewController.swift */; };
@@ -193,7 +192,7 @@
 		23005C112B9C6B1C00425BEA /* RestaurantDetailOpeningTimesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantDetailOpeningTimesCell.swift; sourceTree = "<group>"; };
 		23005C132B9C6B3D00425BEA /* BlurCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurCollectionCell.swift; sourceTree = "<group>"; };
 		230793862B7344E800266227 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
-		230793882B73450300266227 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		230793882B73450300266227 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		2307938A2B73451A00266227 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		2307938C2B7363E000266227 /* SwipeEnableNavViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeEnableNavViewController.swift; sourceTree = "<group>"; };
 		230793932B73649600266227 /* UniqueVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueVariable.swift; sourceTree = "<group>"; };
@@ -342,7 +341,6 @@
 		23DD483B2AE9886300C63821 /* RestaurantManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestaurantManager.swift; sourceTree = "<group>"; };
 		23DD483C2AE9886300C63821 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		23DD48812AE98DC300C63821 /* ChatView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ChatView.storyboard; sourceTree = "<group>"; };
-		23E05DC82BE4E6F500117CC2 /* DeMainPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeMainPostCell.swift; sourceTree = "<group>"; };
 		23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostOptionViewController.swift; sourceTree = "<group>"; };
 		23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostOptionCell.swift; sourceTree = "<group>"; };
 		23E05DCE2BE9043700117CC2 /* EditPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostViewController.swift; sourceTree = "<group>"; };
@@ -572,6 +570,7 @@
 		231B3FD22B5CCE1900DB4132 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				23E8C7982B28859E007F0888 /* PostDetailSheetViewController.swift */,
 				23749C202B0F0047007241A8 /* FriendRequestViewController.swift */,
 				23B1E3E02B10A26500424E21 /* MessageViewController.swift */,
 				23DD48162AE9886300C63821 /* PlaceFindtableViewController.swift */,
@@ -594,7 +593,6 @@
 		232971002B21EE70000C35D9 /* MainPostCell */ = {
 			isa = PBXGroup;
 			children = (
-				23E05DC82BE4E6F500117CC2 /* DeMainPostCell.swift */,
 				23B7FE0F2AEA3B050053EC79 /* MainPostTableCell.swift */,
 				23F085E12BBE5BF400A024D6 /* Standard */,
 				23F085E22BBE5C4200A024D6 /* DetailSheet */,
@@ -908,7 +906,7 @@
 			isa = PBXGroup;
 			children = (
 				230793862B7344E800266227 /* Button.swift */,
-				230793882B73450300266227 /* UIView.swift */,
+				230793882B73450300266227 /* View.swift */,
 				2307938A2B73451A00266227 /* TextField.swift */,
 				23138C4F2B862B89008E7146 /* ZoomAnimatedImageView.swift */,
 				23138C532B8630B6008E7146 /* ExtendedEmojiView.swift */,
@@ -923,7 +921,6 @@
 			children = (
 				23DD48222AE9886300C63821 /* NavMainTableViewController.swift */,
 				23DD48202AE9886300C63821 /* MainPostTableViewController.swift */,
-				23E8C7982B28859E007F0888 /* PostDetailSheetViewController.swift */,
 			);
 			path = MainTableViewController;
 			sourceTree = "<group>";
@@ -1345,7 +1342,6 @@
 				23CDFAD02BA7198500549AA0 /* SharedToFriendCollectionViewCell.swift in Sources */,
 				23F085E72BBE5FB700A024D6 /* StandardImageViewCollectionCell.swift in Sources */,
 				23D367892BB6A9C500D53CFF /* EmptyWholePageMediaViewController.swift in Sources */,
-				23E05DC92BE4E6F500117CC2 /* DeMainPostCell.swift in Sources */,
 				23D3FD7D2BA33ED50011964D /* AddCollectViewController.swift in Sources */,
 				23005C0C2B9C69F200425BEA /* CollectionViewInCollectionCell.swift in Sources */,
 				23C407382AF3F212008C1088 /* GoogleMapLocationResultsJson.swift in Sources */,
@@ -1361,7 +1357,7 @@
 				23138C502B862B89008E7146 /* ZoomAnimatedImageView.swift in Sources */,
 				2309B98B2B3D9592001D8612 /* Playlist.swift in Sources */,
 				23BD8B3B2B7DFC2600947D67 /* TapGestureHelper.swift in Sources */,
-				230793892B73450300266227 /* UIView.swift in Sources */,
+				230793892B73450300266227 /* View.swift in Sources */,
 				230D07FA2BB2A4C100FE2C5A /* MapProtocol.swift in Sources */,
 				23F085EB2BBE6F1900A024D6 /* UploadMediaDetailImageViewCollectionCell.swift in Sources */,
 				232427C62B9769EF00B084EB /* RestaurantPostsTableViewController.swift in Sources */,

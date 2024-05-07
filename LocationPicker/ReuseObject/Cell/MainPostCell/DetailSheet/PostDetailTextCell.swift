@@ -8,8 +8,12 @@ class PostDetailTextCell: UITableViewCell {
     }
     override func awakeFromNib() {
         super.awakeFromNib()
-        mainTextLabel.textColor = .white
+        labelSetup()
         self.backgroundColor = .clear
+    }
+    
+    func labelSetup() {
+        mainTextLabel.textColor = .white
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -21,10 +25,12 @@ class PostDetailTextCell: UITableViewCell {
 }
 
 class PostTitleCell: PostDetailTextCell {
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        mainTextLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+    override func labelSetup() {
+        super.labelSetup()
+        mainTextLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
     }
+    
+
     
     override func configure(post: Post) {
         self.mainTextLabel.text = post.postTitle
@@ -35,9 +41,9 @@ class PostTitleCell: PostDetailTextCell {
 
 class PostContentCell: PostDetailTextCell {
     
-    var mainTextLabelHeightAnchor : NSLayoutConstraint!
+    lazy var mainTextLabelHeightAnchor : NSLayoutConstraint! = self.mainTextLabel.heightAnchor.constraint(equalToConstant: 0)
     
-    weak var postContentCellDelegate : ExtendLabelHeightTableCellDelegate!
+    weak var postContentCellDelegate : ExtendLabelHeightTableCellDelegate?
     
     override var mainTextLabel: UILabel! { didSet {
         mainTextLabel.isUserInteractionEnabled = true
@@ -46,11 +52,16 @@ class PostContentCell: PostDetailTextCell {
     }}
     override func awakeFromNib() {
         super.awakeFromNib()
-        mainTextLabelHeightAnchor = self.mainTextLabel.heightAnchor.constraint(equalToConstant: 0)
-        mainTextLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .regular)
+       
     }
     override func configure(post: Post) {
+        super.configure(post: post)
         self.mainTextLabel.text = post.postContent
+    }
+    
+    override func labelSetup() {
+        super.labelSetup()
+        mainTextLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .regular)
     }
     
     @objc func postsContentExpand() {
@@ -69,7 +80,7 @@ class PostContentCell: PostDetailTextCell {
             mainTextLabelHeightAnchor.constant = actualSize.height
             
             contentView.layoutIfNeeded()
-            self.postContentCellDelegate.cellRowHeightSizeFit()
+            self.postContentCellDelegate?.cellRowHeightSizeFit()
         })
     }
     

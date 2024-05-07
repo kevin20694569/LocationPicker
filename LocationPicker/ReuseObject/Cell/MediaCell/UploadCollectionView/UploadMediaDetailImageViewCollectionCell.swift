@@ -132,6 +132,7 @@ class UploadMediaDetailImageViewCollectionCell  : ImageViewCollectionCell, Uploa
         textField.delegate = textFieldDelegate
         updateTextFieldValidStatus(text: textField.text)
         textFieldLayout()
+
         self.layoutIfNeeded()
     }
     

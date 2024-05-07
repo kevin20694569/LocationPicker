@@ -40,6 +40,8 @@ class StandardPostContentTableCell : StandardPostTableCell {
 
     var postContentLabel : UILabel! = UILabel()
     
+    var postContentExpandGesture : UITapGestureRecognizer!
+    
     
     var postContentTopAnchor : NSLayoutConstraint!  {
         postContentLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: 6)
@@ -89,8 +91,10 @@ class StandardPostContentTableCell : StandardPostTableCell {
     
     override func setGestureTarget() {
         super.setGestureTarget()
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(postsContentExpand))
-        postContentLabel.addGestureRecognizer(gesture)
+        postContentExpandGesture = UITapGestureRecognizer(target: self, action: #selector(postsContentExpand))
+        postContentExpandGesture.cancelsTouchesInView = false
+        postContentLabel.addGestureRecognizer(postContentExpandGesture)
+        postContentExpandGesture.delegate = self
     }
     
     override func prepareForReuse() {
@@ -128,6 +132,11 @@ class StandardPostContentTableCell : StandardPostTableCell {
             self.standardPostCellDelegate?.cellRowHeightSizeFit()
         })
         
+        
+    }
+    
+    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
     
     func expandLabel() {

@@ -110,7 +110,7 @@ class AddCollectViewController : PresentedSheetViewController, UITableViewDelega
     
     override func viewSetup() {
         super.viewSetup()   
-        self.view.backgroundColor = .secondaryBackgroundColor
+        self.view.backgroundColor = .backgroundPrimary
     
     }
     

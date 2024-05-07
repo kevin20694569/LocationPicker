@@ -52,9 +52,11 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
             await loadFriends(user_id: Constant.user_id, date: "")
         }
         registerCells()
+        searchBarSetup()
+        collectionViewSetup()
+        sharedButtonSetup()
         initLayout()
-        layoutShareButton()
-        setCollectionViewStyle()
+
     }
     
     override func initLayout() {
@@ -62,10 +64,6 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         self.view.addSubview(searchBar)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.delaysContentTouches = false
-        collectionView.allowsMultipleSelection = true
-        collectionView.backgroundColor = .secondaryBackgroundColor
         self.view.addSubview(bottomView)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(shareButton)
@@ -92,40 +90,18 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         ])
     }
     
-    func layoutShareButton() {
-        var config = UIButton.Configuration.filled()
-        let attString = AttributedString("傳送", attributes: AttributeContainer([
-            .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular)
-        ]))
-        config.baseBackgroundColor = UIColor.secondaryBackgroundColor
-        config.baseForegroundColor = UIColor.secondaryLabelColor
-        config.attributedTitle = attString
-        shareButton.configuration = config
+    func searchBarSetup() {
+        searchBar.barTintColor = .secondaryBackgroundColor
+        searchBar.searchTextField.backgroundColor = .thirdBackgroundColor
+        searchBar.searchTextField.textColor = .label
+        searchBar.searchBarStyle = .minimal
     }
     
-
-    
-    func updateShareButton(enable : Bool) {
-        
-        self.shareButton.animatedEnable = enable
-        if var config = shareButton.configuration {
-            if enable {
-                config.attributedTitle?.font =  UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
-                config.baseBackgroundColor = .tintOrange
-                config.baseForegroundColor = .label
-            } else {
-                config.attributedTitle?.font =  UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular)
-                config.baseBackgroundColor = .secondaryLabelColor
-                config.baseForegroundColor = .secondaryBackgroundColor
-                
-            }
-            shareButton.configuration = config
-        }
-    }
-    
-
-    
-    func setCollectionViewStyle() {
+    func collectionViewSetup() {
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delaysContentTouches = false
+        collectionView.allowsMultipleSelection = true
+        collectionView.backgroundColor = .secondaryBackgroundColor
         collectionView.delegate = self
         collectionView.dataSource = self
         let space : CGFloat = 1
@@ -136,6 +112,29 @@ class ShareViewController : PresentedSheetViewController, UICollectionViewDelega
         flow.minimumLineSpacing = space
         flow.minimumInteritemSpacing = space
         self.collectionView.collectionViewLayout = flow
+    }
+    
+    
+    func sharedButtonSetup() {
+        var config = UIButton.Configuration.filled()
+        let attString = AttributedString("傳送", attributes: AttributeContainer([
+            .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        ]))
+        config.baseBackgroundColor = .tintOrange
+        config.baseForegroundColor = .white
+        config.attributedTitle = attString
+        shareButton.configuration = config
+        shareButton.clipsToBounds = true
+        shareButton.layer.cornerRadius = 6
+        updateShareButton(enable: false)
+
+    }
+    
+
+    
+    func updateShareButton(enable : Bool) {
+        self.shareButton.animatedEnable = enable
+        shareButton.isEnabled = enable
     }
     
     var canTouchOutsideToDismiss: Bool! = true
@@ -203,8 +202,8 @@ class SharePostViewController : ShareViewController {
         self.dismiss(animated: true)
     }
     
-    override func layoutShareButton() {
-        super.layoutShareButton()
+    override func sharedButtonSetup() {
+        super.sharedButtonSetup()
         shareButton.addTarget(self, action: #selector(sharePost( _ :)), for: .touchUpInside)
     }
 }
@@ -231,8 +230,8 @@ class ShareRestaurantController : ShareViewController {
         self.dismiss(animated: true)
     }
     
-    override func layoutShareButton() {
-        super.layoutShareButton()
+    override func sharedButtonSetup() {
+        super.sharedButtonSetup()
         shareButton.addTarget(self, action: #selector(shareRestaurant( _ :)), for: .touchUpInside)
     }
 }
@@ -258,8 +257,8 @@ class ShareUserController : ShareViewController {
         self.dismiss(animated: true)
     }
     
-    override func layoutShareButton() {
-        super.layoutShareButton()
+    override func sharedButtonSetup() {
+        super.sharedButtonSetup()
         shareButton.addTarget(self, action: #selector(shareUser( _ :)), for: .touchUpInside)
     }
 }

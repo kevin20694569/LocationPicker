@@ -237,8 +237,19 @@ final class PostManager : NSObject {
     }
     
     
-    func updatePostDetail(post_id : String, title : String?, content : String?, grade : Double?) async throws  {
-        guard title != nil || content != nil || grade != nil else {
+    func updatePostDetail(post_id : String, title : String?, content : String?, grade : Double?, medias : [Media]) async throws  {
+        var mediasTextValid = false
+        var mediaTitleArray : [String?] = []
+        for media in medias {
+            mediaTitleArray.append(media.title)
+            if media.title != nil {
+                mediasTextValid = true
+            } else {
+                media.title = nil
+            }
+        }
+        print(mediaTitleArray)
+        guard title != nil || content != nil || grade != nil || mediasTextValid else {
             return
         }
         do {
@@ -249,14 +260,14 @@ final class PostManager : NSObject {
                 throw  APIError.URLnotFound(urlstring)
             }
             let encoder = JSONEncoder()
-            let decoder = JSONDecoder()
+           
             var req = URLRequest(url: url)
             req.httpMethod = "PUT"
-            let body = updatePostDetailRequestBody(title: title, content: content, grade: grade)
+            let body = updatePostDetailRequestBody(title: title, content: content, grade: grade, mediatitles: mediaTitleArray)
             let bodyData = try? encoder.encode(body)
             req.addValue("application/json", forHTTPHeaderField: "Content-Type")
             req.httpBody = bodyData
-            let (data, res) = try await URLSession.shared.data(for: req)
+            let (_, res) = try await URLSession.shared.data(for: req)
             if let res = res as? HTTPURLResponse {
                 if 200...299 ~= res.statusCode  {
                     print("updatePost成功")
@@ -272,6 +283,7 @@ final class PostManager : NSObject {
             var title : String?
             var content : String?
             var grade : Double?
+            var mediatitles : [String?]?
         }
         
     }

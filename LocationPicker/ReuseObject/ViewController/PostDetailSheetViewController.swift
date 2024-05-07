@@ -9,9 +9,7 @@ class PostDetailSheetViewController: UIViewController, UITableViewDelegate, UITa
     var handlePanGesture : UIPanGestureRecognizer!
     let cornerRadiusFloat  = Constant.standardCornerRadius
     
-    @IBOutlet var itemtTitleLabel : UILabel! { didSet {
-        itemtTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
-    }}
+    @IBOutlet var itemtTitleLabel : UILabel!
     
     
     @IBOutlet var bottomReactionView : UIView!
@@ -34,16 +32,16 @@ class PostDetailSheetViewController: UIViewController, UITableViewDelegate, UITa
         postDetailSheetViewControllerDelegate?.updateHeartButtonStatus()
     }
     
-    @IBOutlet var titleSlideView : UIView! { didSet {
-
-    }}
+    @IBOutlet var titleSlideView : UIView!
     @IBOutlet var tableView : UITableView!
     
     weak var postDetailSheetViewControllerDelegate : PostDetailSheetViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewStyleSet()
+        updateItemTitleLabelText(index: currentPost.CurrentIndex)
+        tableViewSetup()
+        labelSetup()
         initLayout()
         setHeartImage()
         layoutHeightAnchor()
@@ -72,18 +70,19 @@ class PostDetailSheetViewController: UIViewController, UITableViewDelegate, UITa
         titleSlideView.insertSubview(blurView , belowSubview: self.itemtTitleLabel)
     }
     
-    func viewStyleSet() {
+    func tableViewSetup() {
         tableView.separatorStyle = .none
         tableView.dataSource = self
         tableView.allowsSelection = false
-        updateItemTitleLabelText(index: currentPost.CurrentIndex)
     }
     
     func updateItemTitleLabelText(index : Int) {
-        let string = currentPost.media[index].title
-        self.itemtTitleLabel.text = string
+        self.itemtTitleLabel.text = currentPost.media[index].title
     }
     
+    func labelSetup() {
+        self.itemtTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -94,8 +93,8 @@ class PostDetailSheetViewController: UIViewController, UITableViewDelegate, UITa
     
     func configure(post : Post) {
         currentPost = post
-
     }
+    
     func cellRowHeightSizeFit() {
         tableView.beginUpdates()
         tableView.endUpdates()

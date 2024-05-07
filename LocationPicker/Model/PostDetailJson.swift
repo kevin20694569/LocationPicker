@@ -77,6 +77,8 @@ struct PostDetailJson : Codable {
     
     var grade : Double?
     
+    var isdeleted : Bool! = false
+    
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -89,6 +91,7 @@ struct PostDetailJson : Codable {
         case grade = "grade"
         case reactionsCount = "reactions"
         case distance = "distance"
+        case isdeleted = "isdeleted"
     }
     
     init(contenttext : String, media : [mediaJSON]!, user_id: String, restaurant_id : String, restaurantname: String?, restaurantaddress : String?) {
@@ -112,6 +115,7 @@ struct PostDetailJson : Codable {
         self.reactionsCount = try container.decodeIfPresent(ReactionsCount.self, forKey: .reactionsCount)
         self.grade = try container.decodeIfPresent(Double.self, forKey: .grade)
         self.distance = try container.decodeIfPresent(Double.self, forKey: .distance)
+        self.isdeleted = try? container.decodeIfPresent(Bool.self, forKey: .isdeleted) ?? false
     }
 }
 

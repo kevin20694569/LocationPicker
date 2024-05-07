@@ -1,6 +1,6 @@
 import UIKit
 
-class EditPostViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+class EditPostViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UICollectionViewDelegate {
     
     var dict : [Int:  String] = [0 : "標題", 1 : "內容"]
     
@@ -13,24 +13,35 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     
     var activeTextView : UITextView?
     
+    var activeTextField : UITextField?
+    
     var saveButtonItem : UIBarButtonItem! = UIBarButtonItem()
     
     weak var refreshCellDelegate : StandardPostTableCellProtocol?
+    
+    var mediaTextFieldsValid : Bool! = true { didSet {
+        self.updateReleaseButtonStatus()
+    }
+    }
     
     var titleTextOverrange : Bool! = false { didSet {
         self.updateReleaseButtonStatus()
     }}
     
+    var mediaCollectionViewCell : UploadMediaDetailTableCell! {
+        return tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? UploadMediaDetailTableCell
+    }
+    
     var titleCell : UploadPostDetailTitleCell! {
-        return tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? UploadPostDetailTitleCell
+        return tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? UploadPostDetailTitleCell
     }
     
     var contentCell : UploadPostDetailContentCell! {
-        return tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? UploadPostDetailContentCell
+        return tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? UploadPostDetailContentCell
     }
     
     var gradeCell : UploadPostDetailGradeCell! {
-        return tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? UploadPostDetailGradeCell
+        return tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? UploadPostDetailGradeCell
     }
     
     required init?(coder: NSCoder) {
@@ -38,13 +49,22 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let width = self.view.bounds.width
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "UploadMediaDetailTableCell", for: indexPath) as! UploadMediaDetailTableCell
+            cell.collectionViewDelegate = self
+            cell.textFieldDelegate = self
+            cell.configure(medias: post.media)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: width / 2, bottom: 0, right: width / 2)
+            cell.selectionStyle = .none
+            return cell
+        }
         
-        if indexPath.section == 1 {
+        if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "UploadPostDetailGradeCell", for: indexPath) as! UploadPostDetailGradeCell
             cell.separatorInset = UIEdgeInsets(top: 0, left: width / 2, bottom: 0, right: width / 2)
             cell.selectionStyle = .none
@@ -71,6 +91,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
             cell.selectionStyle = .none
             return cell
         }
+        
     }
     
     func buttonItemSetup() {
@@ -83,7 +104,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 {
+        if section == 0 || section == 2 {
             return 1
         }
         return dict.count
@@ -124,13 +145,33 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
         
         tableView.register(UploadPostDetailContentCell.self, forCellReuseIdentifier: "UploadPostDetailContentCell")
         tableView.register(UploadPostDetailGradeCell.self, forCellReuseIdentifier: "UploadPostDetailGradeCell")
+        tableView.register(UploadMediaDetailTableCell.self, forCellReuseIdentifier: "UploadMediaDetailTableCell")
         
     }
     
     func tableViewSetup() {
-        tableView.rowHeight = UITableView.automaticDimension
+        //tableView.rowHeight = UITableView.automaticDimension
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        let bounds = self.view.bounds
+        if indexPath.section == 0 {
+            let height = bounds.height * 0.3
+            return height
+        }
+        
+        
+        if indexPath.section == 1 {
+            
+            return UITableView.automaticDimension
+        }
+        
+        let height = bounds.height * 0.08
+        return height
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -147,6 +188,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     
     func savePost() async {
         do {
+            
             var title = titleCell.textView.text
             var content = contentCell.textView.text
             let grade = gradeCell.currentGrade
@@ -157,7 +199,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
                 content = nil
             }
 
-            try await PostManager.shared.updatePostDetail(post_id: post.id, title: title, content: content, grade: grade)
+            try await PostManager.shared.updatePostDetail(post_id: post.id, title: title, content: content, grade: grade, medias: self.post.media)
             navigationController?.popViewController(animated: true)
         } catch {
             print(error)
@@ -205,14 +247,46 @@ extension EditPostViewController : UITextViewDelegate {
         textView.text.trimTrailingWhitespace()
     }
     
-    func updateReleaseButtonStatus() {
-        let isEnable = !titleTextOverrange
-        self.saveButtonItem.isEnabled = isEnable
-        if isEnable {
-         //   self.releaseButton.updateTitle(Title: "發佈", backgroundColor: .tintColor, tintColor: .white, font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
-        } else {
-        //    releaseButton.updateTitle(Title: "發佈", backgroundColor: .secondaryBackgroundColor, tintColor: .secondaryLabelColor, font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        textField.text?.trimTrailingWhitespace()
+        var string = textField.text
+        if textField.text == "" {
+            string = nil
+        }
+        self.post.media[textField.tag].title = string
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+        for cell in mediaCollectionViewCell.collectionView.visibleCells {
+            if let cell = cell as? UploadMediaTextFieldProtocol {
+                if cell.textField == textField {
+                    let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+                    cell.updateTextFieldValidStatus(text: finalString)
+                    let media = self.post.media[textField.tag]
+                    media.title = finalString
+                    let valid = mediaCollectionViewCell.updateValidStatus()
+                    self.mediaTextFieldsValid = valid
+                    break
+                }
+            }
         }
         
+
+        return true
+    }
+    
+    func updateReleaseButtonStatus() {
+        let isEnable = !titleTextOverrange && mediaTextFieldsValid
+        self.saveButtonItem.isEnabled = isEnable
     }
 }

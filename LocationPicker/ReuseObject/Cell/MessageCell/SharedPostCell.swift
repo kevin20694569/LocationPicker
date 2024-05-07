@@ -2,11 +2,14 @@ import UIKit
 
 
 class RhsMessageSharedPostCell : RhsMessageTableViewCell, MessageSharedPostCell {
-    var showPostGesture: UITapGestureRecognizer! = UITapGestureRecognizer()
+    
+   
     
     var postImageView: UIImageView! = UIImageView()
     
     var restaurantNameLabel: UILabel! = UILabel()
+    
+    
     
     var post : PostDetailJson!
     
@@ -20,34 +23,51 @@ class RhsMessageSharedPostCell : RhsMessageTableViewCell, MessageSharedPostCell 
         super.configure(message: message)
         
         self.post = message.postJson
+    
         self.restaurantNameLabel.text = message.sharedPostRestaurant?.name
         self.postImageView.image = nil
-        if let snapshotImage = message.snapshotImage {
-            self.postImageView.image = snapshotImage
-        } else {
-            Task { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                if let image = try? await message.snapshotImageURL?.getImageFromURL() {
-                    message.snapshotImage = image
-                    if message.snapshotImageURL == URL(string : self.post.media!.first!.url) {
-                        self.postImageView.image = image
+        postImageView.contentMode = .scaleAspectFit
+        if !self.post.isdeleted {
+            if let snapshotImage = message.snapshotImage {
+                self.postImageView.image = snapshotImage
+            } else {
+                Task { [weak self] in
+                    guard let self = self else {
+                        return
+                    }
+                    if let image = try? await message.snapshotImageURL?.getImageFromURL() {
+                        message.snapshotImage = image
+                        if message.snapshotImageURL == URL(string : self.post.media!.first!.url) {
+                            self.postImageView.image = image
+                        }
                     }
                 }
             }
+
+        } else {
+            postImageView.contentMode = .scaleAspectFit
+            postImageView.image = UIImage(systemName: "exclamationmark.triangle.fill")?.withTintColor(.tintOrange, renderingMode: .alwaysOriginal)
+
+            
         }
     }
     
-    override func setGesture() {
-        showPostGesture.addTarget(self, action: #selector(showPost ( _ : )))
-        self.mainView.addGestureRecognizer(showPostGesture)
-        mainView.isUserInteractionEnabled = true
+    override func mainViewTapped() {
+        if self.post.isdeleted {
+            guard let restaurant = messageInstance.sharedPostRestaurant else {
+                return
+            }
+            
+            self.showRestaurantDetailViewController(restaurant_id: restaurant.ID, restaurant: restaurant)
+            
+        } else {
+            guard let post_id = self.post.id else {
+                return
+            }
+            self.showWholePageMediaViewController(post_id: post_id)
+        }
     }
-    
-    @objc func showPost( _ gesture : UITapGestureRecognizer) {
-        self.messageTableCellDelegate?.showWholePageMediaViewController(cell: self)
-    }
+        
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -67,11 +87,11 @@ class RhsMessageSharedPostCell : RhsMessageTableViewCell, MessageSharedPostCell 
         restaurantNameLabel.font = .weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
         self.contentView.addSubview(restaurantNameLabel)
         restaurantNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        restaurantNameLabel.text = "jlkklnrwjlknsulojdfnheqoidhjqwoidhjoqwidhoqwjedwlijfweqhn"
         restaurantNameLabel.numberOfLines = 0
         postImageView.contentMode = .scaleAspectFill
         postImageView.clipsToBounds = true
         postImageView.backgroundColor = .secondaryLabelColor
+        postImageView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
         
         self.mainView.addSubview(postImageView)
         postImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,16 +155,22 @@ class LhsMessageSharedPostCell : LhsMessageTableViewCell, MessageSharedPostCell 
     }
     
     
-    override func setGesture() {
-        super.setGesture()
-        showPostGesture.addTarget(self, action: #selector(showPost ( _ : )))
-        self.mainView.addGestureRecognizer(showPostGesture)
-        mainView.isUserInteractionEnabled = true
+    override func mainViewTapped() {
+        if self.post.isdeleted {
+            guard let restaurant = messageInstance.sharedPostRestaurant else {
+                return
+            }
+            
+            self.showRestaurantDetailViewController(restaurant_id: restaurant.ID, restaurant: restaurant)
+            
+        } else {
+            guard let post_id = self.post.id else {
+                return
+            }
+            self.showWholePageMediaViewController(post_id: post_id)
+        }
     }
     
-    @objc func showPost( _ gesture : UITapGestureRecognizer) {
-        self.messageTableCellDelegate?.showWholePageMediaViewController(cell: self)
-    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

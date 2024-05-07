@@ -5,10 +5,8 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     func updateEmojiButtonImage(targetTag: Int?) {
         self.startReactionTargetAnimation(targetTag: targetTag)
     }
-
-    
-    
     weak var mediaTableCellDelegate : MediaTableCellDelegate?
+    
     var canPostReaction : Bool!  {
         true
     }
@@ -337,9 +335,12 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     }
     
     func pageControllSetup() {
-        pageControll.hidesForSinglePage = true
         pageControll.pageIndicatorTintColor = .secondaryLabelColor
         pageControll.currentPageIndicatorTintColor = .tintOrange
+        pageControll.backgroundStyle = .automatic
+        pageControll.isUserInteractionEnabled = false
+        
+        
     }
 
     
@@ -506,7 +507,6 @@ extension MainPostTableCell {
             self.muteTapGesture.isEnabled = false
         } else {
             self.muteTapGesture.isEnabled = true
-            
         }
     }
     
@@ -575,11 +575,11 @@ extension MainPostTableCell {
         
         setHeartButtonStatus()
         
-        self.startReactionTargetAnimation(targetTag: self.currentPost.selfReaction?.reactionType?.reactionTag)
-        self.currentMediaIndexPath = scrollTo
+        startReactionTargetAnimation(targetTag: currentPost.selfReaction?.reactionType?.reactionTag)
+        currentMediaIndexPath = scrollTo
         reloadEnterAndBackCollectionCell(enterIndexPath: reloadIndexPath, backIndexPath: scrollTo)
         
-        self.updateVisibleCellsMuteStatus()
+        updateVisibleCellsMuteStatus()
     }
     
     
@@ -634,6 +634,7 @@ extension MainPostTableCell {
         self.mediaTableCellDelegate?.playCurrentMedia()
         return nil
     }
+
     
     
     

@@ -20,34 +20,51 @@ class RestaurantProfileNameCell : UICollectionViewCell, RestaurantProfileCollect
     
     @IBOutlet var dollarSignStackView : UIStackView!
     
-    @IBOutlet var dollarStatusLabel : UILabel! { didSet {
-        dollarStatusLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .regular)
-    }}
+    @IBOutlet var dollarStatusLabel : UILabel!
 
     @IBOutlet var restaurantImageView : UIImageView! { didSet {
-        restaurantImageView.backgroundColor = .secondaryBackgroundColor
-        restaurantImageView.clipsToBounds = true
-        restaurantImageView.layer.cornerRadius = 16
-        restaurantImageView.contentMode = .scaleAspectFill
+
     }}
-    @IBOutlet var addressLabel : UILabel! { didSet {
-        addressLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
-        addressLabel.adjustsFontSizeToFitWidth = true
-    }}
+    @IBOutlet var addressLabel : UILabel!
     
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        mainView.clipsToBounds = true
-        mainView.layer.cornerRadius = 20
-        mainView.backgroundColor = .secondaryBackgroundColor
+        imageViewSetup()
+        labelSetup()
+        mainViewSetup()
+        stackViewSetup()
+    }
+    
+    func imageViewSetup() {
+        restaurantImageView.backgroundColor = .secondaryBackgroundColor
+        restaurantImageView.clipsToBounds = true
+        restaurantImageView.layer.cornerRadius = 16
+        restaurantImageView.contentMode = .scaleAspectFill
+    }
+    
+    func stackViewSetup() {
         dollarSignStackView.arrangedSubviews.forEach() {
             if let imageView = $0 as? UIImageView {
                 imageView.tintColor = .secondaryLabelColor
                 imageView.image = UIImage(systemName: "dollarsign.circle", withConfiguration: UIImage.SymbolConfiguration(font: dollarImageFont))?.withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal)
             }
         }
+    }
+    
+    func mainViewSetup() {
+        mainView.clipsToBounds = true
+        mainView.layer.cornerRadius = 20
+        mainView.backgroundColor = .secondaryBackgroundColor
+    }
+    
+    func labelSetup() {
+        addressLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
+        addressLabel.adjustsFontSizeToFitWidth = true
+        dollarStatusLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .regular)
+        
+        postsCountLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
     }
 
     func configure(restaurant : Restaurant) {

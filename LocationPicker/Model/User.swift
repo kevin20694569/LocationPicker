@@ -21,6 +21,8 @@ class User : Equatable, Hashable {
     var posts_count : Int?
     var friends_count : Int?
     
+    static var defaultExample : User! = User(user_id: "", name: "", image: UIImage(), imageURL: nil)
+    
 
     
 

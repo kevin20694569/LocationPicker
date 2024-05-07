@@ -7,160 +7,144 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3B405CBB-33EA-454D-8AE7-76A41E017EC3"
+            uuid = "D56B413B-DF20-474C-A174-4D4E3573A27F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/Cell/MessageCell/SharedPostCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "mainViewTapped()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6E5BE3A9-16BF-4305-B961-9EAB443F926B"
+            uuid = "810F53A8-C89F-45F8-B8DA-5B2728BAC5D7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/WholePageMediaViewController/WholePageMediaViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
+            landmarkName = "configureData(post:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "67FDA74C-E86D-43B1-AEF1-7720E05339E5"
+            uuid = "5DA22F6F-11EC-4F8E-9385-4249DA359A0F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/WholePageMediaViewController/WholePageMediaViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "506"
+            endingLineNumber = "506"
+            landmarkName = "configureData(post:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "74891B73-1288-4C08-8001-9672F74D8384"
+            uuid = "66862C0E-B911-434C-8455-1C07E9828AAE"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/WholePageMediaViewController/WholePageMediaViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "444"
+            endingLineNumber = "444"
+            landmarkName = "configureData(post:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A96F7E15-699F-4261-9B31-7A6CB18956F2"
+            uuid = "A6AC7BF8-EAF7-4AFA-AF4D-468EE7540D34"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/Cell/MainPostCell/Standard/StandardPostTableCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
+            landmarkName = "emojiTargetTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "58D0D6F4-CDD5-432C-9ACF-A2D689EE862B"
+            uuid = "1830417A-1A5A-448D-813E-6C637557E51F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/Cell/MainPostCell/Standard/StandardPostTableCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "emojiButtonTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "771DCB2E-5223-45DE-AA50-26A787459889"
+            uuid = "19EFAF98-951F-40FB-8D1E-65755DB9C9CA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/Cell/MainPostCell/Standard/StandardPostTableCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
+            landmarkName = "updateEmojiButtonImage(targetTag:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2D773298-2722-4C18-A031-90E6C1A87FDB"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "576C3B51-8667-44BA-83CD-AC35A2505662"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "43F7C42A-17DD-4728-A5DC-282ACB072BFC"
+            uuid = "1E1F970E-D807-47A2-B904-497D78BE1D0C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LocationPicker/MainTableViewController/MainPostTableViewController.swift"
+            filePath = "LocationPicker/ReuseObject/Cell/MainPostCell/MainPostTableCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6"
-            endingLineNumber = "6"
-            landmarkName = "deletePostCell(post:)"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
+            landmarkName = "emojiTargetTapped(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E368CFE8-7284-431B-BA8F-5E6CD55EB9A3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LocationPicker/ReuseObject/PostTableViewController/PostTableViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
+            landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

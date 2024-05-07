@@ -201,13 +201,26 @@ class UploadPostDetailExtraTableCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        accessoryViewSetup()
+        labelSetup()
+    }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        accessoryViewSetup()
+        labelSetup()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        //fatalError("init(coder:) has not been implemented")
+    }
+    
+    func accessoryViewSetup() {
         let image = UIImage(systemName: "chevron.forward", withConfiguration: UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)))
         let imageView = UIImageView(image: image)
         imageView.tintColor = .secondaryLabelColor
         
         self.accessoryView = imageView
-        titleLabel.adjustsFontSizeToFitWidth = true
-        addressLabel?.adjustsFontSizeToFitWidth = true
     }
     
     func configure(image: UIImage, text : String, address : String?) {
@@ -219,6 +232,11 @@ class UploadPostDetailExtraTableCell: UITableViewCell {
         } else {
             addressLabel?.isHidden = true
         }
+    }
+    
+    func labelSetup() {
+        titleLabel.adjustsFontSizeToFitWidth = true
+        addressLabel?.adjustsFontSizeToFitWidth = true
     }
     
     

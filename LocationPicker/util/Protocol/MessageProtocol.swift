@@ -3,7 +3,8 @@ import UIKit
 
 protocol MessageTableCellDelegate : UIViewController {
     func showUserProfile(user_id : String , user: User?)
-    func showWholePageMediaViewController(cell : UITableViewCell)
+    func showWholePageMediaViewController(post_id : String)
+    func showRestaurantDetailViewController(restaurant_id : String, restaurant : Restaurant?)
 }
 
 protocol MessageTableCellProtocol : UITableViewCell {
@@ -20,7 +21,6 @@ protocol MessageTextViewCell : MessageTableCellProtocol {
 protocol MessageSharedPostCell : MessageTableCellProtocol {
     var postImageView : UIImageView! { get }
     var restaurantNameLabel : UILabel! { get }
-    var showPostGesture : UITapGestureRecognizer! { get }
     func layoutSharePostSubviews()
         
 

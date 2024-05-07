@@ -81,7 +81,7 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     
     var user_id : String! = Constant.user_id
     
-    var userProfile: UserProfile! = UserProfile()
+    var userProfile: UserProfile! = UserProfile.example
     
     var posts : [Post]! =  []
     

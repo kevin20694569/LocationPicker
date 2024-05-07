@@ -19,6 +19,11 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         self.updateReleaseButtonStatus()
     }}
     
+    var mediaTextFieldsValid : Bool! = true { didSet {
+        self.updateReleaseButtonStatus()
+    }
+    }
+    
     var locationIsEmpty : Bool! = true { didSet {
         self.updateReleaseButtonStatus()
         if !locationIsEmpty {
@@ -154,10 +159,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         }
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -215,7 +217,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
     }
     
     func updateReleaseButtonStatus() {
-        let isEnable = !titleTextOverrange && !locationIsEmpty
+        let isEnable = !titleTextOverrange && !locationIsEmpty && mediaTextFieldsValid
         self.releaseButton.isEnabled = isEnable
         releaseButton.animatedEnable = isEnable
         if isEnable {
@@ -409,6 +411,11 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeTextField = textField
     }
@@ -444,10 +451,12 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
                 if let cell = cell as? UploadMediaTextFieldProtocol {
                     if cell.textField == textField {
                         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-                        let valid = cell.updateTextFieldValidStatus(text: finalString)
+                        cell.updateTextFieldValidStatus(text: finalString)
                         let media = self.MediaStorage[textField.tag]
                         media.title = finalString
-                        tableCell.updateValidStatus()
+                        let valid = tableCell.updateValidStatus()
+                        self.mediaTextFieldsValid = valid
+ 
                         break
                     }
                 }
@@ -499,6 +508,8 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         tableView.register(UploadPostDetailTitleCell.self, forCellReuseIdentifier: "UploadPostDetailTitleCell")
         tableView.register(UploadPostDetailContentCell.self, forCellReuseIdentifier: "UploadPostDetailContentCell")
         tableView.register(UploadPostDetailGradeCell.self, forCellReuseIdentifier: "UploadPostDetailGradeCell")
+        tableView.register(UploadMediaDetailTableCell.self, forCellReuseIdentifier: "UploadMediaDetailTableCell")
+        
     }
     
     

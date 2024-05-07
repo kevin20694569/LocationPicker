@@ -248,16 +248,18 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostTitleTableCell
         } else if post.postTitle == nil && post.postContent != nil  {
             let cellIdentifier = "StandardPostContentTableCell"
-            cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostContentTableCell
+            cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! StandardPostContentTableCell
         } else if post.postTitle != nil && post.postContent != nil {
             let cellIdentifier = "StandardPostAllTextTableCell"
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostAllTextTableCell
+
         } else {
             let cellIdentifier = "StandardPostTableCell"
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostTableCell
         }
         cell.standardPostCellDelegate = self
         cell.mediaTableCellDelegate = self
+        
         cell.collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
         cell.configureData(post: post)
 
@@ -288,10 +290,13 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         panViewGesture.cancelsTouchesInView = true
         self.navigationController?.view.addGestureRecognizer(panViewGesture)
         closeCurrentEmojiViewTapGesture = UITapGestureRecognizer(target: self, action: #selector(closeCurrentEmojiView))
-        closeCurrentEmojiViewTapGesture.cancelsTouchesInView = true
+        closeCurrentEmojiViewTapGesture.cancelsTouchesInView = false
         self.navigationController?.view.addGestureRecognizer(closeCurrentEmojiViewTapGesture)
         self.view.addGestureRecognizer(closeCurrentEmojiViewTapGesture)
     }
+
+    
+    
 
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {

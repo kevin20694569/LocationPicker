@@ -3,6 +3,10 @@ import UIKit
 
 class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, MessageTableCellDelegate {
 
+    
+
+    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
@@ -325,12 +329,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.navigationController?.navigationBar.backgroundColor = .clear
     }
     
-    func showUserProfile(user_id: String, user: User?) {
-        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user, user_id: user_id)
-        controller.navigationItem.title = user?.name
-        self.view.endEditing(true)
-        self.navigationController?.pushViewController(controller, animated: true)
-    }
+
     
     var moveHeight : CGFloat?
     
@@ -627,15 +626,25 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 }
 
 extension MessageViewController {
-    func showWholePageMediaViewController(cell : UITableViewCell) {
-        if let cell = cell as? MessageSharedPostCell,
-           let indexPath = tableView.indexPath(for: cell) {
-            let message = self.messages[indexPath.row]
-            if let post_id = message.postJson?.id {
-                let controller = EmptyWholePageMediaViewController(presentForTabBarLessView: true, post_id: post_id)
-                self.show(controller, sender: nil)
-                BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
-            }
+    func showWholePageMediaViewController(post_id : String) {
+        let controller = EmptyWholePageMediaViewController(presentForTabBarLessView: true, post_id: post_id)
+        self.show(controller, sender: nil)
+        BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
+    }
+    
+    func showRestaurantDetailViewController(restaurant_id: String, restaurant: Restaurant?) {
+        guard let restaurant = restaurant else {
+            return
         }
+        let controller =  RestaurantDetailViewController(presentForTabBarLessView: true, restaurant: restaurant)
+        self.show(controller, sender: nil)
+        BasicViewController.shared.swipeDatasourceToggle(navViewController: self.navigationController)
+    }
+    
+    func showUserProfile(user_id: String, user: User?) {
+        let controller = MainUserProfileViewController(presentForTabBarLessView: self.presentForTabBarLessView, user: user, user_id: user_id)
+        controller.navigationItem.title = user?.name
+        self.view.endEditing(true)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 }

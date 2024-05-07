@@ -45,20 +45,12 @@ class RhsShareRestaurantCell : RhsMessageTableViewCell, MessageShareRestaurantCe
     }
     
     
-    override func setGesture() {
-        super.setGesture()
-        showRestaurantDetailGesture.addTarget(self, action: #selector(showRestaurantDetail ( _ : )))
-        self.mainView.addGestureRecognizer(showRestaurantDetailGesture)
-        mainView.isUserInteractionEnabled = true
-    }
-    
-    @objc func showRestaurantDetail( _ gestureRecognizers : UITapGestureRecognizer) {
+    override func mainViewTapped() {
         guard let restaurant = messageInstance.sharedRestaurant else {
             return
         }
-        let controller = RestaurantDetailViewController(presentForTabBarLessView: true, restaurant: restaurant)
         
-        messageTableCellDelegate?.show(controller, sender: nil)
+        self.showRestaurantDetailViewController(restaurant_id: restaurant.ID, restaurant: restaurant)
     }
     
     override func prepareForReuse() {
@@ -167,25 +159,14 @@ class LhsShareRestaurantCell : LhsMessageTableViewCell, MessageShareRestaurantCe
             }
         }
     }
+
     
-    override func setGesture() {
-        super.setGesture()
-        showRestaurantDetailGesture.addTarget(self, action: #selector(showRestaurantDetail ( _ : )))
-        self.mainView.addGestureRecognizer(showRestaurantDetailGesture)
-        mainView.isUserInteractionEnabled = true
-    }
-    
-    
-    @objc func showRestaurantDetail( _ gestureRecognizers : UITapGestureRecognizer) {
-        guard let restaurant = self.messageInstance.sharedRestaurant else {
+    override func mainViewTapped() {
+        guard let restaurant = messageInstance.sharedRestaurant else {
             return
         }
-        let controller = RestaurantDetailViewController(presentForTabBarLessView: true, restaurant: restaurant)
-        messageTableCellDelegate?.show(controller, sender: nil)
-    }
-    
-    @objc func showUserProfile( _ gesture : UITapGestureRecognizer) {
-        self.messageTableCellDelegate?.showWholePageMediaViewController(cell: self)
+        
+        self.showRestaurantDetailViewController(restaurant_id: restaurant.ID, restaurant: restaurant)
     }
     
     override func prepareForReuse() {

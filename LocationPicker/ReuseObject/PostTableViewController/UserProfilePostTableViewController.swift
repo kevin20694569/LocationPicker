@@ -2,7 +2,7 @@ import UIKit
 
 class UserProfilePostTableViewController : PostTableViewController {
     
-    var user : User!
+    var user : User! = User.defaultExample
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard !isLoadingPost, posts.count - indexPath.row == 1,
@@ -53,6 +53,9 @@ class UserProfilePostTableViewController : PostTableViewController {
             let cellIdentifier = "StandardPostTableCell"
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostTableCell
         }
+        cell.settingButton.isHidden = false
+        cell.userNameLabel.isUserInteractionEnabled = false
+        cell.userImageView.isUserInteractionEnabled = false
         cell.collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
         cell.standardPostCellDelegate = self
         cell.mediaTableCellDelegate = self

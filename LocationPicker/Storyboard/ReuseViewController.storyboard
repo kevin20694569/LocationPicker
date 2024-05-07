@@ -120,13 +120,13 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Y9k-f1-Ug6">
                                             <rect key="frame" x="102" y="18.000000000000004" width="271" height="52.333333333333343"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="天候麻辣燙" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N1O-8y-xZU">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="天候麻辣燙" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N1O-8y-xZU">
                                                     <rect key="frame" x="0.0" y="0.0" width="271" height="24"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="天候麻辣燙" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LVk-dV-Go1">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="天候麻辣燙" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LVk-dV-Go1">
                                                     <rect key="frame" x="0.0" y="32" width="271" height="20.333333333333329"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -236,7 +236,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CEN-H9-AUf">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CEN-H9-AUf">
                                 <rect key="frame" x="0.0" y="773.33333333333337" width="393" height="78.666666666666629"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="vgS-fk-eNZ">
@@ -298,11 +298,11 @@
                         <constraints>
                             <constraint firstItem="5fS-1J-Vae" firstAttribute="top" secondItem="84v-Xd-EQv" secondAttribute="top" id="Gbq-oh-ot5"/>
                             <constraint firstAttribute="trailing" secondItem="CEN-H9-AUf" secondAttribute="trailing" id="H44-4y-rfG"/>
+                            <constraint firstItem="och-ap-2Yd" firstAttribute="bottom" secondItem="gza-Pj-W5F" secondAttribute="bottom" id="QPh-6B-bjF"/>
                             <constraint firstItem="gza-Pj-W5F" firstAttribute="leading" secondItem="och-ap-2Yd" secondAttribute="leading" id="Qw8-66-hfz"/>
                             <constraint firstItem="CEN-H9-AUf" firstAttribute="leading" secondItem="84v-Xd-EQv" secondAttribute="leading" id="Rqv-aT-Wui"/>
                             <constraint firstItem="och-ap-2Yd" firstAttribute="trailing" secondItem="5fS-1J-Vae" secondAttribute="trailing" id="Zi2-eX-5Z4"/>
                             <constraint firstItem="gza-Pj-W5F" firstAttribute="trailing" secondItem="och-ap-2Yd" secondAttribute="trailing" id="bpd-Ck-py4"/>
-                            <constraint firstItem="CEN-H9-AUf" firstAttribute="top" secondItem="gza-Pj-W5F" secondAttribute="bottom" id="eP5-RK-Bra"/>
                             <constraint firstItem="gza-Pj-W5F" firstAttribute="top" secondItem="5fS-1J-Vae" secondAttribute="bottom" id="oGV-35-TOS"/>
                             <constraint firstItem="5fS-1J-Vae" firstAttribute="leading" secondItem="och-ap-2Yd" secondAttribute="leading" id="xMC-SY-rKG"/>
                             <constraint firstAttribute="bottom" secondItem="CEN-H9-AUf" secondAttribute="bottom" id="y9H-Yc-C7L"/>

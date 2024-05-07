@@ -17,7 +17,10 @@ protocol StandardPostTableCellProtocol : PostTableCell {
     var standardPostCellDelegate : StandardPostCellDelegate? { get set }
     var userImageView : UIImageView! { get }
     var userNameLabel : UILabel! { get }
+    var settingButton : ZoomAnimatedButton! { get }
     func refreshData() async
+    
+
 
 }
 

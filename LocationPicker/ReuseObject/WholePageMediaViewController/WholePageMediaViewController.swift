@@ -427,7 +427,7 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
             return media.title
         }
         let postTitleLabelSize = self.postTitleButton.titleLabel!.sizeThatFits(CGSize(width: postTitleButton.titleLabel!.bounds.height, height: CGFloat.greatestFiniteMagnitude))
-        var biggerMediaTitleString : (AttributedString, CGSize)?
+        var biggerMediaTitleString : (AttributedString, CGSize)? = (AttributedString(), CGSize())
         let tempAttributedTitle = itemTitleButton.configuration?.attributedTitle
         for media in currentPost.media {
             if media.title != nil && media.title != "", let title = media.title  {
@@ -439,8 +439,10 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
                 itemTitleButton.configuration?.attributedTitle = currentAttrTitle
                 itemTitleButton.layoutIfNeeded()
                 let itemTitleLabelSize = self.itemTitleButton.titleLabel!.sizeThatFits(CGSize(width: itemTitleButton.titleLabel!.bounds.height, height:                          CGFloat.greatestFiniteMagnitude ))
-                if let biggerHeight = biggerMediaTitleString?.1.height {
+                if let biggerHeight = biggerMediaTitleString?.1.height, let biggerWidth = biggerMediaTitleString?.1.width {
                     if itemTitleLabelSize.height >  biggerHeight {
+                        biggerMediaTitleString = (currentAttrTitle , itemTitleLabelSize)
+                    } else if itemTitleLabelSize.width >  biggerWidth {
                         biggerMediaTitleString = (currentAttrTitle , itemTitleLabelSize)
                     }
 
@@ -451,13 +453,11 @@ class WholePageMediaViewController: UIViewController, UICollectionViewDelegate, 
 
                 hiddenItemTitleButton = false
 
-                break
+                
             }
         }
-        
-
-        
-        
+        itemTitleButton.configuration?.attributedTitle = biggerMediaTitleString?.0
+        itemTitleButton.layoutIfNeeded()
         self.itemTitleButton.isHidden = hiddenItemTitleButton
         
         if self.postTitleButton.isHidden && self.itemTitleButton.isHidden {

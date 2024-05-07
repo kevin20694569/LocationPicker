@@ -700,19 +700,16 @@ extension UIColor {
     static let secondaryLabelColor = UIColor { (trait) -> UIColor in
         switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
         case (.dark, _):
-
             return .lightGray
         default:
-
             return .darkGray
         }
     }
     
     static let thirdBackgroundColor = UIColor { (trait) -> UIColor in
-        var float : CGFloat = 20
+        var float : CGFloat = 10
         switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
         case (.dark, _):
-            let float : CGFloat = 20
             return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
         default:
             float = 255 - float
@@ -720,29 +717,22 @@ extension UIColor {
         }
     }
     
-    
-    
     static let secondaryBackgroundColor = UIColor  { (trait) -> UIColor in
         var float : CGFloat = 40
         switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
         case (.dark, _):
-            let float : CGFloat = 40
             return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
         default:
             float = 255 - float
             return UIColor(red: float / 255, green: float / 255, blue: float / 255, alpha: 1)
-
-     //       return .systemGray3
         }
     }
     
     static let gradeStarYellow = UIColor  { (trait) -> UIColor in
         switch (trait.userInterfaceStyle, trait.userInterfaceLevel) {
         case (.dark, _):
-            
             return .systemYellow
         default:
-            
             return .systemYellow
         }
     }

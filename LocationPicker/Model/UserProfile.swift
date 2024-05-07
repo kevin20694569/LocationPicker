@@ -21,7 +21,7 @@ struct UserProfile  {
 
     }
     
-    static let example = UserProfile(user: User.example, isFriend: false)
+    static let example = UserProfile(user: User.defaultExample, isFriend: false)
     
     init() {
         self.user = User()

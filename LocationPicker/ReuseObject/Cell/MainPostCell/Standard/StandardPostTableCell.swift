@@ -18,8 +18,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     var timeStampTopAnchor : NSLayoutConstraint!  {
         timeStampLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: timeStampVerConstant)
     }
-    
-    
 
     var collectionViewHeight : CGFloat! = Constant.standardMinimumTableCellCollectionViewHeight
     
@@ -54,9 +52,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
 
     override func configureData(post : Post) {
         currentPost = post
-        if currentPost.user?.id == Constant.user_id {
-            self.settingButton.isHidden = false
-        }
         self.collectionView.reloadSections([0])
         self.currentEmojiTag = post.selfReaction?.reactionType?.reactionTag
         self.updateEmojiButtonImage(targetTag: post.selfReaction?.reactionType?.reactionTag)
@@ -72,8 +67,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
                 userImageView?.image = userImage
             }
         }
-       
-
         pageControll?.numberOfPages = post.media.count
         timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
         userNameLabel.text = post.user?.name
@@ -141,10 +134,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         userNameLabel.textColor = .label
         
     }
-    
 
-    
-    
     override func setGestureTarget() {
         super.setGestureTarget()
         
@@ -268,8 +258,6 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     
     
     func startEmojiExtendAnimation() {
-        
-        
         guard !isEmojiViewAnimated else {
             return
         }

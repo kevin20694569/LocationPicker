@@ -14,13 +14,15 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
         return 12
     }
     
+    var warningLabel : UILabel! = UILabel()
 
-    
     var messageInstance : Message!
     
     var mainView : UIView! = UIView()
     
     weak var messageTableCellDelegate :  MessageTableCellDelegate?
+    
+    var mainViewTouchGesture : UITapGestureRecognizer!
     
     func configure(message : Message) {
         
@@ -30,11 +32,25 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layoutMainView()
+        setGesture()
     }
     
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func showUserProfileViewController(user_id : String, user : User?) {
+        messageTableCellDelegate?.showUserProfile(user_id: user_id, user: user)
+    }
+    
+    func showWholePageMediaViewController(post_id : String) {
+        messageTableCellDelegate?.showWholePageMediaViewController(post_id: post_id)
+    }
+    
+    func showRestaurantDetailViewController(restaurant_id : String, restaurant : Restaurant) {
+        messageTableCellDelegate?.showRestaurantDetailViewController(restaurant_id: restaurant_id, restaurant: restaurant)
     }
     
     func layoutMainView() {
@@ -44,6 +60,22 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
         mainView.clipsToBounds = true
         mainView.layer.cornerRadius = mainViewCornerRadius
     }
+    
+    
+   
+    
+    @objc func mainViewTapped( ) {
+        
+    }
+    
+    
+    func setGesture() {
+        mainViewTouchGesture = UITapGestureRecognizer(target: self, action: #selector(mainViewTapped))
+        mainView.isUserInteractionEnabled = true
+        self.mainView.addGestureRecognizer(mainViewTouchGesture)
+
+    }
+    
 
 }
 
@@ -61,9 +93,7 @@ class RhsMessageTableViewCell : MessageTableViewCell {
         ])
     }
     
-    func setGesture() {
-        
-    }
+
 }
 
 class LhsMessageTableViewCell : MessageTableViewCell {
@@ -91,12 +121,9 @@ class LhsMessageTableViewCell : MessageTableViewCell {
         setGesture()
 
     }
+    
 
-    func setGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(showUserProfile))
-        userImageView.isUserInteractionEnabled = true
-        userImageView.addGestureRecognizer(gesture)
-    }
+
     
     override func layoutMainView() {
         super.layoutMainView()
@@ -131,10 +158,6 @@ class LhsMessageTableViewCell : MessageTableViewCell {
     
     func hiddenSenderUserImageView(_ bool : Bool) {
         self.userImageView.isHidden = bool
-    }
-    
-    @objc func showUserProfile() {
-        messageTableCellDelegate?.showUserProfile(user_id: self.messageInstance.sender_id, user: self.messageInstance.senderUser)
     }
     
     required init?(coder: NSCoder) {
