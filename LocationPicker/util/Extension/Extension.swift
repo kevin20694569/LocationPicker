@@ -667,6 +667,23 @@ extension Date {
         }
         return currentDate >= startTime && currentDate <= endTime
     }
+    
+    static func generatedCurrentTimeStamp() -> String {
+        let dateFormatter = DateFormatter()
+
+        // 設置日期時間格式
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+
+        // 設置時區（可選）
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+
+        // 創建日期對象
+        let date = Date()
+        
+        let dateString = dateFormatter.string(from: date)
+        return dateString
+        
+    }
 }
 
 

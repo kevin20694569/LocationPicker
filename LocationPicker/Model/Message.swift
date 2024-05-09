@@ -51,7 +51,9 @@ class Message: Equatable, Hashable {
     
     var messageType : MessageType!
     
-    init(messageType : MessageType?, message_id: String? = nil, room_id : String?, sender_id: String?, message: String?, isRead: Bool?,  created_time : String?) {
+    var successSent : Bool! = true
+    
+    init(messageType : MessageType?, message_id: String? = nil, room_id : String?, sender_id: String?, message: String?, isRead: Bool?,  created_time : String?, successSent : Bool) {
         self.message_id = message_id
         self.room_id = room_id
         self.sender_id = sender_id
@@ -62,6 +64,7 @@ class Message: Equatable, Hashable {
             self.agoTime = created_time.timeAgoFromString()
         }
         self.messageType = messageType
+        self.successSent = successSent
     }
     
     init(json : MessageJson) {
@@ -115,7 +118,7 @@ class Message: Equatable, Hashable {
 
     }
     
-    static let examples = Array(repeating: Message( messageType : .General, room_id: "661f99aefd2f5b0eba052b67", sender_id: "Y8hqarQJ_hnpIJYoc72L0", message: "你好", isRead: true, created_time: "2024-04-20T15:49:59.880Z"), count: 20)
+    static let examples = Array(repeating: Message( messageType : .General, room_id: "661f99aefd2f5b0eba052b67", sender_id: "Y8hqarQJ_hnpIJYoc72L0", message: "你好", isRead: true, created_time: "2024-04-20T15:49:59.880Z", successSent: true), count: 20)
     
 }
 

@@ -31,7 +31,7 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        layoutMainView()
+        initLayout()
         setGesture()
     }
     
@@ -53,7 +53,7 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
         messageTableCellDelegate?.showRestaurantDetailViewController(restaurant_id: restaurant_id, restaurant: restaurant)
     }
     
-    func layoutMainView() {
+    func initLayout() {
         mainView.translatesAutoresizingMaskIntoConstraints = false
         mainView.backgroundColor = .secondaryBackgroundColor
         self.contentView.addSubview(mainView)
@@ -81,16 +81,50 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
 
 class RhsMessageTableViewCell : MessageTableViewCell {
     
-    override func layoutMainView() {
-        super.layoutMainView()
+    var sentSuccessActivityView : UIActivityIndicatorView! = UIActivityIndicatorView()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        initActivityView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func initLayout() {
+        super.initLayout()
         
+        contentView.addSubview(sentSuccessActivityView)
+        sentSuccessActivityView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             mainView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mainView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 80),
             mainView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -MainViewTopBottomAnchor * 2),
+            
+            sentSuccessActivityView.trailingAnchor.constraint(equalTo: mainView.leadingAnchor, constant : -4),
+            sentSuccessActivityView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -4),
+            
         ])
+    }
+    
+    func initActivityView() {
+       // sentSuccessActivityView.backgroundColor = .red
+       // sentSuccessActivityView.
+       
+    }
+    
+    override func configure(message: Message) {
+        super.configure(message: message)
+        if !message.successSent {
+            sentSuccessActivityView.isHidden = false
+            sentSuccessActivityView.startAnimating()
+        } else {
+            sentSuccessActivityView.isHidden = true
+            sentSuccessActivityView.stopAnimating()
+        }
     }
     
 
@@ -125,8 +159,8 @@ class LhsMessageTableViewCell : MessageTableViewCell {
 
 
     
-    override func layoutMainView() {
-        super.layoutMainView()
+    override func initLayout() {
+        super.initLayout()
         layoutImageView()
         NSLayoutConstraint.activate([
             mainView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -200,8 +234,8 @@ class RhsTextViewMessageTableViewCell : RhsMessageTableViewCell, MessageTextView
         ])
     }
     
-    override func layoutMainView() {
-        super.layoutMainView()
+    override func initLayout() {
+        super.initLayout()
         layoutMessageTextView()
         
     }
@@ -241,8 +275,8 @@ class LhsTextViewMessageTableViewCell: LhsMessageTableViewCell , MessageTextView
         ])
     }
     
-    override func layoutMainView() {
-        super.layoutMainView()
+    override func initLayout() {
+        super.initLayout()
         layoutMessageTextView()
         
 

@@ -262,7 +262,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         if success {
             self.MediaStorage.removeAll()
             self.cancelUploadButton.updateTitle(Title: "完成", backgroundColor: .systemGreen, tintColor: .white, font: .weightSystemSizeFont(systemFontStyle: .title3, weight: .bold))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5){ [weak self]  in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2){ [weak self]  in
                 self?.startUploadViewSwipeToRightAnimate(popToRoot: true)
             }
         } else {

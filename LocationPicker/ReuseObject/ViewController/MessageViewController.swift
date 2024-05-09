@@ -3,9 +3,6 @@ import UIKit
 
 class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, MessageTableCellDelegate {
 
-    
-
-    
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
@@ -159,7 +156,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func sendMessage( _ button : UIButton) {
-        guard !messageInputTextView.text.isEmpty,
+        guard let text = messageInputTextView.text,
               let chatRoom = chatRoom else {
             return
         }
@@ -169,9 +166,30 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             return true
         }
-        SocketIOManager.shared.sendMessageByToUserIDs(to_user_ids: to_user_id, sender_id: Constant.user_id, message:  messageInputTextView.text)
+        SocketIOManager.shared.sendMessageByToUserIDs(to_user_ids: to_user_id, sender_id: Constant.user_id, message:  text)
+        let created_timestamp = Date.generatedCurrentTimeStamp()
+        let message = Message(messageType: .General, message_id: created_timestamp, room_id: chatRoom.room_id, sender_id: Constant.user_id, message: text, isRead: false, created_time: created_timestamp, successSent: false)
+        insertNewMessage(message : message)
         self.messageInputTextView.text.removeAll()
         fitMessageInputTextView(textView: messageInputTextView)
+    }
+    
+    func insertNewMessage(message : Message) {
+        let bool = isTableViewScrolledToBottom()
+        self.messages.append(message)
+        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+        DispatchQueue.main.async { [weak self ] in
+            guard let self = self else {
+                return
+            }
+            notReadMessageIndexPaths.append(indexPath)
+            tableView.beginUpdates()
+            self.tableView.insertRows(at: [indexPath], with: .none)
+            tableView.endUpdates()
+            if bool && tableView.contentSize.height > tableView.bounds.height {
+                self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+        }
     }
     
     var userImageDict : [String : UIImage]! = [ : ]
@@ -473,22 +491,21 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard message.room_id == self.chatRoom.room_id else {
                 return
             }
-            let bool = isTableViewScrolledToBottom()
-            self.messages.append(message)
-            let indexPath = IndexPath(row: messages.count - 1, section: 0)
-            DispatchQueue.main.async { [weak self ] in
-                guard let self = self else {
-                    return
+            if message.sender_id != Constant.user_id {
+                insertNewMessage(message: message)
+            } else {
+                var i = self.messages.count - 1
+                while i >= 0 {
+                    let messageOnTableView = messages[i]
+                    if message.sender_id == Constant.user_id && messageOnTableView.message == message.message {
+                        messageOnTableView.successSent = true
+                        let targetIndexPath = IndexPath(row: i, section: 0)
+                        let cell = tableView.cellForRow(at: targetIndexPath) as! RhsMessageTableViewCell
+                        cell.configure(message: message)
+                        break
+                    }
+                    i -= 1
                 }
-                notReadMessageIndexPaths.append(indexPath)
-                tableView.beginUpdates()
-                self.tableView.insertRows(at: [indexPath], with: .none)
-                tableView.endUpdates()
-                if bool && tableView.contentSize.height > tableView.bounds.height {
-                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                }
-                    
-                
             }
         }
     }
