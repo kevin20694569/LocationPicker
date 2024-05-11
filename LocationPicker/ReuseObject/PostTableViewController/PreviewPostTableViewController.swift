@@ -38,6 +38,8 @@ class PreviewPostTableViewController : MainPostTableViewController {
         cell.collectButton.isUserInteractionEnabled = false
         cell.shareButton.isUserInteractionEnabled = false
         cell.heartButton.isUserInteractionEnabled = false
+        cell.doubleTapGesture.isEnabled = false
+        
         return cell
     }
 
@@ -50,7 +52,9 @@ class PreviewPostTableViewController : MainPostTableViewController {
         if let currentPostIndex = self.posts.firstIndex(of: post) {
             self.currentTableViewIndexPath = IndexPath(row: currentPostIndex, section: self.currentTableViewIndexPath.section)
         }
-        
+        controller.shareButton.isUserInteractionEnabled = false
+        controller.heartButton.isUserInteractionEnabled = false
+        controller.collectButton.isUserInteractionEnabled = false
         controller.mediaAnimatorDelegate = self
         controller.reactionDelegate = tableViewCurrentCell
         navController.modalPresentationStyle = .overFullScreen

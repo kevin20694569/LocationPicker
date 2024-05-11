@@ -6,7 +6,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     var userRequestInstance : UserFriendRequest!
     
-    weak var friendRequestsDelegate : FriendRequestsCellDelegate!
+    weak var friendRequestsDelegate : FriendRequestsCellDelegate?
     
     var userImageView: UIImageView! = UIImageView()
     var userNameLabel : UILabel! = UILabel()
@@ -20,10 +20,9 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     
     var mainButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
-    @objc func segueToUserProfileView() {
-        if self.userRequestInstance.friendStatus == .isFriend {
-            friendRequestsDelegate.segueToUserProfileView(userRequst: self.userRequestInstance )
-        }
+    @objc func showUserProfileViewController() {
+        friendRequestsDelegate?.showUserProfileViewController(userRequst: self.userRequestInstance )
+        
     }
     
     func configure(userRequest: UserFriendRequest)  {
@@ -75,12 +74,19 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     }
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        layoutSetup()
+
         imageViewSetup()
         labelsSetup()
         buttonsSetup()
         gestureSetup()
+        cellSetup()
+        layoutSetup()
     }
+    
+    func cellSetup() {
+        self.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    }
+    
     
     
     func layoutSetup() {
@@ -131,7 +137,7 @@ class FriendRequestsTableViewCell : UITableViewCell  {
     func imageViewSetup() {
         userImageView.isUserInteractionEnabled = true
         userImageView.contentMode = .scaleAspectFill
-        userImageView.layer.cornerRadius = 10.0
+        userImageView.layer.cornerRadius = 20
         userImageView.clipsToBounds = true
         userImageView.backgroundColor = .secondaryBackgroundColor
     }
@@ -141,8 +147,9 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         self.sendTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .regular)
         userNameLabel.textColor = .label
         sendTimeLabel.textColor = .secondaryLabelColor
-
     }
+    
+
     
     func buttonsSetup() {
         var config = UIButton.Configuration.filled()
@@ -181,16 +188,12 @@ class FriendRequestsTableViewCell : UITableViewCell  {
         
         rightButton.addTarget(self, action: #selector(rightButtonTapped(_:)), for: .touchUpInside)
         
-        mainButton.addTarget(self, action: #selector(segueToUserProfileView), for: .touchUpInside)
+        mainButton.addTarget(self, action: #selector(showUserProfileViewController ), for: .touchUpInside)
     }
     
     
     func gestureSetup() {
-        [self.userImageView, self.userNameLabel].forEach { view in
-            let gesture = UITapGestureRecognizer(target: self, action: #selector(segueToUserProfileView ))
-            view?.addGestureRecognizer(gesture)
-            view?.isUserInteractionEnabled = true
-        }
+
         
     }
     

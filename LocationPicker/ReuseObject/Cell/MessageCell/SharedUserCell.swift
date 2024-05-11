@@ -4,7 +4,7 @@ import UIKit
 class RhsMessageSharedUserCell : RhsMessageTableViewCell, MessageSharedUserCell {
 
     
-    var showUserProfileGesture: UITapGestureRecognizer! = UITapGestureRecognizer()
+    var showSharedUserProfileGesture: UITapGestureRecognizer! = UITapGestureRecognizer()
     
     var sharedUserImageView: UIImageView! = UIImageView()
     
@@ -45,8 +45,8 @@ class RhsMessageSharedUserCell : RhsMessageTableViewCell, MessageSharedUserCell 
     }
     
     override func setGesture() {
-        showUserProfileGesture.addTarget(self, action: #selector(showUserProfile ( _ : )))
-        self.mainView.addGestureRecognizer(showUserProfileGesture)
+        showSharedUserProfileGesture.addTarget(self, action: #selector(showUserProfile ( _ : )))
+        self.mainView.addGestureRecognizer(showSharedUserProfileGesture)
         mainView.isUserInteractionEnabled = true
     }
     
@@ -108,7 +108,7 @@ class RhsMessageSharedUserCell : RhsMessageTableViewCell, MessageSharedUserCell 
 }
 
 class LhsMessageSharedUserCell : LhsMessageTableViewCell, MessageSharedUserCell {
-    var showUserProfileGesture: UITapGestureRecognizer! = UITapGestureRecognizer()
+ //   var showUserProfileGesture: UITapGestureRecognizer!
     
     var sharedUserImageView: UIImageView! = UIImageView()
     
@@ -149,8 +149,8 @@ class LhsMessageSharedUserCell : LhsMessageTableViewCell, MessageSharedUserCell 
     
     override func setGesture() {
         super.setGesture()
-        showUserProfileGesture.addTarget(self, action: #selector(showUserProfile ( _ : )))
-        self.mainView.addGestureRecognizer(showUserProfileGesture)
+        showSharedUserProfileGesture.addTarget(self, action: #selector(showUserProfile ( _ : )))
+        self.mainView.addGestureRecognizer(showSharedUserProfileGesture)
         mainView.isUserInteractionEnabled = true
     }
     

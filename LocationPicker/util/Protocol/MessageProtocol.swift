@@ -29,7 +29,7 @@ protocol MessageSharedPostCell : MessageTableCellProtocol {
 protocol MessageSharedUserCell : MessageTableCellProtocol {
     var sharedUserImageView : UIImageView! { get }
     var userNameLabel : UILabel! { get }
-    var showUserProfileGesture : UITapGestureRecognizer! { get }
+    var showSharedUserProfileGesture : UITapGestureRecognizer! { get }
     func layoutSharedUserSubviews()
 }
 

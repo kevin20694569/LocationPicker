@@ -75,11 +75,11 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     }
     
     var previousOffsetY : CGFloat = 0
-    @IBOutlet weak var RestaurantNameLabel : UILabel! { didSet {
-        RestaurantNameLabel.adjustsFontSizeToFitWidth = true
+    @IBOutlet weak var restaurantNameLabel : UILabel! { didSet {
+        restaurantNameLabel.adjustsFontSizeToFitWidth = true
     }}
-    @IBOutlet weak var RestaurantAddressLabel : UILabel! { didSet {
-        RestaurantAddressLabel.adjustsFontSizeToFitWidth = true
+    @IBOutlet weak var restaurantAddressLabel : UILabel! { didSet {
+        restaurantAddressLabel.adjustsFontSizeToFitWidth = true
     }}
     @IBOutlet weak var RestaurantImageView : UIImageView! { didSet {
         RestaurantImageView.layer.cornerRadius = 8.0
@@ -108,7 +108,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     var restaurant : Restaurant! = Restaurant.example
     
     var collectionViewpreviousOffsetY : CGFloat = 0
-    weak var mapGridPostDelegate : MapGridPostDelegate!
+    weak var mapGridPostDelegate : MapGridPostDelegate?
     var refreshControl : UIRefreshControl! { didSet {
         refreshControl?.backgroundColor = .clear
         refreshControl?.tintColor = .label
@@ -255,11 +255,11 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
         RestaurantImageView.addGestureRecognizer(locationImageViewGesture)
         RestaurantImageView.isUserInteractionEnabled = true
         let RestaurantNameLabelGesture = UITapGestureRecognizer(target: self, action: #selector(presentRestaurantDetailViewController))
-        RestaurantNameLabel.addGestureRecognizer(RestaurantNameLabelGesture)
-        RestaurantNameLabel.isUserInteractionEnabled = true
+        restaurantNameLabel.addGestureRecognizer(RestaurantNameLabelGesture)
+        restaurantNameLabel.isUserInteractionEnabled = true
         let  RestaurantAddressLabelGesture = UITapGestureRecognizer(target: self, action: #selector(presentRestaurantDetailViewController))
-        RestaurantAddressLabel.addGestureRecognizer(RestaurantAddressLabelGesture)
-        RestaurantAddressLabel.isUserInteractionEnabled = true
+        restaurantAddressLabel.addGestureRecognizer(RestaurantAddressLabelGesture)
+        restaurantAddressLabel.isUserInteractionEnabled = true
     }
     
     
@@ -270,7 +270,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
 
         
         self.show(controller, sender: nil)
-        BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate.navigationController)
+        BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate?.navigationController)
         
     }
     
@@ -313,7 +313,7 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        mapGridPostDelegate.removeRoute()
+        mapGridPostDelegate?.removeRoute()
     }
     
     func insertPostsReloadSection(newPosts : [Post]) {
@@ -381,8 +381,8 @@ class MapGridPostViewController: UIViewController, UIViewControllerTransitioning
             return
         }
         self.restaurantID = restaurantID
-        RestaurantNameLabel.text = restaurantname
-        RestaurantAddressLabel.text = restautrantaddress
+        restaurantNameLabel.text = restaurantname
+        restaurantAddressLabel.text = restautrantaddress
         self.posts.removeAll()
         self.collectionView.reloadSections([self.enterCollectionIndexPath.section])
         self.openingTimeStackView.arrangedSubviews.forEach() { view in
@@ -481,7 +481,7 @@ extension MapGridPostViewController : UICollectionViewDelegate {
         nav.modalPresentationStyle = .overFullScreen
         nav.transitioningDelegate = self
         self.present(nav, animated: true) {
-            BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate.navigationController)
+            BasicViewController.shared.swipeDatasourceToggle(navViewController: self.mapGridPostDelegate?.navigationController)
         }
     }
     

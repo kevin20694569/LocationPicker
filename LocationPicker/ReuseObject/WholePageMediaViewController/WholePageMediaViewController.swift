@@ -1170,7 +1170,6 @@ extension WholePageMediaViewController {
                 $0.center = centerInFrame!
                 
             }
-            
             extendedEmojiView.frame = newFrame
             extendedEmojiView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
             extendedEmojiView.alpha = 0

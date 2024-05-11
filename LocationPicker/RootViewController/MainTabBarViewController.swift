@@ -156,11 +156,7 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
                     }
                 }
             }
-            
-            
-            if let mediaViewController = self.currentViewController.viewControllers.first as? MediaDelegate {
-                mediaViewController.playCurrentMedia()
-            }
+
             self.currentViewController.popToRootViewController(animated: true)
             if let reloadAnimator  = currentViewController.viewControllers.first as? BackToReloadMediaAnimator  {
                 reloadAnimator.collectionView.isHidden = false
@@ -169,6 +165,10 @@ class MainTabBarViewController: UIViewController, MediaDelegate, UIViewControlle
             
             
             
+        }
+       
+        if let mediaViewController =  BasicViewController.topMostViewController(self.currentViewController) as? MediaDelegate {
+            mediaViewController.playCurrentMedia()
         }
         
         

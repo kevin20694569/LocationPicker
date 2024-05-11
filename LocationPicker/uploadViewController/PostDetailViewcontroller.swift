@@ -75,10 +75,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
     
     var activeTextView: UITextView?
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        self.view.endEditing(true)
-    }
+
     
     
     
@@ -117,7 +114,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         let contentString = contentCell.textView.text
         let gradeCell = tableView.cellForRow(at: gradeCellIndexPath) as! UploadPostDetailGradeCell
         let grade = gradeCell.currentGrade
-
+        
         let post = Post(restaurant: restaurant, Media: MediaStorage, user: User.example, postTitle: titleString, postContent: contentString, grade: grade)
         controller.posts.append(post)
         self.navigationController?.pushViewController(controller, animated: true)
@@ -138,16 +135,27 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
             return
         }
         
-
+        
         startUploadViewSwipeToLeftAnimate()
         self.pauseCurrentMedia()
         var title : String?
         var content : String?
+        
         if !titleCell.textView.text.isEmpty {
             title = titleCell.textView.text
         }
         if contentCell.textView.text != "" && self.contentCell.forbiddenView.isHidden {
             content = contentCell.textView.text
+        }
+        if title == "" {
+            title = nil
+        }
+        if content == "" {
+            content = nil
+        }
+        
+        if title == nil {
+            content = nil
         }
         Task(priority: .background) {
             do {
@@ -159,7 +167,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         }
     }
     
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -195,7 +203,7 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
                 collectionCell.play()
             }
         }
-        TapGestureHelper.shared.shouldAddTapGestureInWindow(window: self.view.window!)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = false
         
     }
@@ -338,45 +346,17 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         tableView.dataSource = self
     }
     
+    lazy var keyBoardController : KeyBoardController! = KeyBoardController(mainView: self.view)
+    
     @objc func keyboardShown(notification: Notification) {
-        let info: NSDictionary = notification.userInfo! as NSDictionary
-        //取得鍵盤尺寸
-        let keyboardSize = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        
-        //鍵盤頂部 Y軸的位置
-        let keyboardY = self.view.frame.height - keyboardSize.height
-        //編輯框底部 Y軸的位置
-        let offsetY: CGFloat = 20
-        
-        if let activeTextField = activeTextField {
-            let editingTextFieldY = activeTextField.convert(activeTextField.bounds, to: self.view).maxY
-            let targetY = editingTextFieldY - keyboardY
-            if self.view.frame.minY >= 0 {
-                if targetY > 0 {
-                    let offsetY = -targetY - offsetY
-                    UIView.animate(withDuration: 0.25, animations: {
-                        self.view.frame.origin.y += offsetY
-                    })
-                }
-            }
-        }
-        if let activeTextView = activeTextView {
-            let editingTextViewY = activeTextView.convert(activeTextView.bounds, to: self.view).maxY
-            let targetY = editingTextViewY - keyboardY
-            if self.view.frame.minY >= 0 {
-                let offsetY = -targetY - offsetY
-                if targetY > 0 {
-                    UIView.animate(withDuration: 0.25, animations: {
-                        self.view.frame.origin.y += offsetY
-                    })
-                }
-            }
-        }
+        self.keyBoardController.keyboardShown(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
     }
     @objc func keyboardHidden(notification: Notification) {
-        UIView.animate(withDuration: 0.25, animations: {
-            self.view.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-        })
+        self.keyBoardController.keyboardHidden(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     
@@ -456,13 +436,13 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
                         media.title = finalString
                         let valid = tableCell.updateValidStatus()
                         self.mediaTextFieldsValid = valid
- 
+                        
                         break
                     }
                 }
             }
         }
-
+        
         return true
     }
     
@@ -513,7 +493,7 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
     }
     
     
-     
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let width = self.view.bounds.width
@@ -572,7 +552,7 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-
+    
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let mediaTableCell = tableView.cellForRow(at: self.mediaCollectionCellIndexPath) as? UploadMediaDetailTableCell,
@@ -582,7 +562,7 @@ extension PostDetailViewcontroller: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 2 {
             return 8

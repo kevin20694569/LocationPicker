@@ -3,8 +3,6 @@ struct Constant {
     static let standardCornerRadius : CGFloat = 46
     static var bottomBarViewHeight : CGFloat = 83
     
-    
-    
     enum account {
         case kevin20694569, kevin29779499, a110070026
         
@@ -19,7 +17,7 @@ struct Constant {
             }
         }
     }
-    static let user_id : String = account.kevin20694569.user_id
+    static let user_id : String = account.kevin29779499.user_id
     
     static let GridPostCellRadius : CGFloat = 16
     

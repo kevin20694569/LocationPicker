@@ -552,6 +552,9 @@ extension MainPostTableViewController {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView.bounds.height > 0 else {
+            return
+        }
         let index =  Int ( round( scrollView.contentOffset.y / scrollView.bounds.height) )
         
         if currentTableViewIndexPath.row != index {

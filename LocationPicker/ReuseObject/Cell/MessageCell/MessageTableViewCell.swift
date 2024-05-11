@@ -22,6 +22,8 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
     
     weak var messageTableCellDelegate :  MessageTableCellDelegate?
     
+    
+    
     var mainViewTouchGesture : UITapGestureRecognizer!
     
     func configure(message : Message) {
@@ -73,6 +75,8 @@ class MessageTableViewCell: UITableViewCell, MessageTableCellProtocol {
         mainViewTouchGesture = UITapGestureRecognizer(target: self, action: #selector(mainViewTapped))
         mainView.isUserInteractionEnabled = true
         self.mainView.addGestureRecognizer(mainViewTouchGesture)
+        
+
 
     }
     
@@ -133,6 +137,8 @@ class RhsMessageTableViewCell : MessageTableViewCell {
 class LhsMessageTableViewCell : MessageTableViewCell {
     
     var userImageView : UIImageView! = UIImageView()
+    
+    var showSharedUserProfileGesture : UITapGestureRecognizer!
 
     override func configure(message: Message) {
         super.configure(message: message)
@@ -175,6 +181,7 @@ class LhsMessageTableViewCell : MessageTableViewCell {
         userImageView.clipsToBounds = true
         userImageView.backgroundColor = .secondaryBackgroundColor
         userImageView.translatesAutoresizingMaskIntoConstraints = false
+        userImageView.isUserInteractionEnabled = true
         self.contentView.addSubview(userImageView)
         NSLayoutConstraint.activate([
             userImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
@@ -192,6 +199,15 @@ class LhsMessageTableViewCell : MessageTableViewCell {
     
     func hiddenSenderUserImageView(_ bool : Bool) {
         self.userImageView.isHidden = bool
+    }
+    
+    override func setGesture() {
+        super.setGesture()
+        showSharedUserProfileGesture = UITapGestureRecognizer(target: self, action: #selector(userImageViewTapped ( _ :) ))
+        self.userImageView.addGestureRecognizer(showSharedUserProfileGesture)
+    }
+    @objc func userImageViewTapped(_ gesture : UITapGestureRecognizer) {
+        self.showUserProfileViewController(user_id: self.messageInstance.sender_id, user: messageInstance.senderUser)
     }
     
     required init?(coder: NSCoder) {

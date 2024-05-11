@@ -9,9 +9,11 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     
     var leftButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     var shareButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    
     let profileDetailButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var leftLeftPairButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    
     var leftRightPairButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var detailStackView : UIStackView! = UIStackView()
@@ -142,7 +144,8 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
                 await sendFriendRequest()
             }
         case .isFriend :
-            self.delegate?.showMessageViewController(user_ids: [self.userProfile.user.id, Constant.user_id])
+            self.delegate?.showUserProfileOptionViewController(profile: self.userProfile)
+           // self.delegate?.showMessageViewController(user_ids: [self.userProfile.user.id, Constant.user_id])
         case .hasBeenSentRequest :
             Task {
                 await self.cancelFriendRequest()
@@ -213,22 +216,14 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
     }
     
 
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        let bounds = UIScreen.main.bounds
-        
-        let maxWidth = bounds.width - 16
-        var maxHeight : CGFloat! = bounds.height * 0.5
-        if presented is ShareViewController {
-            maxHeight =  bounds.height * 0.7
-        }
-        return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
-    }
+
     
     @objc func showShareController( _ button : UIButton) {
-        let controller = ShareUserController(user: userProfile.user)
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = self
-        self.delegate?.present(controller, animated: true)
+        self.delegate?.showShareUserController(user: self.userProfile.user)
+    }
+    
+    @objc func showUserProfileOptionViewController( _ button : UIButton) {
+        self.delegate?.showUserProfileOptionViewController(profile : self.userProfile)
     }
     
     func layoutDetailStackView() {
@@ -302,7 +297,8 @@ class ProfileMainCell: UICollectionViewCell, UIViewControllerTransitioningDelega
              leftLeftPairButton.leadingAnchor.constraint(equalTo: leftButton.leadingAnchor),
              leftLeftPairButton.widthAnchor.constraint(equalTo: leftButton.widthAnchor, multiplier: 0.5, constant: -2),
              leftLeftPairButton.centerYAnchor.constraint(equalTo : leftButton.centerYAnchor),
-             leftRightPairButton.leadingAnchor.constraint(equalTo: leftLeftPairButton.trailingAnchor, constant: 4),
+             
+             leftRightPairButton.leadingAnchor.constraint(equalTo: leftLeftPairButton.trailingAnchor, constant: 16),
              leftRightPairButton.trailingAnchor.constraint(equalTo : leftButton.trailingAnchor),
              leftRightPairButton.widthAnchor.constraint(equalTo: leftButton.widthAnchor, multiplier: 0.5, constant: -2),
              leftRightPairButton.centerYAnchor.constraint(equalTo : leftButton.centerYAnchor),

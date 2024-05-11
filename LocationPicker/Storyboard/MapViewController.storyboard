@@ -223,15 +223,15 @@
                                         </constraints>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4de-To-kKH">
-                                        <rect key="frame" x="91.000000000000014" y="17" width="199.33333333333337" height="45"/>
+                                        <rect key="frame" x="91.000000000000014" y="2.3333333333333286" width="199.33333333333337" height="74.666666666666671"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bII-7n-r4T">
-                                                <rect key="frame" x="0.0" y="0.0" width="199.33333333333334" height="20.333333333333332"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bII-7n-r4T">
+                                                <rect key="frame" x="0.0" y="0.0" width="199.33333333333334" height="50"/>
                                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzI-a5-jJ0">
-                                                <rect key="frame" x="0.0" y="28.333333333333343" width="199.33333333333334" height="16.666666666666671"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzI-a5-jJ0">
+                                                <rect key="frame" x="0.0" y="58.000000000000007" width="199.33333333333334" height="16.666666666666664"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16.666666666666671" id="DHV-AJ-j6t"/>
                                                 </constraints>
@@ -317,9 +317,7 @@
                     </view>
                     <connections>
                         <outlet property="OpenToggleLabel" destination="xtN-fW-NFh" id="QAs-T9-vl3"/>
-                        <outlet property="RestaurantAddressLabel" destination="uzI-a5-jJ0" id="YaA-Sv-i3S"/>
                         <outlet property="RestaurantImageView" destination="UQa-8i-hiu" id="SCv-f1-Wx2"/>
-                        <outlet property="RestaurantNameLabel" destination="bII-7n-r4T" id="oQS-gk-IDv"/>
                         <outlet property="collectionView" destination="SkR-PO-0OF" id="GXL-yy-6dq"/>
                         <outlet property="distanceAndGradeView" destination="tzb-QN-2od" id="AOb-nB-co7"/>
                         <outlet property="distanceLabel" destination="2nn-gu-BDa" id="PWK-qh-LMK"/>
@@ -329,6 +327,8 @@
                         <outlet property="openToggleView" destination="en5-pO-8OV" id="cFa-eH-i6H"/>
                         <outlet property="openingDayLabel" destination="kkN-fd-a0v" id="faM-aU-bKK"/>
                         <outlet property="openingTimeStackView" destination="xPD-pZ-pDQ" id="gbH-kg-1zw"/>
+                        <outlet property="restaurantAddressLabel" destination="uzI-a5-jJ0" id="YaA-Sv-i3S"/>
+                        <outlet property="restaurantNameLabel" destination="bII-7n-r4T" id="oQS-gk-IDv"/>
                         <outlet property="restaurantNameView" destination="MfT-aF-eln" id="TZh-XF-eOA"/>
                     </connections>
                 </viewController>

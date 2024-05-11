@@ -64,6 +64,8 @@ enum FriendsAPIError : LocalizedError {
     case acceptFriendRequestError
     case sendFriendRequestError
     case getFriendsError
+    case deleteFriendRequestError
+    case deleteFriendShipError
     
     var errorDescription: String? {
         switch self {
@@ -73,6 +75,10 @@ enum FriendsAPIError : LocalizedError {
             return "寄送朋友邀請失敗"
         case .getFriendsError :
             return "獲取朋友失敗"
+        case .deleteFriendRequestError:
+            return "刪除朋友邀請失敗"
+        case .deleteFriendShipError:
+            return "刪除朋友關係失敗"
         }
     }
 }

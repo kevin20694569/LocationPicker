@@ -1,7 +1,5 @@
 import UIKit
-enum FriendsSection {
-    case main
-}
+
 
 class FriendRequestViewController: UIViewController, UITableViewDelegate, UISearchBarDelegate, UIScrollViewDelegate, UISearchControllerDelegate, UITextFieldDelegate, FriendRequestsCellDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -17,7 +15,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     }
     
     
-    func segueToUserProfileView(userRequst userRequest : UserFriendRequest) {
+    func showUserProfileViewController(userRequst userRequest : UserFriendRequest) {
         let controller = MainUserProfileViewController(presentForTabBarLessView: true, user: userRequest.user, user_id: userRequest.user?.id)
         controller.navigationItem.title = userRequest.user?.name
         self.navigationController?.pushViewController(controller, animated: true)
@@ -25,10 +23,10 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
     var userRequests : [UserFriendRequest]! = []
     var currentIndexPath : IndexPath?
-    var headerViewMinY : CGFloat!
+    //var headerViewMinY : CGFloat!
 
     @IBOutlet var TitleLabel: UILabel!
-    @IBOutlet var SearchBar : UISearchBar! { didSet {
+   /* @IBOutlet var SearchBar : UISearchBar! { didSet {
         SearchBar.delegate = self
         SearchBar.delegate = self
         SearchBar.searchBarStyle = .minimal
@@ -36,7 +34,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
         SearchBar.returnKeyType = .search
         SearchBar.backgroundColor = .clear
         SearchBar.showsCancelButton = false
-    }}
+    }}*/
 
     var previousOffsetY :CGFloat = 0
     
@@ -44,11 +42,11 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewStyleSet()
+        viewSetup()
+        tableViewSetup()
         registerCells()
+
         Task {
-            tableView.dataSource = self
-            tableView.delegate = self
             await loadUserFriendsRequests(user_id: Constant.user_id)
         }
         
@@ -59,17 +57,19 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
         tableView.register(FriendRequestsTableViewCell.self, forCellReuseIdentifier: "FriendRequestsTableViewCell")
     }
     
-    func viewStyleSet() {
-        let bounds = UIScreen.main.bounds
-        //tableView.register(UINib(nibName: "FriendsTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendsTableViewCell")
+    func viewSetup() {
 
-        tableView.allowsSelection = false
+      //  headerViewMinY = self.navigationController?.navigationBar.frame.maxY
+        
+    }
+    
+    func tableViewSetup() {
+        let bounds = UIScreen.main.bounds
+        tableView.dataSource = self
+        tableView.delegate = self
         tableView.delaysContentTouches = false
         tableView.rowHeight = bounds.height / 10
-        SearchBar.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        headerViewMinY = self.navigationController?.navigationBar.frame.maxY
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -78,7 +78,7 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UISear
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        SearchBar.endEditing(true)
+     //   SearchBar.endEditing(true)
     }
     
     
@@ -92,7 +92,7 @@ extension FriendRequestViewController {
                 tableView.beginUpdates()
                 let insertionIndexPaths = (self.userRequests.count..<self.userRequests.count + newRequests.count).map { IndexPath(row: $0, section: 0) }
                 self.userRequests.insert(contentsOf: newRequests, at: self.userRequests.count)
-                self.tableView.insertRows(at:insertionIndexPaths, with: .fade)
+                self.tableView.insertRows(at:insertionIndexPaths, with: .automatic)
                 tableView.endUpdates()
             }
         } catch {
@@ -101,7 +101,12 @@ extension FriendRequestViewController {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: indexPath)?.isSelected = false
+        let cell = tableView.cellForRow(at: indexPath)
+        cell?.isSelected = false
+        if let cell = cell as? FriendRequestsTableViewCell {
+            self.showUserProfileViewController(userRequst: cell.userRequestInstance)
+        }
+
     }
 
 
@@ -114,11 +119,13 @@ extension FriendRequestViewController {
             cell.userImageView.image = image
         }
     }
+    
+    
 }
 
 extension FriendRequestViewController {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        SearchBar.endEditing(true)
+    //    SearchBar.endEditing(true)
         previousOffsetY = scrollView.contentOffset.y
     }
     

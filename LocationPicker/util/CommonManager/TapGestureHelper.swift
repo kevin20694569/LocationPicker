@@ -2,21 +2,22 @@ import UIKit
 class TapGestureHelper {
     
     static let shared = TapGestureHelper()
-    var tapGestureRecognizer: UITapGestureRecognizer?
+    lazy var tapGestureRecognizer: UITapGestureRecognizer! = {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(dismissKeyBoard))
+        tapGestureRecognizer.cancelsTouchesInView = false
+        return tapGestureRecognizer
+    }()
     
-    func shouldAddTapGestureInWindow(window: UIWindow) {
-        if tapGestureRecognizer == nil {
-            tapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(dismissKeyBoard))
-            tapGestureRecognizer?.cancelsTouchesInView = false
-        }
+    func shouldAddTapGestureInWindow(view: UIView) {
+        view.isUserInteractionEnabled = true
         
         // 在 window 上增加手勢
-        window.addGestureRecognizer(tapGestureRecognizer!)
+        view.addGestureRecognizer(tapGestureRecognizer!)
     }
     
     @objc func dismissKeyBoard(tap: UITapGestureRecognizer) {
         let view = tap.view
         view?.endEditing(true)
-        //view?.removeGestureRecognizer(tapGestureRecognizer!)
     }
 }

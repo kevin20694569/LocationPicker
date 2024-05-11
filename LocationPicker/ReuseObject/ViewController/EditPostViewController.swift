@@ -1,14 +1,28 @@
 import UIKit
 
-class EditPostViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UICollectionViewDelegate {
+protocol RefreshPostDelegate : UIViewController {
+    
+}
+
+class EditPostViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UICollectionViewDelegate, UploadPostDetailGradeCellDelegate {
     
     var dict : [Int:  String] = [0 : "標題", 1 : "內容"]
     
     var post : Post  = Post()
     
+    lazy var keyBoardController : KeyBoardController! = KeyBoardController(mainView: self.view)
+    
+    
+    
     init(post : Post) {
         super.init(nibName: nil, bundle: nil)
         self.post = post
+        self.initTitleText = post.postTitle
+        self.initContentText = post.postContent
+        self.initGrade = post.grade
+        self.initMediaTitleArray = post.media.map() { media in
+            return media.title
+        }
     }
     
     var activeTextView : UITextView?
@@ -17,12 +31,19 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     
     var saveButtonItem : UIBarButtonItem! = UIBarButtonItem()
     
-    weak var refreshCellDelegate : StandardPostTableCellProtocol?
+    weak var refreshPostDelegate : StandardPostCellDelegate?
+    
+    var initTitleText : String?
+    
+    var initContentText : String?
+    
+    var initGrade : Double?
+    
+    var initMediaTitleArray : [String?] = []
     
     var mediaTextFieldsValid : Bool! = true { didSet {
         self.updateReleaseButtonStatus()
-    }
-    }
+    }}
     
     var titleTextOverrange : Bool! = false { didSet {
         self.updateReleaseButtonStatus()
@@ -68,8 +89,15 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
             let cell = tableView.dequeueReusableCell(withIdentifier: "UploadPostDetailGradeCell", for: indexPath) as! UploadPostDetailGradeCell
             cell.separatorInset = UIEdgeInsets(top: 0, left: width / 2, bottom: 0, right: width / 2)
             cell.selectionStyle = .none
+            cell.uploadPostDetailGradeCellDelegate = self
+            if post.grade == nil {
+                cell.commentStatus = false
+            } else {
+                cell.commentStatus = true
+            }
+
             cell.fillStar(grade: post.grade)
-            
+            cell.lastGrade = post.grade
             return cell
         }
         if indexPath.row == 0 {
@@ -85,7 +113,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
             cell.textView.text = post.postContent
             cell.textViewDelegate = self
             if let title = post.postTitle {
-                cell.forbiddenView.isHidden = title.isEmpty ?  false : true
+                cell.textViewEnableEdit(bool: true)
             }
             cell.separatorInset = UIEdgeInsets(top: 0, left: width / 2, bottom: 0, right: width / 2)
             cell.selectionStyle = .none
@@ -114,14 +142,36 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerNotification()
         buttonItemSetup()
         initLayout()
         registerCell()
         tableViewSetup()
+       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+    }
+    
+    
+    
+    func registerNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.sh_fullscreenPopGestureRecognizer.isEnabled = true
+        self.view.isUserInteractionEnabled = true
+        self.tableView.isUserInteractionEnabled = true
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
     }
     
     
@@ -150,7 +200,6 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableViewSetup() {
-        //tableView.rowHeight = UITableView.automaticDimension
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -182,7 +231,7 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
     @objc func saveButtonTapped() {
         Task {
             await savePost()
-            await refreshCellDelegate?.refreshData()
+            await refreshPostDelegate?.reloadPostCell(post: post)
         }
     }
     
@@ -196,6 +245,9 @@ class EditPostViewController : UIViewController, UITableViewDelegate, UITableVie
                 title = nil
             }
             if content == "" {
+                content = nil
+            }
+            if title == nil {
                 content = nil
             }
 
@@ -224,14 +276,15 @@ extension EditPostViewController : UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         if textView == self.titleCell.textView {
-            let font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold  )
-            let attributes = [NSAttributedString.Key.font: font]
             titleTextOverrange = textView.numberOfLines() > 2
             titleCell.warningStackView.isHidden = !titleTextOverrange
             if textView == self.titleCell.textView {
-                contentCell.textView.isEditable = !textView.text.isEmpty
-                contentCell.forbiddenView.isHidden = !textView.text.isEmpty
+                contentCell.textViewEnableEdit(bool: !textView.text.isEmpty)
             }
+            
+        }
+        if textView == self.contentCell.textView {
+            updateReleaseButtonStatus()
         }
         
     }
@@ -286,7 +339,50 @@ extension EditPostViewController : UITextViewDelegate {
     }
     
     func updateReleaseButtonStatus() {
-        let isEnable = !titleTextOverrange && mediaTextFieldsValid
-        self.saveButtonItem.isEnabled = isEnable
+        let isValid = !titleTextOverrange && mediaTextFieldsValid
+        let mediaIsChanged : Bool = {
+            for (i,initTitle) in self.initMediaTitleArray.enumerated() {
+                var mediaTitle = self.post.media[i].title
+                if self.post.media[i].title == "" {
+                    mediaTitle = nil
+                }
+                 
+                if initTitle != mediaTitle {
+                    return true
+                }
+            }
+            return false
+        }()
+        var contentText : String? = contentCell.textView.text
+        var titleText : String? = titleCell.textView.text
+        if contentCell.textView.text == "" {
+            contentText = nil
+        }
+        if titleCell.textView.text == "" {
+            titleText = nil
+        }
+        let titleTextChanged = initTitleText != titleText
+        let contentTextChanged = initContentText != contentText
+        let gradeChanged = gradeCell.currentGrade != self.initGrade
+        
+        self.saveButtonItem.isEnabled = ( titleTextChanged || contentTextChanged || mediaIsChanged || gradeChanged  ) && isValid
+        
+
+    }
+}
+
+extension EditPostViewController {
+
+    
+    @objc func keyboardShown(notification: Notification) {
+        self.keyBoardController.keyboardShown(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
+    }
+    @objc func keyboardHidden(notification: Notification) {
+        self.keyBoardController.keyboardHidden(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        self.view.endEditing(true)
     }
 }

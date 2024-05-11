@@ -70,6 +70,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         pageControll?.numberOfPages = post.media.count
         timeStampLabel.text = post.timestamp?.timeAgeFromStringOrDateString()
         userNameLabel.text = post.user?.name
+        
+
         if let grade = post.grade {
             gradeStackView.isHidden = false
             self.gradeLabel?.text = String(grade)
@@ -152,12 +154,8 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
     }
     
     @objc func presentEditPostOptionViewController(_ button : UIButton) {
-        let controller = EditPostOptionViewController(post: currentPost)
-        controller.transitioningDelegate = self
-        controller.modalPresentationStyle = .custom
-        controller.postTableViewController = self.standardPostCellDelegate
-        controller.tableViewCell = self
-        self.standardPostCellDelegate?.present(controller, animated: true)
+        self.standardPostCellDelegate?.presentEditPostOptionViewController(post: self.currentPost)
+
     }
     
     func refreshData() async {
@@ -169,24 +167,7 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
     }
     
-    override func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        let bounds = UIScreen.main.bounds
-        
-        let maxWidth = bounds.width - 16
-        var maxHeight : CGFloat! = bounds.height * 0.5
 
-        if presented is EditPostOptionViewController {
-            maxHeight =  bounds.height * 0.3
-            self.mediaTableCellDelegate?.pauseCurrentMedia()
-            return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
-        }
-        return super.presentationController(forPresented: presented, presenting: presenting, source: source)
-    }
-    
-    override func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
-        self.standardPostCellDelegate?.gestureStatusToggle(isTopViewController: true)
-        return super.animationController(forDismissed: dismissed)
-    }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let media = self.currentPost.media[indexPath.row]
@@ -239,19 +220,23 @@ class StandardPostTableCell : MainPostTableCell , StandardEmojiReactionObject, S
         }
     }
     
-    @objc override func emojiTargetTapped(_ button: UIButton) {
-
-        let tag = button.tag
-        if self.currentPost.selfReaction?.reactionType?.reactionTag == tag {
-            currentEmojiTag = nil
-        } else {
-            currentEmojiTag = tag
+    override func emojiTargetTapped(_ button: UIButton) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            let tag = button.tag
+            if self.currentPost.selfReaction?.reactionType?.reactionTag == tag {
+                currentEmojiTag = nil
+            } else {
+                currentEmojiTag = tag
+            }
+            
+            if canPostReaction {
+                self.initNewReaction(reactionTag: currentEmojiTag, liked: currentPost.liked)
+            }
+            startReactionTargetAnimation(targetTag: currentEmojiTag)
         }
-        
-        if canPostReaction {
-            self.initNewReaction(reactionTag: currentEmojiTag, liked: currentPost.liked)
-        }
-        startReactionTargetAnimation(targetTag: currentEmojiTag)
     }
     
 

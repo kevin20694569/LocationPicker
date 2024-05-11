@@ -248,7 +248,6 @@ final class PostManager : NSObject {
                 media.title = nil
             }
         }
-        print(mediaTitleArray)
         guard title != nil || content != nil || grade != nil || mediasTextValid else {
             return
         }

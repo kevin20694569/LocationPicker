@@ -7,6 +7,11 @@ class FriendManager {
     static let shared = FriendManager()
     lazy var API = ip + "/friends"
     
+    struct FriendRequestBody : Encodable {
+        var request_user_id : String
+        var to_user_id : String
+    }
+    
     func getUserFriendsFromUserID(user_id : String, Date : String) async throws -> [Friend]  {
         do {
             let urlstring = API + "/friendships/\(user_id)?request_user_id=\(Constant.user_id)"
@@ -190,17 +195,39 @@ class FriendManager {
                 if 200...299 ~= httpRes.statusCode  {
                     return
                 }
-                throw FriendsAPIError.sendFriendRequestError
+                throw FriendsAPIError.deleteFriendRequestError
             }
         } catch  {
             throw error
         }
     }
     
-    struct FriendRequestBody : Encodable {
-        var request_user_id : String
-        var to_user_id : String
+    
+    func deleteFriendShip(request_user_id : String, to_user_id : String) async throws {
+        let urlstring = API + "/friendships"
+        
+        guard urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) != nil,
+              let url = URL(string: urlstring) else {
+            throw  APIError.URLnotFound(urlstring)
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = "DELETE"
+        req.timeoutInterval = 2.0
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let encoder = JSONEncoder()
+        let request = FriendRequestBody(request_user_id: request_user_id, to_user_id: to_user_id)
+        let body = try encoder.encode(request)
+        req.httpBody = body
+        let (data, res) = try await URLSession.shared.data(for: req)
+        if let httpRes = res as? HTTPURLResponse {
+            if 200...299 ~= httpRes.statusCode  {
+                return
+            }
+            throw FriendsAPIError.deleteFriendShipError
+        }
     }
+
     
     
 }

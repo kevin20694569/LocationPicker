@@ -10,10 +10,15 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
         
     }
     
+    var isFinishedFirstLoad : Bool = false
+    
     
     @IBOutlet var bottomBarView : UIView!
     
     func playCurrentMedia() {
+        guard isFinishedFirstLoad else {
+            return
+        }
         if let cell = self.collectionView.cellForItem(at: self.currentMediaIndexPath) as? PlayerLayerCollectionCell {
             cell.play()
         }
@@ -98,12 +103,14 @@ class UploadMediaViewcontroller: UIViewController, UINavigationControllerDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         registerCells()
         layoutAddMediaView()
         setGesture()
         layoutButton()
         colletionViewLayoutFlow()
         viewStyleSet()
+        isFinishedFirstLoad = true
     }
     
     

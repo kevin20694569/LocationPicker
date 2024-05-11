@@ -7,7 +7,7 @@ protocol PhotoPostViewControllerDelegate : AnyObject  {
 
 
 protocol FriendRequestsCellDelegate : AnyObject {
-    func segueToUserProfileView(userRequst: UserFriendRequest)
+    func showUserProfileViewController(userRequst: UserFriendRequest)
 }
 
 protocol PlaceFindDelegate {
@@ -32,6 +32,11 @@ protocol ShowMessageControllerProtocol : ShowViewControllerDelegate {
 
 protocol ProfileMainCellDelegate : ShowMessageControllerProtocol {
     func showEditUserProfileViewController(userProfile : UserProfile)
+    
+    func showShareUserController(user: User)
+    
+    func showUserProfileOptionViewController(profile : UserProfile)
+
 }
 
 protocol EditUserProfileCellDelegate : ShowViewControllerDelegate {
@@ -40,6 +45,11 @@ protocol EditUserProfileCellDelegate : ShowViewControllerDelegate {
 
 protocol EditUserProfileViewControllerDelegate : MainUserProfileViewController {
     
+}
+
+
+protocol UploadPostDetailGradeCellDelegate : UIViewController {
+    func updateReleaseButtonStatus()
 }
 
 

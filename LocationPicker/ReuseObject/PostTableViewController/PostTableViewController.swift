@@ -3,6 +3,8 @@ import AVFoundation
 
 
 class PostTableViewController : MainPostTableViewController, StandardPostCellDelegate, PanWholePageViewControllerDelegate {
+
+    
     
     var panViewGesture : UIPanGestureRecognizer! = UIPanGestureRecognizer()
     
@@ -96,6 +98,41 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         return
     }
     
+    func presentEditPostOptionViewController(post : Post) {
+        let controller = EditPostOptionViewController(post: post)
+        controller.transitioningDelegate = self
+        controller.modalPresentationStyle = .custom
+        controller.postTableViewController = self
+        self.present(controller, animated: true)
+    }
+    
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let bounds = UIScreen.main.bounds
+        
+        let maxWidth = bounds.width - 16
+        var maxHeight : CGFloat! = bounds.height * 0.5
+
+        if presented is EditPostOptionViewController {
+            maxHeight =  bounds.height * 0.3
+            self.pauseCurrentMedia()
+            
+        }
+        return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
+    }
+    
+    override func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
+        self.gestureStatusToggle(isTopViewController: true)
+        if dismissed == self.navigationController {
+            if self.navigationController?.topViewController == self {
+                if let toViewController = postsTableDelegate {
+                    return  DismissPostTableViewAnimator(transitionToIndexPath: self.currentTableViewIndexPath, toViewController: toViewController, fromViewController: self)
+                }
+            }
+        }
+        self.playCurrentMedia()
+        return super.animationController(forDismissed: dismissed)
+    }
+    
     
     override func registerTableCell() {
         super.registerTableCell()
@@ -178,18 +215,6 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
     
     override func initRefreshControl() {
         
-    }
-    
-    override func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if dismissed == self.navigationController {
-            if self.navigationController?.topViewController == self {
-                if let toViewController = postsTableDelegate {
-                    return  DismissPostTableViewAnimator(transitionToIndexPath: self.currentTableViewIndexPath, toViewController: toViewController, fromViewController: self)
-                }
-            }
-        }
-        
-        return nil
     }
         
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -290,9 +315,9 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         panViewGesture.cancelsTouchesInView = true
         self.navigationController?.view.addGestureRecognizer(panViewGesture)
         closeCurrentEmojiViewTapGesture = UITapGestureRecognizer(target: self, action: #selector(closeCurrentEmojiView))
-        closeCurrentEmojiViewTapGesture.cancelsTouchesInView = false
+        closeCurrentEmojiViewTapGesture.cancelsTouchesInView = true
         self.navigationController?.view.addGestureRecognizer(closeCurrentEmojiViewTapGesture)
-        self.view.addGestureRecognizer(closeCurrentEmojiViewTapGesture)
+    //    self.view.addGestureRecognizer(closeCurrentEmojiViewTapGesture)
     }
 
     
@@ -377,6 +402,27 @@ class PostTableViewController : MainPostTableViewController, StandardPostCellDel
         self.navigationItem.leftBarButtonItem = defaultLeftBarButtonItem
         if let title = title {
             self.navigationItem.title = title
+        }
+    }
+    
+    func showEditPostViewController(post : Post) {
+        let controller = EditPostViewController(post: post)
+        controller.refreshPostDelegate = self
+        self.show(controller, sender: nil)
+    }
+    
+    func reloadPostCell(post : Post) async {
+        
+        if let index = posts.firstIndex(of: post) {
+            do {
+                let post = try await PostManager.shared.getPostDetail(post_id: post.id , request_user_id: Constant.user_id)
+                posts[index] = post
+                self.postsTableDelegate?.posts[index] = post
+            } catch {
+                print(error)
+            }
+            let indexPath = IndexPath(row: index, section: 0)
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
     

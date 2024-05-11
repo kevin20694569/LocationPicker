@@ -29,8 +29,9 @@ class StandardPostTitleTableCell : StandardPostTableCell {
     
     override func labelSetup() {
         super.labelSetup()
-        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
         postTitleLabel.textColor = .label
+        postTitleLabel.numberOfLines = 0
     }
 }
 
@@ -187,15 +188,16 @@ class StandardPostAllTextTableCell : StandardPostContentTableCell {
         NSLayoutConstraint.activate([
             postTitleLabel.topAnchor.constraint(equalTo: shareButton.bottomAnchor, constant: postTitleLabelTopConstant),
             postTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: textLabelHorConstant),
-            postTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: textLabelHorConstant),
+            postTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -textLabelHorConstant),
 
         ])
     }
     
     override func labelSetup() {
         super.labelSetup()
-        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)
+        postTitleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
         postTitleLabel.textColor = .label
+        postTitleLabel.numberOfLines = 0
     }
     
     override func configureData(post: Post) {

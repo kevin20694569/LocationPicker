@@ -31,5 +31,6 @@ protocol MediaTableViewCellDelegate : MediaTableCellDelegate  {
     var tableView : UITableView! { get }
     var collectionView : UICollectionView! { get }
     func deletePostCell(post : Post)
+    
 }
 

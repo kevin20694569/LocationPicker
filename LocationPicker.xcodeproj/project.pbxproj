@@ -58,6 +58,11 @@
 		23138C502B862B89008E7146 /* ZoomAnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23138C4F2B862B89008E7146 /* ZoomAnimatedImageView.swift */; };
 		23138C542B8630B6008E7146 /* ExtendedEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23138C532B8630B6008E7146 /* ExtendedEmojiView.swift */; };
 		231B3FD72B5CE28300DB4132 /* LoginViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 231B3FD62B5CE28300DB4132 /* LoginViewController.storyboard */; };
+		231C42082BEE097800B3ADE9 /* StandardSheetTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C42072BEE097800B3ADE9 /* StandardSheetTableViewController.swift */; };
+		231C420A2BEE09C100B3ADE9 /* UserProfileOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C42092BEE09C100B3ADE9 /* UserProfileOptionViewController.swift */; };
+		231C420C2BEE0A5000B3ADE9 /* OptionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C420B2BEE0A5000B3ADE9 /* OptionTableCell.swift */; };
+		231C420F2BEE0AAD00B3ADE9 /* UserProfileOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C420E2BEE0AAD00B3ADE9 /* UserProfileOptionCell.swift */; };
+		231C42112BEE24FB00B3ADE9 /* KeyBoardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C42102BEE24FB00B3ADE9 /* KeyBoardController.swift */; };
 		232427C62B9769EF00B084EB /* RestaurantPostsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232427C52B9769EF00B084EB /* RestaurantPostsTableViewController.swift */; };
 		23278F8D2B5918AA00B365B9 /* PreviewPostTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23278F8C2B5918AA00B365B9 /* PreviewPostTableCell.swift */; };
 		232971032B21F168000C35D9 /* ImageViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232971022B21F168000C35D9 /* ImageViewCollectionCell.swift */; };
@@ -236,6 +241,11 @@
 		23138C4F2B862B89008E7146 /* ZoomAnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimatedImageView.swift; sourceTree = "<group>"; };
 		23138C532B8630B6008E7146 /* ExtendedEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedEmojiView.swift; sourceTree = "<group>"; };
 		231B3FD62B5CE28300DB4132 /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
+		231C42072BEE097800B3ADE9 /* StandardSheetTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardSheetTableViewController.swift; sourceTree = "<group>"; };
+		231C42092BEE09C100B3ADE9 /* UserProfileOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileOptionViewController.swift; sourceTree = "<group>"; };
+		231C420B2BEE0A5000B3ADE9 /* OptionTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionTableCell.swift; sourceTree = "<group>"; };
+		231C420E2BEE0AAD00B3ADE9 /* UserProfileOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileOptionCell.swift; sourceTree = "<group>"; };
+		231C42102BEE24FB00B3ADE9 /* KeyBoardController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBoardController.swift; sourceTree = "<group>"; };
 		232427C52B9769EF00B084EB /* RestaurantPostsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantPostsTableViewController.swift; sourceTree = "<group>"; };
 		23278F8C2B5918AA00B365B9 /* PreviewPostTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPostTableCell.swift; sourceTree = "<group>"; };
 		232971022B21F168000C35D9 /* ImageViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCollectionCell.swift; sourceTree = "<group>"; };
@@ -581,6 +591,16 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
+		231C420D2BEE0A9300B3ADE9 /* OptionCell */ = {
+			isa = PBXGroup;
+			children = (
+				23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */,
+				231C420B2BEE0A5000B3ADE9 /* OptionTableCell.swift */,
+				231C420E2BEE0AAD00B3ADE9 /* UserProfileOptionCell.swift */,
+			);
+			path = OptionCell;
+			sourceTree = "<group>";
+		};
 		232427C42B9769D300B084EB /* RestaurantDetailViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -738,6 +758,7 @@
 		23881A492B4D3D35008BE6AA /* CommonCell */ = {
 			isa = PBXGroup;
 			children = (
+				231C420D2BEE0A9300B3ADE9 /* OptionCell */,
 				23B7FE0A2AEA3B050053EC79 /* PlaceFindCell.swift */,
 				23005C0B2B9C69F200425BEA /* CollectionViewInCollectionCell.swift */,
 				23B7FE0D2AEA3B050053EC79 /* GridPostCell.swift */,
@@ -748,7 +769,6 @@
 				23DCB7132B95BE3500D97BF2 /* CollectionViewButtonCell.swift */,
 				23F21A842BCAEC65000E1F98 /* EmptyPostCollectoinCell.swift */,
 				23F21A862BCAF31C000E1F98 /* LoadingCollectionCell.swift */,
-				23E05DCC2BE8FA9B00117CC2 /* EditPostOptionCell.swift */,
 			);
 			path = CommonCell;
 			sourceTree = "<group>";
@@ -805,6 +825,8 @@
 				23CDFAC52BA6D9A700549AA0 /* ShareViewController.swift */,
 				23E05DCA2BE8F8CB00117CC2 /* EditPostOptionViewController.swift */,
 				23CDFAC92BA6EE2100549AA0 /* PresentSheetViewController.swift */,
+				231C42072BEE097800B3ADE9 /* StandardSheetTableViewController.swift */,
+				231C42092BEE09C100B3ADE9 /* UserProfileOptionViewController.swift */,
 			);
 			path = PresentSheetViewControllers;
 			sourceTree = "<group>";
@@ -880,6 +902,7 @@
 				231B3FD22B5CCE1900DB4132 /* ViewController */,
 				23DD481D2AE9886300C63821 /* View */,
 				231B3FD02B5CCB5900DB4132 /* Camera */,
+				231C42102BEE24FB00B3ADE9 /* KeyBoardController.swift */,
 			);
 			path = ReuseObject;
 			sourceTree = "<group>";
@@ -1308,6 +1331,7 @@
 				23DD486C2AE9886300C63821 /* MapGridPostViewController.swift in Sources */,
 				23DD48542AE9886300C63821 /* CameraController.swift in Sources */,
 				23DD486B2AE9886300C63821 /* MapViewController.swift in Sources */,
+				231C42082BEE097800B3ADE9 /* StandardSheetTableViewController.swift in Sources */,
 				23E8C79B2B2889E8007F0888 /* PostDetailTextCell.swift in Sources */,
 				233EB5682BBDB6BF00E415D6 /* FriendTableCell.swift in Sources */,
 				23BD8B312B7A099200947D67 /* ReactionsManager.swift in Sources */,
@@ -1347,6 +1371,7 @@
 				23C407382AF3F212008C1088 /* GoogleMapLocationResultsJson.swift in Sources */,
 				23DD48402AE9886300C63821 /* Media.swift in Sources */,
 				23DD48612AE9886300C63821 /* PlaceFindtableViewController.swift in Sources */,
+				231C42112BEE24FB00B3ADE9 /* KeyBoardController.swift in Sources */,
 				23E05DCF2BE9043700117CC2 /* EditPostViewController.swift in Sources */,
 				23749C312B0F90A8007241A8 /* UserFriendRequest.swift in Sources */,
 				23DD48502AE9886300C63821 /* ChatRoomViewController.swift in Sources */,
@@ -1355,6 +1380,7 @@
 				23A905022B63C88800409A0C /* DismissWholePageMediaViewController.swift in Sources */,
 				23B1E3EA2B10F38600424E21 /* SocketIOManager.swift in Sources */,
 				23138C502B862B89008E7146 /* ZoomAnimatedImageView.swift in Sources */,
+				231C420F2BEE0AAD00B3ADE9 /* UserProfileOptionCell.swift in Sources */,
 				2309B98B2B3D9592001D8612 /* Playlist.swift in Sources */,
 				23BD8B3B2B7DFC2600947D67 /* TapGestureHelper.swift in Sources */,
 				230793892B73450300266227 /* View.swift in Sources */,
@@ -1410,6 +1436,7 @@
 				23F21A872BCAF31C000E1F98 /* LoadingCollectionCell.swift in Sources */,
 				23F21A8C2BCC1D81000E1F98 /* EditUserTextFieldTableCell.swift in Sources */,
 				233CC5FA2B67D15B0012238C /* DismissPostTableViewAnimator.swift in Sources */,
+				231C420C2BEE0A5000B3ADE9 /* OptionTableCell.swift in Sources */,
 				237CD14B2B5EBAD900644BDA /* UserProfilePostTableViewController.swift in Sources */,
 				23C3E0B52B66A2B100FF118A /* PresentGridCellAnimator.swift in Sources */,
 				230D07E02BB1C89000FE2C5A /* APIKey.swift in Sources */,
@@ -1421,6 +1448,7 @@
 				23DD487D2AE9886300C63821 /* RestaurantManager.swift in Sources */,
 				23DD485F2AE9886300C63821 /* PostDetailViewcontroller.swift in Sources */,
 				23DD48652AE9886300C63821 /* SignUpViewController.swift in Sources */,
+				231C420A2BEE09C100B3ADE9 /* UserProfileOptionViewController.swift in Sources */,
 				23DCB70F2B94C89A00D97BF2 /* RestaurantProfileNameCell.swift in Sources */,
 				237BE2CB2B9B18FA00F3B06D /* OpeningTimeView.swift in Sources */,
 			);

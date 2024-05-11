@@ -90,7 +90,7 @@ class UploadPostDetailTextViewTableCell : UITableViewCell {
         
         ])
     }
-    
+
 }
 
 class UploadPostDetailTitleCell : UploadPostDetailTextViewTableCell {
@@ -131,8 +131,6 @@ class UploadPostDetailContentCell : UploadPostDetailTextViewTableCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layoutForbiddenView()
-
-
     }
     
     required init?(coder: NSCoder) {
@@ -143,18 +141,18 @@ class UploadPostDetailContentCell : UploadPostDetailTextViewTableCell {
     
     override func textViewSetup() {
         super.textViewSetup()
-        textView.isEditable = false
         textView.textAlignment = .justified
         self.textView.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
         NSLayoutConstraint.activate([
             textView.heightAnchor.constraint(equalToConstant: UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium).lineHeight * 3 + self.textView.contentInset.top  + self.textView.contentInset.bottom)
         ])
-
+        textViewEnableEdit(bool: false)
     }
     
     override func labelSetup() {
         super.labelSetup()
         titleLabel.text = "內文"
+        
     }
     
     func layoutForbiddenView() {
@@ -170,21 +168,24 @@ class UploadPostDetailContentCell : UploadPostDetailTextViewTableCell {
         forbiddenLabel.textColor = .secondaryLabelColor
         forbiddenLabel.textAlignment = .center
         forbiddenLabel.frame = CGRect(origin: .zero, size: CGSize(width: forbiddenView.frame.width * 0.8, height: forbiddenView.frame.height * 0.5))
-       
-
         self.forbiddenView.addSubview(forbiddenLabel)
         forbiddenLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             forbiddenLabel.centerXAnchor.constraint(equalTo: self.textView.centerXAnchor),
             forbiddenLabel.centerYAnchor.constraint(equalTo: self.textView.centerYAnchor   ),
-
         ])
+
 
     }
     
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
         forbiddenView.frame = self.textView.bounds
+    }
+    
+    func textViewEnableEdit(bool : Bool) {
+        forbiddenView.isHidden = bool
+        textView.isEditable = bool
     }
         
     
@@ -243,11 +244,14 @@ class UploadPostDetailExtraTableCell: UITableViewCell {
 }
 
 
-class UploadPostDetailGradeCell : UITableViewCell {
+
+class UploadPostDetailGradeCell : UITableViewCell  {
     
     var gradeToggleButton : RoundedButton! = RoundedButton()
     
     var currentGrade : Double?
+    
+    weak var uploadPostDetailGradeCellDelegate : UploadPostDetailGradeCellDelegate?
     
     var commentStatus : Bool = false
     
@@ -255,10 +259,11 @@ class UploadPostDetailGradeCell : UITableViewCell {
     
     let starImageFont = UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .medium)
     
-    var lastGrade : Double! = 5
+    var lastGrade : Double?
     
     var starStackView : UIStackView! = UIStackView()
     func initLayout() {
+        
         contentView.addSubview(gradeToggleButton)
         contentView.addSubview(starStackView)
         contentView.subviews.forEach() {
@@ -324,38 +329,19 @@ class UploadPostDetailGradeCell : UITableViewCell {
     }
     
     @objc func gradeToggle(_ button : UIButton) {
+        
         commentStatus.toggle()
         let gradeToggleButton = button as! RoundedButton
         if commentStatus {
+            if lastGrade == nil {
+                lastGrade = 5
+            }
+            guard let lastGrade = lastGrade else {
+                return
+            }
             self.currentGrade = lastGrade
             gradeToggleButton.updateTitle(Title: "啟用", backgroundColor: .tintColor, tintColor: .white, font: buttonFont)
-            let integerPart = Int(lastGrade)
-            let decimalPart = lastGrade - Double(integerPart)
-            
-            for index in 0...integerPart - 1 {
-                let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
-                starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-            }
-            if lastGrade == 5 {
-                return
-            }
-            let starImageView = self.starStackView.arrangedSubviews[integerPart] as! UIImageView
-            if decimalPart == 0 {
-                starImageView.image = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-            } else {
-                starImageView.image = UIImage(systemName: "star.leadinghalf.filled", withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-            }
-            let round = Int(round(lastGrade))
-            if round == 4 {
-                return
-            } else {
-               
-                for index in round...4 {
-                    
-                    let starImageView = self.starStackView.arrangedSubviews[index] as! UIImageView
-                    starImageView.image = UIImage(systemName: "star",withConfiguration: UIImage.SymbolConfiguration(font: starImageFont))?.withTintColor(.gradeStarYellow, renderingMode: .alwaysOriginal)
-                }
-            }
+            fillStar(grade : lastGrade)
 
         } else {
             gradeToggleButton.updateTitle(Title: "啟用", backgroundColor: .secondaryBackgroundColor , tintColor: .secondaryLabelColor, font: buttonFont)
@@ -369,6 +355,7 @@ class UploadPostDetailGradeCell : UITableViewCell {
             }
             
         }
+        uploadPostDetailGradeCellDelegate?.updateReleaseButtonStatus()
         
     }
     
@@ -398,6 +385,7 @@ class UploadPostDetailGradeCell : UITableViewCell {
             currentGrade = totalGrade
             self.lastGrade = currentGrade
         }
+        uploadPostDetailGradeCellDelegate?.updateReleaseButtonStatus()
     }
     
     func fillStar(grade : Double?) {

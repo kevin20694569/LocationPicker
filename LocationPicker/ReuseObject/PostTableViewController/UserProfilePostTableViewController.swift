@@ -53,13 +53,14 @@ class UserProfilePostTableViewController : PostTableViewController {
             let cellIdentifier = "StandardPostTableCell"
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? StandardPostTableCell
         }
-        cell.settingButton.isHidden = false
+        cell.settingButton.isHidden = post.user?.id != Constant.user_id
         cell.userNameLabel.isUserInteractionEnabled = false
         cell.userImageView.isUserInteractionEnabled = false
         cell.collectionViewHeight = Constant.standardMinimumTableCellCollectionViewHeight
         cell.standardPostCellDelegate = self
         cell.mediaTableCellDelegate = self
         cell.configureData(post: post)
+
         return cell
     }
     

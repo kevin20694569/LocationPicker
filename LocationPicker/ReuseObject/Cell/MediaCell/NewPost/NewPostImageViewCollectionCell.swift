@@ -14,7 +14,7 @@ class StaticImageViewCollectionCell : ImageViewCollectionCell, UITextFieldDelega
         super.configure(media: media)
         let gesture = {
             let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(IntoLargePost (_ :)))
-            longTapGesture.minimumPressDuration = 0.5
+            longTapGesture.minimumPressDuration = 0.2
             return longTapGesture
         }()
         self.contentView.addGestureRecognizer(gesture)

@@ -8,8 +8,11 @@ protocol PostTableCell : UITableViewCell {
 }
 
 protocol PostsTableForGridPostCellViewDelegate : GridPostCollectionViewAnimatorDelegate {
+    var posts : [Post]! { get set }
     var tempModifiedPostsWithMediaCurrentIndex : [String: (Post, Int)]! { get set }
     func deletePostCell(post: Post)
+    
+    
 }
 
 protocol StandardPostTableCellProtocol : PostTableCell {
@@ -21,6 +24,8 @@ protocol StandardPostTableCellProtocol : PostTableCell {
     func refreshData() async
     
 
+    
+
 
 }
 
@@ -29,6 +34,12 @@ protocol StandardPostCellDelegate : MediaTableViewCellDelegate {
     func scrollToUpdateIndexPath(diffY : CGFloat)
     var tableView  : UITableView! { get }
     func gestureStatusToggle(isTopViewController  : Bool)
+    
+    func showEditPostViewController(post : Post)
+    
+    func reloadPostCell(post: Post) async
+    
+    func presentEditPostOptionViewController(post : Post)
         
     
 }

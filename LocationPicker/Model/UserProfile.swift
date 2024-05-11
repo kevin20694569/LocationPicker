@@ -2,14 +2,14 @@
 
 import UIKit
 
-struct UserProfile  {
+class UserProfile  {
     
     var user : User!
     var friendStatus : FriendStatus! = .default
     
-    init(user: User, isFriend: Bool) {
+    init(user: User, friendStatus : FriendStatus) {
         self.user = user
-        self.friendStatus = isFriend ? .isFriend : .notFriend
+        self.friendStatus = friendStatus
     }
     
     init(profileJson : UserProfileJson) {
@@ -21,7 +21,7 @@ struct UserProfile  {
 
     }
     
-    static let example = UserProfile(user: User.defaultExample, isFriend: false)
+    static let example = UserProfile(user: User.defaultExample, friendStatus: .default)
     
     init() {
         self.user = User()

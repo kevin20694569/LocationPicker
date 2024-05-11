@@ -2,7 +2,36 @@ import UIKit
 
 
 
-class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate, ShowMessageControllerProtocol {
+class MainUserProfileViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate , UIViewControllerTransitioningDelegate, UINavigationControllerDelegate, GridPostCollectionViewAnimatorDelegate, UIGestureRecognizerDelegate , PostsTableForGridPostCellViewDelegate, ProfileMainCellDelegate {
+    func showUserProfileOptionViewController(profile: UserProfile) {
+        let controller = UserProfileOptionViewController(profile: profile)
+        controller.mainUserProfileViewController = self
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = self
+        self.present(controller, animated: true)
+    }
+    
+    func showShareUserController(user: User) {
+        let controller = ShareUserController(user: user)
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = self
+        self.present(controller, animated: true)
+    }
+    
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let bounds = UIScreen.main.bounds
+        
+        let maxWidth = bounds.width - 16
+        var maxHeight : CGFloat! = bounds.height * 0.5
+        if presented is ShareViewController {
+            maxHeight =  bounds.height * 0.7
+        }
+        return MaxFramePresentedViewPresentationController(presentedViewController: presented, presenting: presenting, maxWidth: maxWidth, maxHeight: maxHeight)
+    }
+    
+    
+
+    
     
     func deletePostCell(post: Post) {
         guard let index = self.posts.firstIndex(of: post) else {

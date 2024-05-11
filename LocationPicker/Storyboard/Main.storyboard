@@ -46,7 +46,7 @@
                         </textAttributes>
                     </navigationBar>
                     <connections>
-                        <segue destination="B1o-At-4c7" kind="relationship" relationship="rootViewController" id="ada-yX-ENU"/>
+                        <segue destination="B1o-At-4c7" kind="relationship" relationship="rootViewController" id="mle-OF-fiT"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TPp-K9-I5w" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -81,7 +81,7 @@
                                 <rect key="frame" x="310" y="483" width="67" height="47.333333333333371"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="plus.circle" catalog="system">
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="font" weight="bold">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="font" weight="medium">
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                     </preferredSymbolConfiguration>
                                     <color key="baseForegroundColor" systemColor="labelColor"/>
