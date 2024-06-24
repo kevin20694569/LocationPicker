@@ -271,3 +271,9 @@ extension BasicViewController {
     }
     
 }
+
+#Preview("BasicView") {
+    let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BasicViewController") as UIViewController
+    
+    return vc
+}

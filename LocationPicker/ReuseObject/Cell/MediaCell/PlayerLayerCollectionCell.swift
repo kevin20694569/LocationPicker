@@ -12,25 +12,28 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
     
     var soundImageview : UIImageView! = UIImageView()
     
+    weak var mediaCellDelegate : MediaCellDelegate?
+    
     
     @objc func playerRestart() {
         playerLayer.player?.seek(to: CMTime.zero)
         playerLayer.player?.play()
     }
     
-    func updateMuteStatus() {
+    @objc func updateMuteStatus() {
+        
         playerLayer.player?.isMuted = UniqueVariable.IsMuted
         let image = UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.2.fill")
         let config = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout  , weight: .regular))
         soundImageview.image = image?.withTintColor(.white).withRenderingMode(.alwaysOriginal).withConfiguration(config)
+
+        
     }
     
     var soundImageBackgroundBlurView : UIVisualEffectView! = UIVisualEffectView(frame: .zero, style: .systemUltraThinMaterialDark)
     var soundViewIncludeBlur : [UIView] {
         [soundImageview, soundImageBackgroundBlurView]
     }
-    
-
     
     
 
@@ -83,12 +86,23 @@ class PlayerLayerCollectionCell: UICollectionViewCell, MediaCollectionCell {
         self.updateMuteStatus()
     }
     
+    @objc func soundImageTapped(_ sender : Any) {
+        mediaCellDelegate?.updateVisibleCellsMuteStatus()
+        updateMuteStatus()
+    }
+    
     func soundImageViewSetup() {
         let image = UniqueVariable.IsMuted ? UIImage(systemName: "speaker.slash.fill") : UIImage(systemName: "speaker.wave.2.fill")
         let config = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .callout  , weight: .regular))
         soundImageview.image = image?.withTintColor(.white).withRenderingMode(.alwaysOriginal).withConfiguration(config)
         soundImageview.contentMode = .center
         soundImageview.translatesAutoresizingMaskIntoConstraints = false
+        
+        soundImageview.isUserInteractionEnabled = true
+        
+        let soundImageViewGesture = UITapGestureRecognizer(target: self, action: #selector(soundImageTapped( _ :)))
+        soundImageViewGesture.cancelsTouchesInView = false
+        soundImageBackgroundBlurView.addGestureRecognizer(soundImageViewGesture)
         soundImageBackgroundBlurView.clipsToBounds = true
         soundImageBackgroundBlurView.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(soundImageBackgroundBlurView)

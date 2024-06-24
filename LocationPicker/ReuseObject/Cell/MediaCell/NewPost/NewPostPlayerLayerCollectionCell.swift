@@ -1,11 +1,11 @@
 import UIKit
 class StaticPlayerLayerCollectionCell : PlayerLayerCollectionCell {
     
-    weak var mediaCellDelegate : MediaTableCellDelegate!
+    weak var mediaTableCellDelegate : MediaTableCellDelegate?
     
     @objc func IntoLargePost(_ gesture : UILongPressGestureRecognizer) {
         if gesture.state == .began {
-            mediaCellDelegate.presentWholePageMediaViewController(post: nil)
+            mediaTableCellDelegate?.presentWholePageMediaViewController(post: nil)
         }
     }
     

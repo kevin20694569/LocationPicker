@@ -46,7 +46,9 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         }
         Task {
             async let userProfile = getUserProfile()
-            self.userProfile = await userProfile
+            if let userProfile = try? await userProfile {
+                self.userProfile = userProfile
+            }
             self.collectionView.reloadSections([0])
         }
 
@@ -216,9 +218,13 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
     }
 
     
-    func getUserProfile() async -> UserProfile? {
-        let userProfile = try? await UserProfileManager.shared.getProfileByID(user_ID: user_id)
-        return userProfile
+    func getUserProfile() async throws -> UserProfile {
+        do {
+            let userProfile = try await UserProfileManager.shared.getProfileByID(user_ID: user_id)
+            return userProfile
+        } catch {
+            throw error
+        }
     }
     
     func getChatRoomPreview() async -> ChatRoomPreview? {
@@ -235,10 +241,12 @@ class MainUserProfileViewController: UIViewController, UICollectionViewDataSourc
         }
         async let userProfile = getUserProfile()
         async let chatRoomPreview = getChatRoomPreview()
-
-        self.userProfile = await userProfile
+        if let userProfile = try? await userProfile {
+            self.userProfile = userProfile
+            configureNavBar(title: userProfile.user?.name)
+        }
         self.chatRoomPreview = await chatRoomPreview
-        await configureNavBar(title: userProfile?.user?.name)
+
         self.collectionView.reloadItems(at: [IndexPath(row: 0, section: 0)])
         
         getUserProfileFinish = true

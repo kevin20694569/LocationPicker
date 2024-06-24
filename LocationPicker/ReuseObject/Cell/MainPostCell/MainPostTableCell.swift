@@ -46,6 +46,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlayerLayerCollectionCell", for: indexPath) as! PlayerLayerCollectionCell
+            cell.mediaCellDelegate = self
             cell.configure(media: media)
             return cell
         }
@@ -83,6 +84,8 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
     var doubleTapGesture : UITapGestureRecognizer! =  UITapGestureRecognizer()
     var longTapGesture : UILongPressGestureRecognizer! = UILongPressGestureRecognizer()
     var muteTapGesture : UITapGestureRecognizer! = UITapGestureRecognizer()
+    
+    var tapToPresentWholeMediaGesture : UITapGestureRecognizer! = UITapGestureRecognizer()
 
     
     var gradeStackView : UIStackView! = UIStackView()
@@ -391,7 +394,7 @@ class MainPostTableCell: UITableViewCell, UICollectionViewDelegate, UICollection
             longTapGesture.minimumPressDuration = 0.2
             return longTapGesture
         }()
-        muteTapGesture = UITapGestureRecognizer(target: self, action: #selector(MutedToggle( _ : )))
+        muteTapGesture = UITapGestureRecognizer(target: self, action: #selector(muteGestureTapped( _ : )))
         
         heartButton.addTarget(self, action: #selector(LikeToggle), for: .touchUpInside)
         
@@ -518,10 +521,17 @@ extension MainPostTableCell {
         }
     }
     
-    @objc func presentWholePageViewController(_ gesture : UILongPressGestureRecognizer) {
+   /* @objc func presentWholePageViewController(_ gesture : UILongPressGestureRecognizer) {
+        
         if gesture.state == .began {
             mediaTableCellDelegate?.presentWholePageMediaViewController(post : currentPost)
         }
+    }*/
+    
+    @objc func presentWholePageViewController(_ gesture : UITapGestureRecognizer) {
+       // if gesture.state == .began {
+             mediaTableCellDelegate?.presentWholePageMediaViewController(post : currentPost)
+        //}
     }
     
     @objc func LikeToggle() {
@@ -551,13 +561,14 @@ extension MainPostTableCell {
         mediaTableCellDelegate?.showUserProfile(user: user)
     }
 
-    @objc func MutedToggle(_ gesture: UITapGestureRecognizer? = nil) {
+    @objc func muteGestureTapped(_ gesture: UITapGestureRecognizer) {
         UniqueVariable.IsMuted.toggle()
         mediaTableCellDelegate?.updateVisibleCellsMuteStatus()
         updateVisibleCellsMuteStatus()
     }
     
     func updateVisibleCellsMuteStatus() {
+
         for cell in collectionView.visibleCells {
             if let cell = cell as? PlayerLayerCollectionCell {
                 cell.updateMuteStatus()

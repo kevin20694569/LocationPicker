@@ -340,7 +340,7 @@ extension UploadMediaViewcontroller :  PHPickerViewControllerDelegate, UICollect
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StaticPlayerLayerCollectionCell", for: indexPath) as! StaticPlayerLayerCollectionCell
-            cell.mediaCellDelegate = self
+            cell.mediaTableCellDelegate = self
             cell.configure(media: media)
             return cell
         }

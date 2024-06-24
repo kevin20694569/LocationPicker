@@ -182,6 +182,8 @@ class PostDetailViewcontroller: UIViewController, UITextViewDelegate, UITextFiel
         
     }
     
+    
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
